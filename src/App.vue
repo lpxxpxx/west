@@ -5,6 +5,7 @@
     <div v-transfer-dom>
       <actionsheet :menus="menus" v-model="showMenus"></actionsheet>
     </div>
+    <footer class="footer"><span class="pull-left">当前仓库：【LA】洛杉矶大仓</span><span class="pull-right">操作人：Donny</span></footer>
   </div>
 </template>
 
@@ -40,5 +41,21 @@ export default {
 
 body {
   background-color: #fbf9fe;
+}
+.pull-left {
+  float: left;
+}
+.pull-right {
+  float: right;
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 1rem;
+  background: #ccc;
+  height: 3rem;
+  line-height: 3rem;
 }
 </style>
