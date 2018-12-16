@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <x-header :left-options="{backText: ''}">{{title}}<a slot="right" @click="showMenus = true">English</a></x-header>
+    <x-header :left-options="{backText: ''}">{{$store.getters.getTitle}}<a slot="right" @click="showMenus = true">English</a></x-header>
     <router-view></router-view>
     <div v-transfer-dom>
       <actionsheet :menus="menus" v-model="showMenus"></actionsheet>
     </div>
-    <footer class="footer"><span class="pull-left">当前仓库：【LA】洛杉矶大仓</span><span class="pull-right">操作人：Donny</span></footer>
+    <footer v-show="showFooter" class="footer"><span class="pull-left">当前仓库：【LA】洛杉矶大仓</span><span class="pull-right">操作人：Donny</span></footer>
   </div>
 </template>
 
@@ -24,12 +24,17 @@ export default {
         menu1: '中文',
         menu2: 'English'
       },
-      showMenus: false
+      showMenus: false,
+      showFooter: false
     }
   },
-  computed: {
-    title () {
-      return this.$store.getters.getTitle
+  watch: {
+    '$route' (to, from) {
+      if (to.name === 'Warehouse') {
+        this.showFooter = false
+      } else {
+        this.showFooter = true
+      }
     }
   }
 }
@@ -38,9 +43,13 @@ export default {
 <style lang="less">
 @import '~vux/src/styles/reset.less';
 @import '~vux/src/styles/1px.less';
+@import './assets/css/fonts.css';
 
 body {
   background-color: #fbf9fe;
+}
+#app {
+  padding-bottom: 3rem;
 }
 .pull-left {
   float: left;
@@ -57,5 +66,6 @@ body {
   background: #ccc;
   height: 3rem;
   line-height: 3rem;
+  font-size: 0.75rem;
 }
 </style>

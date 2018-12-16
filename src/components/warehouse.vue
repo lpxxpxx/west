@@ -2,7 +2,7 @@
   <div class="container">
     <flexbox :gutter="0" wrap="wrap">
       <flexbox-item :span="1/2" v-for="item in warehouses" v-bind:key="item.id">
-        <div class="flex-demo">
+        <div class="flex-demo" @click="goToMenu">
           <p>【{{item.warehouseShort}}】</p>
           <p>{{item.warehouseName}}</p>
         </div>
@@ -68,8 +68,8 @@ export default {
     }
   },
   methods: {
-    changeTitle () {
-      this.$store.dispatch('setTitle', 'bianle')
+    goToMenu () {
+      this.$router.push('/menu')
     }
   }
 }
