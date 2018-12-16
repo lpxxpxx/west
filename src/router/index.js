@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Store from '@/store'
 import Warehouse from '@/components/warehouse'
 import Menu from '@/components/menu'
-import Store from '@/store'
+import StockInquiry from '@/components/stock_inquiry'
 
 Vue.use(Router)
 
@@ -22,6 +23,14 @@ const routes = new Router({
       component: Menu,
       meta: {
         title: '操作菜单'
+      }
+    },
+    {
+      path: '/stockInquiry',
+      name: 'stockInquiry',
+      component: StockInquiry,
+      meta: {
+        title: '库存查询'
       }
     }
   ]

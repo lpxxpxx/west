@@ -1,67 +1,37 @@
 <template>
   <div class="container">
-    <div v-for="item in menuList" :key="item.id" class="menu-list" @click="goToDetail(item.target)">
-      <span :class="item.icon"></span>
-      <span class="menu-title">{{item.name}}</span>
-      <badge :text="item.num"></badge>
-    </div>
+    <sticky scroll-box="vux_view_box_body" :check-sticky-support="false" :offset="46">
+      <tab :line-width=1>
+        <tab-item>按库位查</tab-item>
+        <tab-item>按SKU查</tab-item>
+      </tab>
+    </sticky>
+    <swiper v-model="index" height="100px" :show-dots="false">
+      <swiper-item>
+        <div class="tab-swiper vux-center">1</div>
+      </swiper-item>
+      <swiper-item>
+        <div class="tab-swiper vux-center">2</div>
+      </swiper-item>
+    </swiper>
   </div>
 </template>
 
 <script>
-import { Badge } from 'vux'
+import { Sticky, Tab, TabItem, Swiper, SwiperItem } from 'vux'
 
 export default {
-  name: 'Menu',
+  name: 'stockInquiry',
   components: {
-    Badge
+    Sticky,
+    Tab,
+    TabItem,
+    Swiper,
+    SwiperItem
   },
   data () {
     return {
-      menuList: [
-        {
-          id: 0,
-          name: '库存查询',
-          icon: 'icon icon-search',
-          target: '/stockInquiry',
-          num: 0
-        },
-        {
-          id: 1,
-          name: '收货',
-          icon: 'icon icon-download',
-          target: '/receiving',
-          num: 2
-        },
-        {
-          id: 2,
-          name: '上架',
-          icon: 'icon icon-upload',
-          target: '/upperShelf',
-          num: 2
-        },
-        {
-          id: 3,
-          name: '调库存',
-          icon: 'icon icon-list-numbered',
-          target: '/inventoryAdjustment',
-          num: 2
-        },
-        {
-          id: 4,
-          name: '移库',
-          icon: 'icon icon-exit',
-          target: '/moveLibrary',
-          num: 2
-        },
-        {
-          id: 5,
-          name: '产品规格',
-          icon: 'icon icon-file-text2',
-          target: '/productSpecification',
-          num: 222
-        }
-      ]
+
     }
   },
   methods: {
