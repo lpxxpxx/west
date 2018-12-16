@@ -2,13 +2,18 @@
   <div class="container">
     <sticky scroll-box="vux_view_box_body" :check-sticky-support="false" :offset="46">
       <tab :line-width=1>
-        <tab-item>按库位查</tab-item>
-        <tab-item>按SKU查</tab-item>
+        <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">按库位查</tab-item>
+        <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">按SKU查</tab-item>
       </tab>
     </sticky>
-    <swiper v-model="index" height="100px" :show-dots="false">
+    <swiper v-model="index" :show-dots="false">
       <swiper-item>
-        <div class="tab-swiper vux-center">1</div>
+        <div class="tab-swiper vux-center">
+          <div class="search">
+            <span class="label">库位</span>
+            <input type="text" />  
+          </div>  
+        </div>
       </swiper-item>
       <swiper-item>
         <div class="tab-swiper vux-center">2</div>
@@ -31,40 +36,24 @@ export default {
   },
   data () {
     return {
-
+      index: 1
     }
   },
   methods: {
-    goToDetail (url) {
-      this.$router.push(url)
+    changeIndex (i) {
+      this.index = i
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-  .menu-list{
+  .search {
+    height: 3rem;
+    line-height: 3rem;
     display: flex;
-    font-size: 1.5rem;
-    border-bottom: 1px dashed #999;
-    color: #333;
-    padding: 1.5rem;
-    .icon {
-      margin-right: 10px;
-      position: relative;
-      top: 5px;
-    }
-    .menu-title {
-      font-size: 1.25rem;
+    input {
       flex: 1;
-    }
-    .vux-badge {
-      position: relative;
-      top: 8px;
-      height: 1.25rem;
-      width: 1.25rem;
-      line-height: 1.25rem;
-      border-radius: 2rem;
     }
   }
 </style>
