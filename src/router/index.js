@@ -4,6 +4,8 @@ import Store from '@/store'
 import Warehouse from '@/components/warehouse'
 import Menu from '@/components/menu'
 import StockInquiry from '@/components/stock_inquiry'
+import ReceivingTask from '@/components/receiving_task'
+import Receiving from '@/components/receiving'
 
 Vue.use(Router)
 
@@ -31,6 +33,22 @@ const routes = new Router({
       component: StockInquiry,
       meta: {
         title: '库存查询'
+      }
+    },
+    {
+      path: '/receivingTask',
+      name: 'receivingTask',
+      component: ReceivingTask,
+      meta: {
+        title: '收货任务'
+      }
+    },
+    {
+      path: '/receiving',
+      name: 'receiving',
+      component: Receiving,
+      meta: {
+        title: '收货'
       }
     }
   ]

@@ -57,6 +57,9 @@ body {
 .pull-right {
   float: right;
 }
+.underline {
+  text-decoration: underline;
+}
 .footer {
   position: fixed;
   bottom: 0;

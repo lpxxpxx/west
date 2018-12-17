@@ -30,7 +30,7 @@ export default {
           id: 1,
           name: '收货',
           icon: 'icon icon-download',
-          target: '/receiving',
+          target: '/receivingTask',
           num: 2
         },
         {
