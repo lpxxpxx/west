@@ -71,4 +71,14 @@ body {
   line-height: 3rem;
   font-size: 0.75rem;
 }
+.clearfloat:after {
+  display: block;
+  clear: both;
+  content: "";
+  visibility: hidden;
+  height: 0
+}
+.clearfloat {
+  zoom: 1
+}
 </style>

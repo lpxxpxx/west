@@ -19,27 +19,17 @@
           <span class="underline name" title="">AICOOK-GH23-电烤箱（美规）</span>
         </div>
         <div class="total">
-          <span class="pull-left">预报数量： <span class="underline">5</span></span>
-          <span class="pull-right">已收数量： <span class="underline">1020</span></span>
+          <span class="pull-left">收货数量： <span class="underline">5</span></span>
+          <span class="pull-right">已上架数量： <span class="underline">1020</span></span>
         </div>
       </div>
-      <div class="size">
-        <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
-        </div>
-        <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
-        </div>
-        <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" style="width: calc(100% - 37px)" /><span style="width: 35px"> CM </span>
-        </div>
-        <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" style="width: calc(100% - 37px)" /><span style="width: 35px"> KG</span>
-        </div>
+      <div class="search">
+        <span class="label">库位</span>
+        <input type="text" placeholder="此处扫描入库单号" />
       </div>
       <div class="search search-last">
-        <span class="label" style="width: 9rem">本次收货数量</span>
-        <input type="number" placeholder="0" style="width: 9rem" />
+        <span class="label">数量</span>
+        <input type="number" placeholder="此处扫描箱唛上的SKU" />
       </div>
       <div class="photo">
         <span class="label">拍照（可选）</span>
@@ -77,7 +67,7 @@
           <span class="pull-right">已上架数量： <span class="underline">1020</span></span>
         </div>
       </div>
-      <div class="size">
+      <div class="search">
         <span class="label">库位</span>
         <input type="text" placeholder="此处扫描入库单号" />
       </div>
@@ -109,7 +99,7 @@
 import { Tab, TabItem, XButton, XInput, Flexbox, FlexboxItem } from 'vux'
 
 export default {
-  name: 'receiving',
+  name: 'upperShelf',
   components: {
     Tab,
     TabItem,
@@ -157,25 +147,6 @@ export default {
       .name {
         flex: 1;
         text-overflow: ellipsis;
-      }
-    }
-  }
-  .size {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1rem 10px;
-    .size-item {
-      input {
-        height: 3rem;
-        line-height: 3rem;
-        padding: 0 6px;
-        box-sizing: border-box;
-        font-size: 1.5rem;
-      }
-      span {
-        display: inline-block;
-        text-align: center;
       }
     }
   }

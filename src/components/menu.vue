@@ -37,28 +37,28 @@ export default {
           id: 2,
           name: '上架',
           icon: 'icon icon-upload',
-          target: '/upperShelf',
+          target: '/upperShelfTask',
           num: 2
         },
         {
           id: 3,
           name: '调库存',
           icon: 'icon icon-list-numbered',
-          target: '/inventoryAdjustment',
+          target: '/inventoryAdjustmentTask',
           num: 2
         },
         {
           id: 4,
           name: '移库',
           icon: 'icon icon-exit',
-          target: '/moveLibrary',
+          target: '/moveLibraryTask',
           num: 2
         },
         {
           id: 5,
           name: '产品规格',
           icon: 'icon icon-file-text2',
-          target: '/productSpecification',
+          target: '/productSpecificationTask',
           num: 222
         }
       ]

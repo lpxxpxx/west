@@ -23,7 +23,7 @@
 import { XButton, XInput } from 'vux'
 
 export default {
-  name: 'receivingTask',
+  name: 'inventoryAdjustmentTask',
   components: {
     XButton,
     XInput
@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     goToDetail () {
-      this.$router.push('/receiving')
+      this.$router.push('/inventoryAdjustment')
     }
   }
 }
