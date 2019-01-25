@@ -6,98 +6,105 @@
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
-        <span class="label">单号</span>
-        <input type="text" placeholder="此处扫描入库单号" />
+        <scan-input :name="'单号'" :placeholder="'此处扫描入库单号'" v-model="skuData.receivingCode"></scan-input>
       </div>
       <div class="search search-last">
-        <span class="label">SKU</span>
-        <input type="text" placeholder="此处扫描箱唛上的SKU" />
+        <scan-input :name="'SKU'" :placeholder="'此处扫描箱唛上的SKU'" v-model="skuData.productBarcode"></scan-input>
       </div>
       <div class="info clearfloat">
         <div class="info-detail">
           <span class="label">SKU名称：</span> 
-          <span class="underline name" title="">AICOOK-GH23-电烤箱（美规）</span>
+          <span class="underline name" title="">{{skuData.productTitleEn}}</span>
         </div>
         <div class="total">
-          <span class="pull-left">预报数量： <span class="underline">5</span></span>
-          <span class="pull-right">已收数量： <span class="underline">1020</span></span>
+          <span class="pull-left">预报数量： <span class="underline">{{skuData.rdReceivingQtySubset || 0}}</span></span>
+          <span class="pull-right">已收数量： <span class="underline">{{skuData.rdReceivedQtySubset || 0}}</span></span>
         </div>
       </div>
       <div class="size">
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="skuData.productLength" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="skuData.productWidth" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" style="width: calc(100% - 37px)" /><span style="width: 35px"> CM </span>
+          <input type="number" placeholder="0" v-model="skuData.productHeight" style="width: calc(100% - 37px)" /><span style="width: 35px"> CM </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" style="width: calc(100% - 37px)" /><span style="width: 35px"> KG</span>
+          <input type="number" placeholder="0" v-model="skuData.productWeight" style="width: calc(100% - 37px)" /><span style="width: 35px"> KG</span>
         </div>
       </div>
       <div class="search search-last">
-        <span class="label" style="width: 9rem">本次收货数量</span>
-        <input type="number" placeholder="0" style="width: 9rem" />
+        <span class="label" style="width: 10rem">本次收货数量</span>
+        <input type="number" placeholder="0" v-model="skuData.rdReceivedNetReceiptsQty" />
       </div>
       <div class="photo">
         <span class="label">拍照（可选）</span>
         <span class="photo-cont">
-          <span class="icon icon-camera"></span>
+          <span class="iconfont icon-camera" @click="chooseImage"></span>
         </span>
       </div>
       <div class="button">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#cccccc', '#cccccc']">重置</x-button>
+            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">重置</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']">确认</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">确认</x-button>
           </flexbox-item>
         </flexbox>
       </div>
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
-        <span class="label">单号</span>
-        <input type="text" placeholder="此处扫描入库单号" />
+        <scan-input :name="'箱号'" :placeholder="'此处扫描箱唛上的箱号'" v-model="boxData.boxNumberSubset"></scan-input>
       </div>
       <div class="search search-last">
         <span class="label">SKU</span>
-        <input type="text" placeholder="此处扫描箱唛上的SKU" />
+        <input type="text" disabled="disabled" v-model="boxData.productBarcode" />
       </div>
       <div class="info clearfloat">
         <div class="info-detail">
           <span class="label">SKU名称：</span> 
-          <span class="underline name" title="">AICOOK-GH23-电烤箱（美规）</span>
+          <span class="underline name" title="">{{boxData.productTitleEn}}</span>
         </div>
         <div class="total">
-          <span class="pull-left">收货数量： <span class="underline">5</span></span>
-          <span class="pull-right">已上架数量： <span class="underline">1020</span></span>
+          <span class="pull-left">预报数量： <span class="underline">{{boxData.rdReceivingQtySubset || 0}}</span></span>
+          <span class="pull-right">已收数量： <span class="underline">{{boxData.rdReceivedQtySubset || 0}}</span></span>
         </div>
       </div>
       <div class="size">
-        <span class="label">库位</span>
-        <input type="text" placeholder="此处扫描入库单号" />
+        <div class="size-item" style="width: 23%;">
+          <input type="number" placeholder="0" v-model="boxData.productLength" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
+        </div>
+        <div class="size-item" style="width: 23%;">
+          <input type="number" placeholder="0" v-model="boxData.productWidth" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
+        </div>
+        <div class="size-item" style="width: 27%;">
+          <input type="number" placeholder="0" v-model="boxData.productHeight" style="width: calc(100% - 37px)" /><span style="width: 35px"> CM </span>
+        </div>
+        <div class="size-item" style="width: 27%;">
+          <input type="number" placeholder="0" v-model="boxData.productWeight" style="width: calc(100% - 37px)" /><span style="width: 35px"> KG</span>
+        </div>
       </div>
       <div class="search search-last">
-        <span class="label">数量</span>
-        <input type="number" placeholder="此处扫描箱唛上的SKU" />
+        <span class="label" style="width: 10rem">本次收货数量</span>
+        <input type="number" placeholder="0" v-model="boxData.rdReceivedNetReceiptsQty" style="width: 9rem" />
       </div>
       <div class="photo">
         <span class="label">拍照（可选）</span>
         <span class="photo-cont">
-          <span class="icon icon-camera"></span>
+          <span class="iconfont icon-camera" @click="chooseImage"></span>
         </span>
       </div>
       <div class="button">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#cccccc', '#cccccc']">重置</x-button>
+            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('box')">重置</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']">确认</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('box')">确认</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -107,6 +114,7 @@
 
 <script>
 import { Tab, TabItem, XButton, XInput, Flexbox, FlexboxItem } from 'vux'
+import qs from 'Qs'
 
 export default {
   name: 'receiving',
@@ -118,27 +126,187 @@ export default {
     Flexbox,
     FlexboxItem
   },
+  mounted () {
+    let query = this.$route.query || {}
+    this.skuData.receivingCode = query.receivingCode
+    this.boxData.receivingCode = query.receivingCode
+  },
+  computed: {
+    boxDataBoxNumberSubset () {
+      return this.boxData.boxNumberSubset
+    }
+  },
   data () {
     return {
-      index: 0
+      index: 0,
+      timeoutId: '',
+      localIds: {
+        skuImg: [],
+        boxImg: []
+      },
+      skuData: {
+        receivingCode: '',
+        productBarcode: '',
+        receivingQtyList: [{}]
+      },
+      boxData: {
+        receivingCode: '',
+        productBarcode: '',
+        receivingQtyList: [{
+          boxNumberSubset: ''
+        }]
+      },
+      oldskuData: {
+        receivingCode: '',
+        productBarcode: '',
+        receivingQtyList: [{}]
+      },
+      oldboxData: {
+        receivingCode: '',
+        productBarcode: '',
+        receivingQtyList: [{
+          boxNumberSubset: ''
+        }]
+      }
     }
   },
   methods: {
     changeIndex (i) {
       this.index = i
+    },
+    searchDetail (type, code, receivingCode) {
+      this.axios.get(`${this.$store.getters.getUrl}/weixinapi/receiving/receivingDetailSearch`, {
+        params: {
+          codeType: type,
+          warehouseId: this.$store.getters.getWarehouse.warehouseId,
+          queryCode: code,
+          receivingCode: receivingCode
+        }
+      })
+      .then(res => {
+        if (res.data.receivingId) {
+          this[`${type}Data`] = res.data
+          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data))
+        }
+        console.log(res)
+      })
+      .catch(res => {
+        alert('业务系统异常！')
+      })
+    },
+    toSearch (type) {
+      let that = this
+      let code = type === 'sku' ? this[`${type}Data`].productBarcode : this[`${type}Data`].boxNumberSubset
+      clearTimeout(that.timeoutId)
+      that.timeoutId = setTimeout(function () {
+        that.searchDetail(type, code, that[`${type}Data`].receivingCode)
+      }, 1000)
+    },
+    reset (type) {
+      this[`${type}Data`] = JSON.parse(JSON.stringify(this[`old${type}Data`]))
+    },
+    submit (type) {
+      if (type === 'sku') {
+        if (!this[`${type}Data`].receivingCode) {
+          alert(`请输入入库单号`)
+          return false
+        }
+        if (!this[`${type}Data`].productBarcode) {
+          alert(`请输入SKU`)
+          return false
+        }
+      } else {
+        if (!this[`${type}Data`].boxNumberSubset) {
+          alert(`请输入箱号`)
+          return false
+        }
+      }
+      if (!this[`${type}Data`].productLength) {
+        alert(`请输入产品长度`)
+        return false
+      }
+      if (!this[`${type}Data`].productWidth) {
+        alert(`请输入产品宽度`)
+        return false
+      }
+      if (!this[`${type}Data`].productHeight) {
+        alert(`请输入产品高度`)
+        return false
+      }
+      if (!this[`${type}Data`].productWeight) {
+        alert(`请输入产品重量`)
+        return false
+      }
+      if (!this[`${type}Data`].rdReceivedNetReceiptsQty) {
+        alert(`请输入本次收货数量`)
+        return false
+      }
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/receiving/confirmArrival`, qs.stringify({receivedManageVo: JSON.stringify(this[`${type}Data`])}), {
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        }
+      })
+      .then(res => {
+        this.$vux.loading.hide()
+        if (res.success) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: '操作成功'
+          })
+        } else {
+          alert(JSON.stringify(res))
+        }
+      })
+      .catch(res => {
+        this.$vux.loading.hide()
+        alert(JSON.stringify(res))
+      })
+    },
+    chooseImage () {
+      let that = this
+      // eslint-disable-next-line
+      wx.chooseImage({
+        count: 3,
+        sizeType: ['original', 'compressed'],
+        sourceType: ['album', 'camera'],
+        success: function (a) {
+          that.localIds.skuImg.push(a.localIds)
+          alert(JSON.stringify(a))
+        }
+      })
+    }
+  },
+  watch: {
+    'skuData.receivingCode' () {
+      if (this.skuData.receivingCode && this.skuData.productBarcode) {
+        this.toSearch('sku')
+      }
+    },
+    'skuData.productBarcode' () {
+      if (this.skuData.receivingCode && this.skuData.productBarcode) {
+        this.toSearch('sku')
+      }
+    },
+    boxDataBoxNumberSubset () {
+      this.toSearch('box')
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+  .container {
+    margin-bottom: 7rem;
+  }
   .search {
     padding: 1rem 1rem 5px;
     height: 3rem;
     line-height: 3rem;
     display: flex;
     .label {
-      margin-right: 1rem;
       font-size: 1.5rem;
       width: 4rem;
     }
@@ -192,14 +360,20 @@ export default {
       flex: 1;
       font-size: 2rem;
       line-height: 3rem;
-      .icon {
+      .iconfont {
         border: 1px dashed #999;
         color: #999;
-        padding: 5px 7px 0;
+        font-size: 2rem;
+        padding: 0px 7px 0;
       }
     }
   }
   .button {
-    padding: 0 1rem;
+    position: fixed;
+    padding: 1rem 1rem;
+    bottom: 3rem;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fbf9fe;
   }
 </style>

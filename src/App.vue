@@ -2,21 +2,27 @@
   <div id="app">
     <x-header :left-options="{backText: ''}">{{$store.getters.getTitle}}<a slot="right" @click="showMenus = true">English</a></x-header>
     <router-view></router-view>
-    <div v-transfer-dom>
+    <div>
       <actionsheet :menus="menus" v-model="showMenus"></actionsheet>
     </div>
-    <footer v-show="showFooter" class="footer"><span class="pull-left">当前仓库：【LA】洛杉矶大仓</span><span class="pull-right">操作人：Donny</span></footer>
+    <footer v-show="showFooter" class="footer"><span class="pull-left">当前仓库：{{$store.getters.getWarehouse.warehouseDesc}}</span><span class="pull-right">操作人：{{$store.getters.getUser}}</span></footer>
   </div>
 </template>
 
 <script>
 import { XHeader, Actionsheet } from 'vux'
+import qs from 'Qs'
 
 export default {
   name: 'app',
   components: {
     XHeader,
     Actionsheet
+  },
+  mounted () {
+    this.changeFooter()
+    this.afterRefresh()
+    this.store()
   },
   data () {
     return {
@@ -28,13 +34,54 @@ export default {
       showFooter: false
     }
   },
-  watch: {
-    '$route' (to, from) {
-      if (to.name === 'Warehouse') {
+  methods: {
+    changeFooter () {
+      if (this.$route.name === 'Warehouse') {
         this.showFooter = false
       } else {
         this.showFooter = true
       }
+    },
+    afterRefresh () {
+      let warehouse = this.$cookies.get('warehouse')
+      let user = this.$cookies.get('user')
+      let url = this.$cookies.get('url')
+      let userEmail = this.$cookies.get('userEmail')
+      alert(`cookie: ${url}`)
+      if (warehouse) {
+        this.$store.dispatch('setWarehouse', warehouse)
+      }
+      if (user) {
+        this.$store.dispatch('setUser', user)
+      }
+      if (url) {
+        this.$store.dispatch('setUrl', url)
+      }
+      if (userEmail) {
+        this.$store.dispatch('setUserEmail', userEmail)
+      }
+    },
+    store () {
+      let url = document.querySelector('#domain').value
+      let userEmail = document.querySelector('#userInfo').value
+      alert(`store: ${url}`)
+      if (url) {
+        this.$cookies.set('url', url)
+        this.$store.dispatch('setUrl', url)
+      }
+      if (userEmail) {
+        window.localStorage.setItem('userEmail', userEmail.userEmail)
+      }
+    }
+  },
+  computed: {
+    title () {
+      return this.$store.getters.getTitle
+    }
+  },
+  watch: {
+    '$route' (to, from) {
+      this.changeFooter()
     }
   }
 }
@@ -43,7 +90,7 @@ export default {
 <style lang="less">
 @import '~vux/src/styles/reset.less';
 @import '~vux/src/styles/1px.less';
-@import './assets/css/fonts.css';
+@import '//at.alicdn.com/t/font_978696_1eux34znd68.css';
 
 body {
   background-color: #fbf9fe;
@@ -59,6 +106,28 @@ body {
 }
 .underline {
   text-decoration: underline;
+}
+.input {
+  padding-top: .5rem;
+  .cont {
+    .label {
+      display: none;
+    }
+    input {
+      background: #fbf9fe;
+      border-left: 0;
+      border-right: 0;
+      border-top: 1px solid #999;
+      border-bottom: 1px solid #999;
+      padding: .5rem 2rem .5rem 1rem!important;
+    }
+  }
+}
+.move-library .search .label {
+  margin-right: .5rem!important;
+  font-size: 1.5rem;
+  width: 5rem;
+  text-align: right;
 }
 .footer {
   position: fixed;

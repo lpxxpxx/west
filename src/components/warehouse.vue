@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <flexbox :gutter="0" wrap="wrap">
-      <flexbox-item :span="1/2" v-for="item in warehouses" v-bind:key="item.id">
-        <div class="flex-demo" @click="goToMenu">
-          <p>【{{item.warehouseShort}}】</p>
-          <p>{{item.warehouseName}}</p>
+      <flexbox-item :span="1/2" v-for="item in warehouses.warehouseList" v-bind:key="item.warehouseId">
+        <div class="flex-demo" @click="goToMenu(item)">
+          <p>【{{item.warehouseCode}}】</p>
+          <p>{{item.warehouseDesc}}</p>
         </div>
       </flexbox-item>
     </flexbox>
@@ -20,55 +20,35 @@ export default {
     Flexbox,
     FlexboxItem
   },
+  mounted () {
+    let warehouses = document.querySelector('#userInfo').value
+    if (warehouses) {
+      warehouses = JSON.parse(warehouses)
+    } else {
+      alert('无法取得用户信息')
+      return false
+    }
+    if (warehouses.warehouseList.length === 0) {
+      alert('暂无权限查看')
+      return false
+    } else if (warehouses.warehouseList.length === 1) {
+      this.goToMenu(warehouses.warehouseList[0])
+    }
+    this.warehouses = warehouses
+  },
   data () {
     return {
-      warehouses: [
-        {
-          id: 0,
-          warehouseShort: 'LA',
-          warehouseName: '洛杉矶大仓'
-        },
-        {
-          id: 1,
-          warehouseShort: 'NJ',
-          warehouseName: '新泽西大仓'
-        },
-        {
-          id: 2,
-          warehouseShort: 'LA02LSC',
-          warehouseName: '洛杉矶临时仓'
-        },
-        {
-          id: 3,
-          warehouseShort: 'DE',
-          warehouseName: '德国仓'
-        },
-        {
-          id: 4,
-          warehouseShort: 'USHOU01',
-          warehouseName: '休斯敦仓'
-        },
-        {
-          id: 5,
-          warehouseShort: 'USCHI01',
-          warehouseName: '芝加哥仓'
-        },
-        {
-          id: 6,
-          warehouseShort: 'WPUKK',
-          warehouseName: '英国K仓'
-        },
-        {
-          id: 7,
-          warehouseShort: 'WPUKS',
-          warehouseName: '英国S仓'
-        }
-      ],
-      msg: 'Welcome to Your Vue.js App'
+      warehouses: {}
     }
   },
   methods: {
-    goToMenu () {
+    goToMenu (item) {
+      this.$store.dispatch('setWarehouse', item)
+      this.$store.dispatch('setUser', this.warehouses.userName)
+      this.$store.dispatch('setUserEmail', this.warehouses.userEmail)
+      this.$cookies.set('warehouse', JSON.stringify(item))
+      this.$cookies.set('user', this.warehouses.userName)
+      this.$cookies.set('userEmail', this.warehouses.userEmail)
       this.$router.push('/menu')
     }
   }

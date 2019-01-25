@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-for="item in menuList" :key="item.id" class="menu-list" @click="goToDetail(item.target)">
-      <span :class="item.icon"></span>
+      <i class="iconfont" :class="item.icon"></i>
       <span class="menu-title">{{item.name}}</span>
       <badge :text="item.num"></badge>
     </div>
@@ -22,42 +22,42 @@ export default {
         {
           id: 0,
           name: '库存查询',
-          icon: 'icon icon-search',
+          icon: 'icon-monitor',
           target: '/stockInquiry',
           num: 0
         },
         {
           id: 1,
           name: '收货',
-          icon: 'icon icon-download',
+          icon: 'icon-Import',
           target: '/receivingTask',
           num: 2
         },
         {
           id: 2,
           name: '上架',
-          icon: 'icon icon-upload',
+          icon: 'icon-export',
           target: '/upperShelfTask',
           num: 2
         },
         {
           id: 3,
           name: '调库存',
-          icon: 'icon icon-list-numbered',
+          icon: 'icon-sync',
           target: '/inventoryAdjustmentTask',
           num: 2
         },
         {
           id: 4,
           name: '移库',
-          icon: 'icon icon-exit',
+          icon: 'icon-redo',
           target: '/moveLibraryTask',
           num: 2
         },
         {
           id: 5,
           name: '产品规格',
-          icon: 'icon icon-file-text2',
+          icon: 'icon-detail',
           target: '/productSpecificationTask',
           num: 222
         }
@@ -79,14 +79,15 @@ export default {
     border-bottom: 1px dashed #999;
     color: #333;
     padding: 1.5rem;
-    .icon {
-      margin-right: 10px;
-      position: relative;
-      top: 5px;
+    .iconfont {
+      position: absolute;
+      margin-top: -5px;
+      font-size: 1.75rem;
     }
     .menu-title {
       font-size: 1.25rem;
       flex: 1;
+      padding-left: 2.5rem;
     }
     .vux-badge {
       position: relative;

@@ -1,35 +1,32 @@
 <template>
-  <div class="container">
+  <div class="container move-library">
     <div class="tab-swiper" v-show="index === 0">
       <div class="search search-first">
-        <span class="label">库位</span>
-        <input type="text" placeholder="此处扫描入库单号" />
+        <scan-input :name="'库位'" :placeholder="'此处扫描入库单号'" v-model="lcCode"></scan-input>
       </div>
       <div class="cheak">
         <check-icon :value.sync="isAll" type="plain">移动当前库位所有SKU</check-icon>
       </div>
       <div class="search">
-        <span class="label">SKU</span>
-        <input type="text" placeholder="此处扫描入库单号" />
+        <scan-input :name="'SKU'" :placeholder="'此处扫描SKU'" :disabled="isAll ? 'disabled' : false" v-model="productBarcode"></scan-input>
       </div>
       <div class="search">
         <span class="label">数量</span>
-        <input type="text" placeholder="此处扫描入库单号" />
+        <input type="text" v-model="quantity" :disabled="isAll ? 'disabled' : false" placeholder="" />
       </div>
       <div class="search search-last">
-        <span class="label">新库位</span>
-        <input type="text" placeholder="此处扫描箱唛上的SKU" />
+        <scan-input :name="'新库位'" :placeholder="'此处扫描箱唛上的SKU'" v-model="lcCodeNew"></scan-input>
       </div>
       <div class="photo">
         <span class="label">拍照（可选）</span>
         <span class="photo-cont">
-          <span class="icon icon-camera"></span>
+          <span class="iconfont icon-camera" @click="chooseImage"></span>
         </span>
       </div>
       <div class="button">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']">提交</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit">提交</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -39,6 +36,7 @@
 
 <script>
 import { XButton, Flexbox, FlexboxItem, CheckIcon } from 'vux'
+import qs from 'Qs'
 
 export default {
   name: 'moveLibrary',
@@ -48,15 +46,104 @@ export default {
     FlexboxItem,
     CheckIcon
   },
+  mounted () {
+    let query = this.$route.query || {}
+    this.loadDetail(query.productBarcode, query.warehouseId, query.lcCode, query.lcCodeNew)
+  },
   data () {
     return {
       index: 0,
-      isAll: false
+      isAll: false,
+      productBarcode: '',
+      lcCode: '',
+      lcCodeNew: '',
+      quantity: 0
     }
   },
   methods: {
     changeIndex (i) {
       this.index = i
+    },
+    loadDetail (productBarcode = '', warehouseId = '', lcCode = '', lcCodeNew = '') {
+      this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/queryMoveWarehouseTask`, {
+        params: {
+          productBarcode: productBarcode,
+          warehouseId: warehouseId,
+          lcCode: lcCode,
+          lcCodeNew: lcCodeNew
+        }})
+      .then(res => {
+        this.lcCode = res.data.lcCode
+        this.lcCodeNew = res.data.lcCodeNew
+        this.productBarcode = res.data.productBarcode
+        this.quantity = res.data.quantity
+      })
+      .catch(res => {
+        alert('业务系统异常！')
+      })
+    },
+    submit () {
+      if (!this.lcCode) {
+        alert(`请输入库位`)
+        return false
+      }
+      if (!this.lcCodeNew) {
+        alert(`请输入新库位`)
+        return false
+      }
+      if (!this.isAll) {
+        if (!this.productBarcode) {
+          alert(`请输入SKU`)
+          return false
+        }
+        if (!this.lcCode) {
+          alert(`请输入数量`)
+          return false
+        }
+      }
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
+      let query = {
+        moveType: this.isAll ? 'All' : 'Part',
+        productBarcode: this.productBarcode,
+        quantity: this.quantity,
+        lcCode: this.lcCode,
+        lcCodeNew: this.lcCodeNew
+      }
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/moveWarehouse`, qs.stringify(query), {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        }
+      })
+      .then(res => {
+        this.$vux.loading.hide()
+        if (res.success) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: '操作成功'
+          })
+        } else {
+          alert(JSON.stringify(res))
+        }
+      })
+      .catch(res => {
+        this.$vux.loading.hide()
+        alert(JSON.stringify(res))
+      })
+    },
+    chooseImage () {
+      let that = this
+      // eslint-disable-next-line
+      wx.chooseImage({
+        count: 3,
+        sizeType: ['original', 'compressed'],
+        sourceType: ['album', 'camera'],
+        success: function (a) {
+          that.localIds.skuImg.push(a.localIds)
+          alert(JSON.stringify(a))
+        }
+      })
     }
   }
 }
@@ -90,7 +177,7 @@ export default {
     margin-left: 5rem;
   }
   .photo {
-    padding: .5rem 1rem 1.5rem;
+    padding: 1.5rem 1rem;
     display: flex;
     .label {
       display: inline-block;
@@ -102,10 +189,11 @@ export default {
       flex: 1;
       font-size: 2rem;
       line-height: 3rem;
-      .icon {
+      .iconfont {
         border: 1px dashed #999;
         color: #999;
-        padding: 5px 7px 0;
+        font-size: 2rem;
+        padding: 0px 7px 0;
       }
     }
   }

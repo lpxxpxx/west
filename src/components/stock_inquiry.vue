@@ -1,108 +1,49 @@
 <template>
   <div class="container">
     <tab :line-width=1>
-      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">按库位查</tab-item>
-      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">按SKU查</tab-item>
+      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">按SKU查</tab-item>
+      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">按库位查</tab-item>
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
-        <span class="label">库位</span>
-        <input type="text" />  
+        <scan-input :name="'SKU'" v-model="sku"></scan-input>
       </div>
       <div class="total">
-        <span class="pull-left">SKU种类 <span class="underline">5</span></span>
-        <span class="pull-right">总计 <span class="underline">1020</span></span>
+        <span class="pull-left">库位数 <span class="underline">{{skuCount}}</span></span>
+        <span class="pull-right">总计 <span class="underline">{{skuAll}}</span></span>
       </div>
       <div class="table">
         <x-table full-bordered>
           <thead>
             <tr>
-              <th>SKU</th>
+              <th>库位</th>
               <th>可用</th>
               <th>待出库</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
+            <tr v-for="(item, index) in skuData" :key="index">
+              <td>{{item.lcCode}}</td>
+              <td v-once>{{item.piSellable}}</td>
+              <td v-once>{{item.piReserved}}</td>
             </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
+            <tr v-if="!hassku">
+              <td colspan="3">没有找到匹配的记录</td>
             </tr>
           </tbody>
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']">调库存</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku)">调库存</x-button>
       </div>
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
-        <span class="label">SKU</span>
-        <input type="text" />  
+        <scan-input :name="'库位'" v-model="lcCode"></scan-input>
       </div>
       <div class="total">
-        <span class="pull-left">库位数 <span class="underline">5</span></span>
-        <span class="pull-right">总计 <span class="underline">1020</span></span>
+        <span class="pull-left">SKU种类 <span class="underline">{{lcCodeCount}}</span></span>
+        <span class="pull-right">总计 <span class="underline">{{lcCodeAll}}</span></span>
       </div>
       <div class="table">
         <x-table full-bordered>
@@ -114,76 +55,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
+            <tr v-for="(item, index) in lcCodeData" :key="index">
+              <td>{{item.productBarcode}}</td>
+              <td>{{item.piSellable}}</td>
+              <td>{{item.piReserved}}</td>
             </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
-            </tr>
-            <tr>
-              <td>YDL-1010101020</td>
-              <td>25</td>
-              <td>1</td>
+            <tr v-if="!haslcCode">
+              <td colspan="3">没有找到匹配的记录</td>
             </tr>
           </tbody>
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']">调库存</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('')">调库存</x-button>
       </div>
     </div>
   </div>
@@ -191,6 +75,7 @@
 
 <script>
 import { Tab, TabItem, XTable, XButton } from 'vux'
+import ScanInput from './scan_input'
 
 export default {
   name: 'stockInquiry',
@@ -198,34 +83,87 @@ export default {
     Tab,
     TabItem,
     XTable,
-    XButton
+    XButton,
+    ScanInput
   },
   data () {
     return {
-      index: 0
+      index: 0,
+      sku: '',
+      lcCode: '',
+      skuCount: '',
+      lcCodeCount: '',
+      skuAll: '',
+      lcCodeAll: '',
+      hassku: false,
+      haslcCode: false,
+      timeoutId: '',
+      skuData: [],
+      lcCodeData: []
     }
   },
   methods: {
-    changeIndex (i) {
-      this.index = i
+    changeIndex (val) {
+      this.index = val
+    },
+    goToDetail (productBarcode = '') {
+      this.$router.push(`/inventoryAdjustment?productBarcode=${productBarcode}`)
+    },
+    search (type) {
+      if (this.$store.getters.getWarehouse.warehouseId === undefined) {
+        this.$router.push('/')
+        return false
+      }
+      this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventorySearch`, {
+        params: {
+          codeType: type,
+          warehouseId: this.$store.getters.getWarehouse.warehouseId,
+          queryCode: type === 'sku' ? this.sku : this.lcCode
+        }
+      })
+      .then(res => {
+        let all = 0
+        this[`${type}Data`] = res.data.rows
+        this[`${type}Count`] = [...new Set(res.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
+        res.data.rows.forEach(item => {
+          all += item.piSellable
+        })
+        this[`${type}All`] = all
+        if (res.data.rows.length === 0) {
+          this[`has${type}`] = false
+        } else {
+          this[`has${type}`] = true
+        }
+      })
+      .catch(res => {
+        alert('业务系统异常！')
+      })
+    },
+    toSearch (type) {
+      let that = this
+      clearTimeout(that.timeoutId)
+      that.timeoutId = setTimeout(function () {
+        that.search(type)
+      }, 1000)
+    }
+  },
+  watch: {
+    lcCode () {
+      this.toSearch('lcCode')
+    },
+    sku () {
+      this.toSearch('sku')
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
+  .container {
+    margin-bottom: 7rem;
+  }
   .search {
     padding: 1.5rem 1rem;
-    height: 3rem;
-    line-height: 3rem;
-    display: flex;
-    .label {
-      margin-right: 1rem;
-      font-size: 1.5rem;
-    }
-    input {
-      flex: 1;
-    }
   }
   .total {
     padding: 0rem 1rem 1.5rem;
@@ -234,6 +172,11 @@ export default {
     padding: 1rem;
   }
   .button {
-    padding: 0 1rem 1rem;
+    position: fixed;
+    padding: 1rem 1rem;
+    bottom: 3rem;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fbf9fe;
   }
 </style>
