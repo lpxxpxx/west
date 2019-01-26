@@ -142,6 +142,7 @@ export default {
       submitData.productWeight = this.data.productWeight
       submitData.productWidth = this.data.productWidth
       submitData.productHeight = this.data.productHeight
+      submitData.pwaId = this.data.pwaId
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/product/updateAttr`, qs.stringify(submitData), {
         headers: {
           'content-type': 'application/x-www-form-urlencoded'

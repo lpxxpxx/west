@@ -24,7 +24,7 @@
           <tbody>
             <tr v-for="(item, index) in skuData" :key="index">
               <td>{{item.lcCode}}</td>
-              <td v-once>{{item.piSellable}}</td>
+              <td>{{item.piSellableOld}}</td>
               <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
             </tr>
             <tr v-if="!hassku">
@@ -64,7 +64,7 @@
           <tbody>
             <tr v-for="(item, index) in lcCodeData" :key="index">
               <td>{{item.productBarcode}}</td>
-              <td v-once>{{item.piSellable}}</td>
+              <td>{{item.piSellableOld}}</td>
               <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
             </tr>
             <tr v-if="!haslcCode">
@@ -189,19 +189,24 @@ export default {
         }
       })
       .then(res => {
-        this.$vux.loading.hide()
-        if (res.success) {
-          this.$vux.toast.show({
-            type: 'text',
-            text: '操作成功'
-          })
+        let all = 0
+        let saveData = res.data.rows.map(item => {
+          item.piSellableOld = item.piSellable
+          all += item.piSellable
+          return item
+        })
+        this[`${type}Data`] = saveData
+        this[`old${type}Data`] = JSON.parse(JSON.stringify(saveData))
+        this[`${type}Count`] = [...new Set(saveData.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
+        this[`${type}All`] = all
+        if (saveData.length === 0) {
+          this[`has${type}`] = false
         } else {
-          alert(JSON.stringify(res))
+          this[`has${type}`] = true
         }
       })
       .catch(res => {
-        this.$vux.loading.hide()
-        alert(JSON.stringify(res))
+        alert('业务系统异常！')
       })
     }
   },

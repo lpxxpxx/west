@@ -11,7 +11,6 @@
 
 <script>
 import { XHeader, Actionsheet } from 'vux'
-import qs from 'Qs'
 
 export default {
   name: 'app',
@@ -70,7 +69,7 @@ export default {
         this.$store.dispatch('setUrl', url)
       }
       if (userEmail) {
-        window.localStorage.setItem('userEmail', userEmail.userEmail)
+        window.localStorage.setItem('userEmail', JSON.parse(userEmail).userEmail)
       }
     }
   },

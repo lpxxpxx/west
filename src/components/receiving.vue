@@ -58,7 +58,7 @@
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
-        <scan-input :name="'箱号'" :placeholder="'此处扫描箱唛上的箱号'" v-model="boxData.boxNumberSubset"></scan-input>
+        <scan-input :name="'箱号'" :placeholder="'此处扫描箱唛上的箱号'" v-model="boxData.boxNo"></scan-input>
       </div>
       <div class="search search-last">
         <span class="label">SKU</span>
@@ -132,8 +132,8 @@ export default {
     this.boxData.receivingCode = query.receivingCode
   },
   computed: {
-    boxDataBoxNumberSubset () {
-      return this.boxData.boxNumberSubset
+    boxDataboxNo () {
+      return this.boxData.boxNo
     }
   },
   data () {
@@ -153,7 +153,7 @@ export default {
         receivingCode: '',
         productBarcode: '',
         receivingQtyList: [{
-          boxNumberSubset: ''
+          boxNo: ''
         }]
       },
       oldskuData: {
@@ -165,7 +165,7 @@ export default {
         receivingCode: '',
         productBarcode: '',
         receivingQtyList: [{
-          boxNumberSubset: ''
+          boxNo: ''
         }]
       }
     }
@@ -196,7 +196,7 @@ export default {
     },
     toSearch (type) {
       let that = this
-      let code = type === 'sku' ? this[`${type}Data`].productBarcode : this[`${type}Data`].boxNumberSubset
+      let code = type === 'sku' ? this[`${type}Data`].productBarcode : this[`${type}Data`].boxNo
       clearTimeout(that.timeoutId)
       that.timeoutId = setTimeout(function () {
         that.searchDetail(type, code, that[`${type}Data`].receivingCode)
@@ -216,7 +216,7 @@ export default {
           return false
         }
       } else {
-        if (!this[`${type}Data`].boxNumberSubset) {
+        if (!this[`${type}Data`].boxNo) {
           alert(`请输入箱号`)
           return false
         }
@@ -241,10 +241,16 @@ export default {
         alert(`请输入本次收货数量`)
         return false
       }
+      if (this[`${type}Data`].rdReceivedNetReceiptsQty > (this[`${type}Data`].rdReceivingQtySubset - this[`${type}Data`].rdReceivedQtySubset)) {
+        this[`${type}Data`].rdReceivedNetReceiptsQty = (this[`${type}Data`].rdReceivingQtySubset - this[`${type}Data`].rdReceivedQtySubset)
+        alert(`超出实际收货数量`)
+        return false
+      }
       this.$vux.loading.show({
         text: 'Loading'
       })
-      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/receiving/confirmArrival`, qs.stringify({receivedManageVo: JSON.stringify(this[`${type}Data`])}), {
+      this[`${type}Data`].codeType = type
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/receiving/confirmArrival`, qs.stringify({receivingWeixinDetailVo: JSON.stringify(this[`${type}Data`])}), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         }
@@ -290,7 +296,7 @@ export default {
         this.toSearch('sku')
       }
     },
-    boxDataBoxNumberSubset () {
+    boxDataboxNo () {
       this.toSearch('box')
     }
   }
