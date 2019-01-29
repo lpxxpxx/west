@@ -57,7 +57,8 @@ export default {
       productBarcode: '',
       lcCode: '',
       lcCodeNew: '',
-      quantity: 0
+      quantity: 0,
+      aid: ''
     }
   },
   methods: {
@@ -77,6 +78,7 @@ export default {
         this.lcCodeNew = res.data.lcCodeNew
         this.productBarcode = res.data.productBarcode
         this.quantity = res.data.quantity
+        this.aid = res.data.aid
       })
       .catch(res => {
         alert('业务系统异常！')
@@ -109,7 +111,8 @@ export default {
         productBarcode: this.productBarcode,
         quantity: this.quantity,
         lcCode: this.lcCode,
-        lcCodeNew: this.lcCodeNew
+        lcCodeNew: this.lcCodeNew,
+        aid: this.aid
       }
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/moveWarehouse`, qs.stringify(query), {
         headers: {

@@ -168,11 +168,9 @@ export default {
       let submitData = []
       for (let i = 0; i < this[`${type}Data`].length; i++) {
         let quantity = this[`old${type}Data`][i].piSellable - this[`${type}Data`][i].piSellable
-        if (quantity < 0) {
-          alert(`${this[`${type}Data`][i].lcCode || this[`${type}Data`][i].productBarcode}调整数大于库存数`)
-          return false
-        } else if (quantity > 0) {
+        if (quantity != 0) {
           this[`${type}Data`][i].quantity = quantity
+          this[`${type}Data`][i].warehouseId = this.$store.getters.getWarehouse.warehouseId
           submitData.push(this[`${type}Data`][i])
         }
       }
