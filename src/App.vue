@@ -46,7 +46,6 @@ export default {
       let user = this.$cookies.get('user')
       let url = this.$cookies.get('url')
       let userEmail = this.$cookies.get('userEmail')
-      alert(`cookie: ${url}`)
       if (warehouse) {
         this.$store.dispatch('setWarehouse', warehouse)
       }
@@ -63,7 +62,6 @@ export default {
     store () {
       let url = document.querySelector('#domain').value
       let userEmail = document.querySelector('#userInfo').value
-      alert(`store: ${url}`)
       if (url) {
         this.$cookies.set('url', url)
         this.$store.dispatch('setUrl', url)

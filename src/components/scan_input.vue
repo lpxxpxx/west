@@ -22,6 +22,7 @@ export default {
   methods: {
     scan () {
       let that = this
+      if (that.disabled) return false
       // eslint-disable-next-line
       wx.scanQRCode({
         needResult: 1,

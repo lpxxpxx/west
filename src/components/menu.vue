@@ -3,7 +3,7 @@
     <div v-for="item in menuList" :key="item.id" class="menu-list" @click="goToDetail(item.target)">
       <i class="iconfont" :class="item.icon"></i>
       <span class="menu-title">{{item.name}}</span>
-      <badge :text="item.num"></badge>
+      <badge v-if="item.num !== 0" :text="item.num"></badge>
     </div>
   </div>
 </template>

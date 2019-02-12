@@ -6,7 +6,7 @@
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
-        <scan-input :name="'SKU'" v-model="sku"></scan-input>
+        <scan-input :placeholder="'此处扫描SKU条码'" :name="'SKU'" v-model="sku"></scan-input>
       </div>
       <div class="total">
         <span class="pull-left">库位数 <span class="underline">{{skuCount}}</span></span>
@@ -34,12 +34,12 @@
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku)">调库存</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku, '')">调库存</x-button>
       </div>
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
-        <scan-input :name="'库位'" v-model="lcCode"></scan-input>
+        <scan-input :placeholder="'此处扫描库位条码'" :name="'库位'" v-model="lcCode"></scan-input>
       </div>
       <div class="total">
         <span class="pull-left">SKU种类 <span class="underline">{{lcCodeCount}}</span></span>
@@ -67,7 +67,7 @@
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('')">调库存</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)">调库存</x-button>
       </div>
     </div>
   </div>
@@ -106,19 +106,26 @@ export default {
     changeIndex (val) {
       this.index = val
     },
-    goToDetail (productBarcode = '') {
-      this.$router.push(`/inventoryAdjustment?productBarcode=${productBarcode}`)
+    goToDetail (productBarcode, lcCode) {
+      this.$router.push(`/inventoryAdjustment?productBarcode=${productBarcode}&lcCode=${lcCode}`)
     },
     search (type) {
       if (this.$store.getters.getWarehouse.warehouseId === undefined) {
         this.$router.push('/')
         return false
       }
+      let queryCode = type === 'sku' ? this.sku : this.lcCode
+      if (!queryCode) {
+        this[`${type}Data`] = []
+        this[`${type}Count`] = 0
+        this[`${type}All`] = 0
+        return false
+      }
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventorySearch`, {
         params: {
           codeType: type,
           warehouseId: this.$store.getters.getWarehouse.warehouseId,
-          queryCode: type === 'sku' ? this.sku : this.lcCode
+          queryCode: queryCode
         }
       })
       .then(res => {

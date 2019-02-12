@@ -2,20 +2,20 @@
   <div class="container move-library">
     <div class="tab-swiper" v-show="index === 0">
       <div class="search search-first">
-        <scan-input :name="'库位'" :placeholder="'此处扫描入库单号'" v-model="lcCode"></scan-input>
+        <scan-input :name="'库位'" :placeholder="'此处扫描库位条码'" v-model="lcCode"></scan-input>
       </div>
       <div class="cheak">
         <check-icon :value.sync="isAll" type="plain">移动当前库位所有SKU</check-icon>
       </div>
       <div class="search">
-        <scan-input :name="'SKU'" :placeholder="'此处扫描SKU'" :disabled="isAll ? 'disabled' : false" v-model="productBarcode"></scan-input>
+        <scan-input :name="'SKU'" :placeholder="'此处扫描SKU条码'" :disabled="isAll ? 'disabled' : false" v-model="productBarcode"></scan-input>
       </div>
       <div class="search">
         <span class="label">数量</span>
         <input type="text" v-model="quantity" :disabled="isAll ? 'disabled' : false" placeholder="" />
       </div>
       <div class="search search-last">
-        <scan-input :name="'新库位'" :placeholder="'此处扫描箱唛上的SKU'" v-model="lcCodeNew"></scan-input>
+        <scan-input :name="'新库位'" :placeholder="'此处扫描库位条码'" v-model="lcCodeNew"></scan-input>
       </div>
       <div class="photo">
         <span class="label">拍照（可选）</span>
@@ -79,6 +79,8 @@ export default {
         this.productBarcode = res.data.productBarcode
         this.quantity = res.data.quantity
         this.aid = res.data.aid
+        this.warehouseId = this.$store.getters.getWarehouse.warehouseId
+        this.productId = res.data.productId
       })
       .catch(res => {
         alert('业务系统异常！')
@@ -112,7 +114,9 @@ export default {
         quantity: this.quantity,
         lcCode: this.lcCode,
         lcCodeNew: this.lcCodeNew,
-        aid: this.aid
+        aid: this.aid,
+        warehouseId: this.warehouseId,
+        productId: this.productId
       }
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/moveWarehouse`, qs.stringify(query), {
         headers: {

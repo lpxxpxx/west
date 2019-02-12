@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="search">
-        <scan-input :name="'库位'" v-model="skuData.lcCode"></scan-input>
+        <scan-input :name="'库位'" :placeholder="'此处扫描库位条码'" v-model="skuData.lcCode"></scan-input>
       </div>
       <div class="search search-last">
         <span class="label">数量</span>
@@ -63,7 +63,7 @@
         </div>
       </div>
       <div class="search">
-        <scan-input :name="'库位'" v-model="boxNoData.lcCode"></scan-input>
+        <scan-input :name="'库位'" :placeholder="'此处扫描库位条码'" v-model="boxNoData.lcCode"></scan-input>
       </div>
       <div class="search search-last">
         <span class="label">数量</span>
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { Tab, TabItem, XButton, XInput, Flexbox, FlexboxItem } from 'vux'
+import { Tab, TabItem, XButton, Flexbox, FlexboxItem } from 'vux'
 import ScanInput from './scan_input'
 import qs from 'Qs'
 
@@ -100,7 +100,6 @@ export default {
     Tab,
     TabItem,
     XButton,
-    XInput,
     Flexbox,
     FlexboxItem,
     ScanInput

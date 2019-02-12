@@ -6,7 +6,7 @@
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
-        <scan-input :placeholder="'SKU'" :name="'SKU'" v-model="sku"></scan-input>
+        <scan-input :placeholder="'此处扫描SKU条码'" :name="'SKU'" v-model="sku"></scan-input>
       </div>
       <div class="total">
         <span class="pull-left">库位数 <span class="underline">{{skuCount}}</span></span>
@@ -46,7 +46,7 @@
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
-        <scan-input :placeholder="'库位'" :name="'库位'" v-model="lcCode"></scan-input>
+        <scan-input :placeholder="'此处扫描库位条码'" :name="'库位'" v-model="lcCode"></scan-input>
       </div>
       <div class="total">
         <span class="pull-left">SKU种类 <span class="underline">{{lcCodeCount}}</span></span>
@@ -104,6 +104,8 @@ export default {
   mounted () {
     let query = this.$route.query || {}
     this.sku = query.productBarcode
+    this.lcCode = query.lcCode
+    this.index = this.lcCode ? 1 : 0
   },
   data () {
     return {
@@ -168,7 +170,7 @@ export default {
       let submitData = []
       for (let i = 0; i < this[`${type}Data`].length; i++) {
         let quantity = this[`old${type}Data`][i].piSellable - this[`${type}Data`][i].piSellable
-        if (quantity != 0) {
+        if (quantity !== 0) {
           this[`${type}Data`][i].quantity = quantity
           this[`${type}Data`][i].warehouseId = this.$store.getters.getWarehouse.warehouseId
           submitData.push(this[`${type}Data`][i])

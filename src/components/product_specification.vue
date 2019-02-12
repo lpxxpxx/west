@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="search search-first">
-        <scan-input :name="'SKU'" v-model="data.productBarcode"></scan-input>
+        <scan-input :placeholder="'此处扫描SKU条码'" :name="'SKU'" v-model="data.productBarcode"></scan-input>
     </div>
     <div class="search search-last" style="height: auto">
       <div class="info-detail">
@@ -12,22 +12,22 @@
     <divider>参数</divider>
     <div class="search search-first">
       <span class="label">重量</span>
-      <input type="number" placeholder="0" v-model="data.productWeight" />
+      <input type="number" placeholder="0" v-model="data.productWeight" v-enter-number />
       <span class="type">KG</span>
     </div>
     <div class="search">
       <span class="label">长</span>
-      <input type="number" placeholder="0" v-model="data.productLength" />
+      <input type="number" placeholder="0" v-model="data.productLength" v-enter-number />
       <span class="type">CM</span>
     </div>
     <div class="search">
       <span class="label">宽</span>
-      <input type="number" placeholder="0" v-model="data.productWidth" />
+      <input type="number" placeholder="0" v-model="data.productWidth" v-enter-number />
       <span class="type">CM</span>
     </div>
     <div class="search search-last">
       <span class="label">高</span>
-      <input type="number" placeholder="0" v-model="data.productHeight" />
+      <input type="number" placeholder="0" v-model="data.productHeight" v-enter-number />
       <span class="type">CM</span>
     </div>
     <div class="button">
@@ -63,6 +63,7 @@ export default {
     return {
       index: 0,
       timeoutId: '',
+      isSubmit: false,
       data: {
         productBarcode: '',
         productTitleEn: '',
@@ -113,6 +114,10 @@ export default {
       }, 1000)
     },
     submit (type) {
+      if (this.isSubmit) {
+        alert(`暂不支持二次核对编辑，请勿重复提交`)
+        return false
+      }
       if (!this.data.productId) {
         alert(`请输入正确的SKU`)
         return false
@@ -151,6 +156,7 @@ export default {
       .then(res => {
         this.$vux.loading.hide()
         if (res.success) {
+          this.isSubmit = true
           this.$vux.toast.show({
             type: 'text',
             text: '操作成功'

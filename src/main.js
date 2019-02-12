@@ -37,6 +37,15 @@ axios.interceptors.request.use(function (config) {
   return Promise.reject(error)
 })
 
+Vue.directive('enterNumber', {
+  inserted: function (el) {
+    el.addEventListener('blur', function () {
+      el.value = (el.value.match(/\d{1,4}(\.\d{0,2})?/) || [''])[0]
+      el.dispatchEvent(new Event('input'))
+    })
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   router,
