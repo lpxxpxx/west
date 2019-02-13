@@ -39,7 +39,7 @@
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">重置</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('lcCode')">确认</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">确认</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -142,12 +142,14 @@ export default {
       })
       .then(res => {
         let all = 0
+        res.data.rows.map(item => {
+          all += item.piSellable
+          item.piSellableOld = item.piSellable
+          return item
+        })
         this[`${type}Data`] = res.data.rows
         this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.rows))
         this[`${type}Count`] = [...new Set(res.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
-        res.data.rows.forEach(item => {
-          all += item.piSellable
-        })
         this[`${type}All`] = all
         if (res.data.rows.length === 0) {
           this[`has${type}`] = false
@@ -169,7 +171,7 @@ export default {
     submit (type) {
       let submitData = []
       for (let i = 0; i < this[`${type}Data`].length; i++) {
-        let quantity = this[`old${type}Data`][i].piSellable - this[`${type}Data`][i].piSellable
+        let quantity = this[`${type}Data`][i].piSellable - this[`${type}Data`][i].piSellableOld
         if (quantity !== 0) {
           this[`${type}Data`][i].quantity = quantity
           this[`${type}Data`][i].warehouseId = this.$store.getters.getWarehouse.warehouseId
@@ -183,26 +185,24 @@ export default {
       this.$vux.loading.show({
         text: 'Loading'
       })
-      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/inventoryAdjustment`, qs.stringify(JSON.stringify(submitData)), {
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/inventoryAdjustment`, qs.stringify({receivedManageVo: JSON.stringify(submitData)}), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         }
       })
       .then(res => {
-        let all = 0
-        let saveData = res.data.rows.map(item => {
-          item.piSellableOld = item.piSellable
-          all += item.piSellable
-          return item
-        })
-        this[`${type}Data`] = saveData
-        this[`old${type}Data`] = JSON.parse(JSON.stringify(saveData))
-        this[`${type}Count`] = [...new Set(saveData.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
-        this[`${type}All`] = all
-        if (saveData.length === 0) {
-          this[`has${type}`] = false
+        this.$vux.loading.hide()
+        if (res.data.success) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: '操作成功'
+          })
+          this.searchDetail(this.index === 0 ? 'sku' : 'lcCode')
         } else {
-          this[`has${type}`] = true
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
         }
       })
       .catch(res => {

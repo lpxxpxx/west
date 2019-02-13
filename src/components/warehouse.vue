@@ -32,9 +32,9 @@ export default {
       alert('暂无权限查看')
       return false
     } else if (warehouses.warehouseList.length === 1) {
+      this.warehouses = warehouses
       this.goToMenu(warehouses.warehouseList[0])
     }
-    this.warehouses = warehouses
   },
   data () {
     return {

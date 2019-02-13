@@ -63,7 +63,6 @@ export default {
     return {
       index: 0,
       timeoutId: '',
-      isSubmit: false,
       data: {
         productBarcode: '',
         productTitleEn: '',
@@ -114,10 +113,6 @@ export default {
       }, 1000)
     },
     submit (type) {
-      if (this.isSubmit) {
-        alert(`暂不支持二次核对编辑，请勿重复提交`)
-        return false
-      }
       if (!this.data.productId) {
         alert(`请输入正确的SKU`)
         return false
@@ -155,14 +150,23 @@ export default {
       })
       .then(res => {
         this.$vux.loading.hide()
-        if (res.success) {
-          this.isSubmit = true
+        if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
             text: '操作成功'
           })
+          this.data.productBarcode = ''
+          this.data.productTitleEn = ''
+          this.data.productLength = 0
+          this.data.productWidth = 0
+          this.data.productHeight = 0
+          this.data.productWeight = 0
+          this.oldData = JSON.parse(JSON.stringify(this.data))
         } else {
-          alert(JSON.stringify(res))
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
         }
       })
       .catch(res => {

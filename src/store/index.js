@@ -7,9 +7,9 @@ const state = {
   title: '西邮移动端',
   user: 'Narotu',
   warehouse: { warehouseId: 3 },
-  /* url: 'http://localhost:8080' */
-  /* url: 'http://wms.qa.aukeyit.com' */
-  url: '',
+  url: 'http://localhost:8080',
+  /* url: 'http://wms.qa.aukeyit.com', */
+  /* url: '', */
   userEmail: ''
 }
 

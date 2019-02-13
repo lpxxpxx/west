@@ -124,14 +124,24 @@ export default {
         }
       })
       .then(res => {
+        console.log(res)
         this.$vux.loading.hide()
-        if (res.success) {
+        if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
             text: '操作成功'
           })
+          this.isAll = false
+          this.productBarcode = ''
+          this.lcCode = ''
+          this.lcCodeNew = ''
+          this.quantity = 0
+          this.aid = ''
         } else {
-          alert(JSON.stringify(res))
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
         }
       })
       .catch(res => {

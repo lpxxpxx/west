@@ -257,13 +257,16 @@ export default {
       })
       .then(res => {
         this.$vux.loading.hide()
-        if (res.success) {
+        if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
             text: '操作成功'
           })
         } else {
-          alert(JSON.stringify(res))
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
         }
       })
       .catch(res => {
