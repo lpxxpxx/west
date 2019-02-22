@@ -23,16 +23,16 @@
       </div>
       <div class="size">
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" v-model="skuData.productLength" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="skuData.productLength" style="width: calc(100% - 22px)" v-enter-number /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" v-model="skuData.productWidth" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="skuData.productWidth" style="width: calc(100% - 22px)" v-enter-number /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="skuData.productHeight" style="width: calc(100% - 37px)" /><span style="width: 35px"> CM </span>
+          <input type="number" placeholder="0" v-model="skuData.productHeight" style="width: calc(100% - 37px)" v-enter-number /><span style="width: 35px"> CM </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="skuData.productWeight" style="width: calc(100% - 37px)" /><span style="width: 35px"> KG</span>
+          <input type="number" placeholder="0" v-model="skuData.productWeight" style="width: calc(100% - 37px)" class="weight" v-enter-number /><span style="width: 35px"> KG</span>
         </div>
       </div>
       <div class="search search-last">
@@ -42,7 +42,11 @@
       <div class="photo">
         <span class="label">拍照（可选）</span>
         <span class="photo-cont">
-          <span class="iconfont icon-camera" @click="chooseImage"></span>
+          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? skuImgIOS :skuImg" :key="index">
+            <img :src="item" @click="previewImg('sku', index)">
+            <span class="delete-icon" @click="deleteImg('sku', index)">x</span>
+          </span>
+          <span class="iconfont icon-camera" @click="chooseImage('sku')" v-show="skuImg.length <= 2"></span>
         </span>
       </div>
       <div class="button">
@@ -76,16 +80,16 @@
       </div>
       <div class="size">
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" v-model="boxData.productLength" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="boxData.productLength" style="width: calc(100% - 22px)" v-enter-number /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" v-model="boxData.productWidth" style="width: calc(100% - 22px)" /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="boxData.productWidth" style="width: calc(100% - 22px)" v-enter-number /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="boxData.productHeight" style="width: calc(100% - 37px)" /><span style="width: 35px"> CM </span>
+          <input type="number" placeholder="0" v-model="boxData.productHeight" style="width: calc(100% - 37px)" v-enter-number /><span style="width: 35px"> CM </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="boxData.productWeight" style="width: calc(100% - 37px)" /><span style="width: 35px"> KG</span>
+          <input type="number" placeholder="0" v-model="boxData.productWeight" style="width: calc(100% - 37px)" v-enter-number /><span style="width: 35px"> KG</span>
         </div>
       </div>
       <div class="search search-last">
@@ -95,7 +99,11 @@
       <div class="photo">
         <span class="label">拍照（可选）</span>
         <span class="photo-cont">
-          <span class="iconfont icon-camera" @click="chooseImage"></span>
+          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? boxImgIOS :boxImg" :key="index">
+            <img :src="item" @click="previewImg('box', index)">
+            <span class="delete-icon" @click="deleteImg('box', index)">x</span>
+          </span>
+          <span class="iconfont icon-camera" @click="chooseImage('box')" v-show="boxImg.length <= 2"></span>
         </span>
       </div>
       <div class="button">
@@ -113,7 +121,7 @@
 </template>
 
 <script>
-import { Tab, TabItem, XButton, XInput, Flexbox, FlexboxItem } from 'vux'
+import { Tab, TabItem, XButton, Flexbox, FlexboxItem } from 'vux'
 import qs from 'Qs'
 
 export default {
@@ -122,14 +130,12 @@ export default {
     Tab,
     TabItem,
     XButton,
-    XInput,
     Flexbox,
     FlexboxItem
   },
   mounted () {
     let query = this.$route.query || {}
     this.skuData.receivingCode = query.receivingCode
-    this.boxData.receivingCode = query.receivingCode
   },
   computed: {
     boxDataboxNo () {
@@ -140,15 +146,15 @@ export default {
     return {
       index: 0,
       timeoutId: '',
-      localIds: {
-        skuImg: [],
-        boxImg: []
-      },
       skuData: {
         receivingCode: '',
         productBarcode: '',
         receivingQtyList: [{}]
       },
+      skuImg: [],
+      skuImgIOS: [],
+      boxImg: [],
+      boxImgIOS: [],
       boxData: {
         receivingCode: '',
         productBarcode: '',
@@ -167,7 +173,8 @@ export default {
         receivingQtyList: [{
           boxNo: ''
         }]
-      }
+      },
+      uploadIds: []
     }
   },
   methods: {
@@ -184,11 +191,30 @@ export default {
         }
       })
       .then(res => {
-        if (res.data.receivingId) {
-          this[`${type}Data`] = res.data
-          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data))
+        if (res.data.success) {
+          if (res.data.data) {
+            res.data.data.rdReceivedNetReceiptsQty = res.data.data.rdReceivingQtySubset - res.data.data.rdReceivedQtySubset
+            this[`${type}Data`] = res.data.data
+            this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
+          } else {
+            if (type === 'box') {
+              this[`${type}Data`].productBarcode = ''
+            }
+            this[`${type}Data`].productTitleEn = ''
+            this[`${type}Data`].rdReceivingQtySubset = 0
+            this[`${type}Data`].rdReceivedQtySubset = 0
+            this[`${type}Data`].productLength = 0
+            this[`${type}Data`].productWidth = 0
+            this[`${type}Data`].productHeight = 0
+            this[`${type}Data`].productWeight = 0
+            this[`${type}Data`].rdReceivedNetReceiptsQty = 0
+          }
+        } else {
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
         }
-        console.log(res)
       })
       .catch(res => {
         alert('业务系统异常！')
@@ -208,48 +234,91 @@ export default {
     submit (type) {
       if (type === 'sku') {
         if (!this[`${type}Data`].receivingCode) {
-          alert(`请输入入库单号`)
+          this.$vux.toast.show({
+            type: 'text',
+            text: '请输入入库单号'
+          })
           return false
         }
         if (!this[`${type}Data`].productBarcode) {
-          alert(`请输入SKU`)
+          this.$vux.toast.show({
+            type: 'text',
+            text: '请输入SKU'
+          })
           return false
         }
       } else {
         if (!this[`${type}Data`].boxNo) {
-          alert(`请输入箱号`)
+          this.$vux.toast.show({
+            type: 'text',
+            text: '请输入箱号'
+          })
           return false
         }
       }
       if (!this[`${type}Data`].productLength) {
-        alert(`请输入产品长度`)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入产品长度'
+        })
         return false
       }
       if (!this[`${type}Data`].productWidth) {
-        alert(`请输入产品宽度`)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入产品宽度'
+        })
         return false
       }
       if (!this[`${type}Data`].productHeight) {
-        alert(`请输入产品高度`)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入产品高度'
+        })
         return false
       }
       if (!this[`${type}Data`].productWeight) {
-        alert(`请输入产品重量`)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入产品重量'
+        })
         return false
       }
-      if (!this[`${type}Data`].rdReceivedNetReceiptsQty) {
-        alert(`请输入本次收货数量`)
+      if (!this[`${type}Data`].rdReceivedNetReceiptsQty || Number(this[`${type}Data`].rdReceivedNetReceiptsQty) === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入本次收货数量'
+        })
+        return false
+      }
+      let reg = /^[1-9]\d{0,4}$/
+      if (!reg.test(Number(this[`${type}Data`].rdReceivedNetReceiptsQty)) || Number(this[`${type}Data`].rdReceivedNetReceiptsQty) === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入正确的数量'
+        })
         return false
       }
       if (this[`${type}Data`].rdReceivedNetReceiptsQty > (this[`${type}Data`].rdReceivingQtySubset - this[`${type}Data`].rdReceivedQtySubset)) {
         this[`${type}Data`].rdReceivedNetReceiptsQty = (this[`${type}Data`].rdReceivingQtySubset - this[`${type}Data`].rdReceivedQtySubset)
-        alert(`超出实际收货数量`)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '超出实际收货数量'
+        })
         return false
       }
       this.$vux.loading.show({
         text: 'Loading'
       })
       this[`${type}Data`].codeType = type
+      if (this[`${type}Img`].length) {
+        this.uploadImg(type)
+      } else {
+        this.doAjax(type)
+      }
+    },
+    doAjax (type) {
+      this[`${type}Data`].serverIds = this.uploadIds
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/receiving/confirmArrival`, qs.stringify({receivingWeixinDetailVo: JSON.stringify(this[`${type}Data`])}), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
@@ -262,30 +331,78 @@ export default {
             type: 'text',
             text: '操作成功'
           })
+          this[`${type}Img`] = []
+          this[`${type}ImgIOS`] = []
+          this.uploadIds = []
+          this.searchDetail(type, type === 'sku' ? this[`${type}Data`].productBarcode : this[`${type}Data`].boxNo, this[`${type}Data`].receivingCode)
         } else {
           this.$vux.toast.show({
             type: 'text',
             text: res.data.message
           })
+          this.uploadIds = []
         }
       })
       .catch(res => {
         this.$vux.loading.hide()
-        alert(JSON.stringify(res))
+        alert('业务系统异常！')
       })
     },
-    chooseImage () {
+    chooseImage (type) {
       let that = this
+      let count = 3 - that[`${type}Img`].length
       // eslint-disable-next-line
       wx.chooseImage({
-        count: 3,
+        count: count,
         sizeType: ['original', 'compressed'],
         sourceType: ['album', 'camera'],
-        success: function (a) {
-          that.localIds.skuImg.push(a.localIds)
-          alert(JSON.stringify(a))
+        success: function (res) {
+          that[`${type}Img`] = [...that[`${type}Img`], ...res.localIds]
+          if (this.$store.getters.getPhoneType === 'IOS') {
+            that[`${type}Img`].forEach((item, index) => {
+              that.getLocalImgData(item, index, type)
+            })
+          }
         }
       })
+    },
+    getLocalImgData (item, index, type) {
+      let that = this
+      // eslint-disable-next-line
+      wx.getLocalImgData({
+        localId: 'item',
+        success: function (res) {
+          that[`${type}ImgIOS`][index] = res.localData
+        }
+      })
+    },
+    deleteImg (type, index) {
+      this[`${type}Img`].splice(index, 1)
+      this[`${type}ImgIOS`].splice(index, 1)
+    },
+    previewImg (type, index) {
+      let that = this
+      // eslint-disable-next-line
+      wx.previewImage({
+        current: that[`${type}Img`][index],
+        urls: that[`${type}Img`]
+      })
+    },
+    uploadImg (type) {
+      let that = this
+      if (!that[`${type}Img`].length) {
+        that.doAjax(type)
+      } else {
+        let localId = that[`${type}Img`].pop()
+        // eslint-disable-next-line
+        wx.uploadImage({
+          localId: localId,
+          success: function (res) {
+            that.uploadIds.push(res.serverId)
+            that.uploadImg(type)
+          }
+        })
+      }
     }
   },
   watch: {
@@ -348,7 +465,7 @@ export default {
         line-height: 3rem;
         padding: 0 6px;
         box-sizing: border-box;
-        font-size: 1.5rem;
+        font-size: 1rem;
       }
       span {
         display: inline-block;
@@ -369,6 +486,28 @@ export default {
       flex: 1;
       font-size: 2rem;
       line-height: 3rem;
+      .img-con {
+        height: 3rem;
+        margin-right: .5rem;
+        border: 1px solid #999;
+        position: relative;
+        img {
+          height: 3rem;
+        }
+        .delete-icon {
+          position: absolute;
+          background: red;
+          color: #fff;
+          width: 16px;
+          height: 16px;
+          top: -8px;
+          right: -8px;
+          line-height: 16px;
+          font-size: 12px;
+          border-radius: 16px;
+          text-align: center;
+        }
+      }
       .iconfont {
         border: 1px dashed #999;
         color: #999;

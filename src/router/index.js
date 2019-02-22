@@ -14,6 +14,7 @@ import MoveLibraryTask from '@/components/move_library_task'
 import MoveLibrary from '@/components/move_library'
 import ProductSpecificationTask from '@/components/product_specification_task'
 import ProductSpecification from '@/components/product_specification'
+import slideList from '@/components/slide_list'
 
 Vue.use(Router)
 
@@ -121,6 +122,14 @@ const routes = new Router({
       component: ProductSpecification,
       meta: {
         title: '产品规格'
+      }
+    },
+    {
+      path: '/slideList',
+      name: 'slideList',
+      component: slideList,
+      meta: {
+        title: '滑动菜单'
       }
     }
   ]

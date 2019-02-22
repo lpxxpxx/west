@@ -106,6 +106,11 @@ export default {
     this.sku = query.productBarcode
     this.lcCode = query.lcCode
     this.index = this.lcCode ? 1 : 0
+    if (this.sku) {
+      this.searchDetail('sku')
+    } else if (this.lcCode) {
+      this.searchDetail('lcCode')
+    }
   },
   data () {
     return {
@@ -133,11 +138,19 @@ export default {
       this[`${type}Data`] = JSON.parse(JSON.stringify(this[`old${type}Data`]))
     },
     searchDetail (type) {
+      let queryCode = type === 'sku' ? this.sku : this.lcCode
+      if (!queryCode) {
+        this[`${type}Data`] = []
+        this[`${type}Count`] = ''
+        this[`${type}All`] = ''
+        this[`has${type}`] = false
+        return false
+      }
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventoryAdjustmentSearch`, {
         params: {
           codeType: type,
           warehouseId: this.$store.getters.getWarehouse.warehouseId,
-          queryCode: type === 'sku' ? this.sku : this.lcCode
+          queryCode: queryCode
         }
       })
       .then(res => {
@@ -179,7 +192,10 @@ export default {
         }
       }
       if (submitData.length === 0) {
-        alert(`无更改`)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '无更改'
+        })
         return false
       }
       this.$vux.loading.show({
@@ -206,6 +222,7 @@ export default {
         }
       })
       .catch(res => {
+        this.$vux.loading.hide()
         alert('业务系统异常！')
       })
     }

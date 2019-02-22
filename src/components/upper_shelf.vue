@@ -11,6 +11,7 @@
       <div class="search search-last">
         <scan-input :name="'SKU'" :placeholder="'此处扫描箱唛上的SKU'" v-model="skuData.productBarcode"></scan-input>
       </div>
+      <p class="error-info" v-show="skuData.receivingCode && skuData.productBarcode">{{skuData.errorInfo}}</p>
       <div class="info clearfloat">
         <div class="info-detail">
           <span class="label">SKU名称：</span> 
@@ -31,7 +32,11 @@
       <div class="photo">
         <span class="label">拍照（可选）</span>
         <span class="photo-cont">
-          <span class="iconfont icon-camera" @click="chooseImage"></span>
+          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? skuImgIOS :skuImg" :key="index">
+            <img :src="item" @click="previewImg('sku', index)">
+            <span class="delete-icon" @click="deleteImg('sku', index)">x</span>
+          </span>
+          <span class="iconfont icon-camera" @click="chooseImage('sku')" v-show="skuImg.length <= 2"></span>
         </span>
       </div>
       <div class="button">
@@ -52,6 +57,7 @@
       <div class="search search-last">
         <scan-input :name="'SKU'" :placeholder="'此处扫描箱唛上的SKU'" v-model="boxNoData.productBarcode"></scan-input>
       </div>
+      <p class="error-info" v-show="boxNoData.boxCode && boxNoData.productBarcode">{{boxNoData.errorInfo}}</p>
       <div class="info clearfloat">
         <div class="info-detail">
           <span class="label">SKU名称：</span> 
@@ -72,7 +78,11 @@
       <div class="photo">
         <span class="label">拍照（可选）</span>
         <span class="photo-cont">
-          <span class="iconfont icon-camera" @click="chooseImage"></span>
+          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? boxNoImgIOS :boxNoImg" :key="index">
+            <img :src="item" @click="previewImg('boxNo', index)">
+            <span class="delete-icon" @click="deleteImg('boxNo', index)">x</span>
+          </span>
+          <span class="iconfont icon-camera" @click="chooseImage('boxNo')" v-show="boxNoImg.length <= 2"></span>
         </span>
       </div>
       <div class="button">
@@ -117,27 +127,35 @@ export default {
         receivingCode: '',
         productBarcode: '',
         lcCode: '',
-        pdQuantity: ''
+        pdQuantity: '',
+        errorInfo: ''
       },
+      skuImg: [],
+      skuImgIOS: [],
       boxNoData: {
         boxCode: '',
         productBarcode: '',
         lcCode: '',
-        pdQuantity: ''
+        pdQuantity: '',
+        errorInfo: ''
       },
-      boxNoData1: '',
+      boxNoImg: [],
+      boxNoImgIOS: [],
       oldskuData: {
         receivingCode: '',
         productBarcode: '',
         lcCode: '',
-        pdQuantity: ''
+        pdQuantity: '',
+        errorInfo: ''
       },
       oldboxNoData: {
         boxCode: '',
         productBarcode: '',
         lcCode: '',
-        pdQuantity: ''
-      }
+        pdQuantity: '',
+        errorInfo: ''
+      },
+      uploadIds: []
     }
   },
   methods: {
@@ -152,14 +170,23 @@ export default {
         params: {
           receivingCode: this[`${type}Data`].receivingCode,
           warehouseId: this.$store.getters.getWarehouse.warehouseId,
-          queryCode: type === 'sku' ? this[`${type}Data`].productBarcode : this[`${type}Data`].boxCode,
+          productBarcode: this[`${type}Data`].productBarcode,
+          boxNo: this[`${type}Data`].boxCode,
           codeType: type
         }
       })
       .then(res => {
-        if (res.data) {
-          this[`${type}Data`] = res.data
-          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data))
+        if (res.data.success) {
+          res.data.data.boxCode = this[`${type}Data`].boxCode
+          this[`${type}Data`] = res.data.data
+          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
+        } else {
+          this[`${type}Data`].pdQuantity = 0
+          this[`${type}Data`].productId = 0
+          this[`${type}Data`].productTitleEn = ''
+          this[`${type}Data`].rdbPutawayQty = 0
+          this[`${type}Data`].rdbReceivedQty = 0
+          this[`${type}Data`].errorInfo = res.data.message
         }
       })
       .catch(res => {
@@ -176,26 +203,64 @@ export default {
     submit (type) {
       if (type === 'sku') {
         if (!this[`${type}Data`].receivingCode) {
-          alert(`请输入入库单号`)
+          this.$vux.toast.show({
+            type: 'text',
+            text: '请输入入库单号'
+          })
           return false
         }
       } else {
         if (!this[`${type}Data`].boxCode) {
-          alert(`请输入箱号`)
+          this.$vux.toast.show({
+            type: 'text',
+            text: '请输入箱号'
+          })
           return false
         }
       }
       if (!this[`${type}Data`].lcCode) {
-        alert(`请输入库位`)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入库位'
+        })
         return false
       }
-      if (!this[`${type}Data`].pdQuantity) {
-        alert(`请输入数量`)
+      if (!this[`${type}Data`].pdQuantity || Number(this[`${type}Data`].pdQuantity) === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入数量'
+        })
         return false
       }
+      let reg = /^[1-9]\d{0,4}$/
+      if (!reg.test(Number(this[`${type}Data`].pdQuantity)) || Number(this[`${type}Data`].pdQuantity) === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入正确的数量'
+        })
+        return false
+      }
+      if (Number(this[`${type}Data`].pdQuantity) > (this[`${type}Data`].rdbReceivedQty - this[`${type}Data`].rdbPutawayQty)) {
+        this[`${type}Data`].pdQuantity = (this[`${type}Data`].rdbReceivedQty - this[`${type}Data`].rdbPutawayQty)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '超出实际收货数量'
+        })
+        return false
+      }
+      this[`${type}Data`].putawayType = type === 'sku' ? 'sku' : 'boxNo'
+      this[`${type}Data`].userEmail = window.localStorage.getItem('userEmail')
       this.$vux.loading.show({
         text: 'Loading'
       })
+      if (this[`${type}Img`].length) {
+        this.uploadImg(type)
+      } else {
+        this.doAjax(type)
+      }
+    },
+    doAjax (type) {
+      this[`${type}Data`].serverIds = this.uploadIds
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/putaway/doPutaway`, qs.stringify(this[`${type}Data`]), {
         headers: {
           'content-type': 'application/x-www-form-urlencoded'
@@ -208,30 +273,78 @@ export default {
             type: 'text',
             text: '操作成功'
           })
+          this[`${type}Img`] = []
+          this[`${type}ImgIOS`] = []
+          this.uploadIds = []
+          this.toSearch(type)
         } else {
           this.$vux.toast.show({
             type: 'text',
             text: res.data.message
           })
+          this.uploadIds = []
         }
       })
       .catch(res => {
         this.$vux.loading.hide()
-        alert(JSON.stringify(res))
+        alert('业务系统异常！')
       })
     },
-    chooseImage () {
+    chooseImage (type) {
       let that = this
+      let count = 3 - that[`${type}Img`].length
       // eslint-disable-next-line
       wx.chooseImage({
-        count: 3,
+        count: count,
         sizeType: ['original', 'compressed'],
         sourceType: ['album', 'camera'],
-        success: function (a) {
-          that.localIds.skuImg.push(a.localIds)
-          alert(JSON.stringify(a))
+        success: function (res) {
+          that[`${type}Img`] = [...that[`${type}Img`], ...res.localIds]
+          if (this.$store.getters.getPhoneType === 'IOS') {
+            that[`${type}Img`].forEach((item, index) => {
+              that.getLocalImgData(item, index, type)
+            })
+          }
         }
       })
+    },
+    getLocalImgData (item, index, type) {
+      let that = this
+      // eslint-disable-next-line
+      wx.getLocalImgData({
+        localId: 'item',
+        success: function (res) {
+          that[`${type}ImgIOS`][index] = res.localData
+        }
+      })
+    },
+    deleteImg (type, index) {
+      this[`${type}Img`].splice(index, 1)
+      this[`${type}ImgIOS`].splice(index, 1)
+    },
+    previewImg (type, index) {
+      let that = this
+      // eslint-disable-next-line
+      wx.previewImage({
+        current: that[`${type}Img`][index],
+        urls: that[`${type}Img`]
+      })
+    },
+    uploadImg (type) {
+      let that = this
+      if (!that[`${type}Img`].length) {
+        that.doAjax(type)
+      } else {
+        let localId = that[`${type}Img`].pop()
+        // eslint-disable-next-line
+        wx.uploadImage({
+          localId: localId,
+          success: function (res) {
+            that.uploadIds.push(res.serverId)
+            that.uploadImg(type)
+          }
+        })
+      }
     }
   },
   watch: {
@@ -262,6 +375,10 @@ export default {
 <style lang="less" scoped>
   .container {
     margin-bottom: 7rem;
+  }
+  .error-info {
+    margin-left: 5rem;
+    color: red;
   }
   .search {
     padding: 1rem 1rem 5px;
@@ -303,6 +420,28 @@ export default {
       flex: 1;
       font-size: 2rem;
       line-height: 3rem;
+      .img-con {
+        height: 3rem;
+        margin-right: .5rem;
+        border: 1px solid #999;
+        position: relative;
+        img {
+          height: 3rem;
+        }
+        .delete-icon {
+          position: absolute;
+          background: red;
+          color: #fff;
+          width: 16px;
+          height: 16px;
+          top: -8px;
+          right: -8px;
+          line-height: 16px;
+          font-size: 12px;
+          border-radius: 16px;
+          text-align: center;
+        }
+      }
       .iconfont {
         border: 1px dashed #999;
         color: #999;

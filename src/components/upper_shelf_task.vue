@@ -25,14 +25,13 @@
 </template>
 
 <script>
-import { XButton, XInput } from 'vux'
+import { XButton } from 'vux'
 import ScanInput from './scan_input'
 
 export default {
   name: 'upperShelfTask',
   components: {
     XButton,
-    XInput,
     ScanInput
   },
   mounted () {
@@ -88,7 +87,7 @@ export default {
         this.isLoading = false
         this.page--
         alert(`${this.$store.getters.getUrl}/weixinapi/putaway/putawaySearch`)
-        alert(JSON.stringify(res))
+        alert('业务系统异常！')
       })
     }
   },

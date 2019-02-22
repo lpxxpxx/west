@@ -16,6 +16,9 @@ export default {
   components: {
     Badge
   },
+  mounted () {
+    this.getWaitOperateData()
+  },
   data () {
     return {
       menuList: [
@@ -31,40 +34,63 @@ export default {
           name: '收货',
           icon: 'icon-Import',
           target: '/receivingTask',
-          num: 2
+          num: 0
         },
         {
           id: 2,
           name: '上架',
           icon: 'icon-export',
           target: '/upperShelfTask',
-          num: 2
+          num: 0
         },
         {
           id: 3,
           name: '调库存',
           icon: 'icon-sync',
           target: '/inventoryAdjustmentTask',
-          num: 2
+          num: 0
         },
         {
           id: 4,
           name: '移库',
           icon: 'icon-redo',
           target: '/moveLibraryTask',
-          num: 2
+          num: 0
         },
         {
           id: 5,
           name: '产品规格',
           icon: 'icon-detail',
           target: '/productSpecificationTask',
-          num: 222
+          num: 0
         }
       ]
     }
   },
   methods: {
+    getWaitOperateData () {
+      this.axios.get(`${this.$store.getters.getUrl}/weixinapi/index/getWaitOperateData`, {
+        params: {
+          warehouseId: this.$store.getters.getWarehouse.warehouseId
+        }})
+      .then(res => {
+        if (res.data.success) {
+          this.menuList[1].num = res.data.data.waitReceivingCount || 0
+          this.menuList[2].num = res.data.data.waitPutawayCount || 0
+          this.menuList[3].num = res.data.data.inventoryAdjustmentCount || 0
+          this.menuList[4].num = res.data.data.moveWarehouseCount || 0
+          this.menuList[5].num = res.data.data.productSkuAttrCount || 0
+        } else {
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
+        }
+      })
+      .catch(res => {
+        alert('业务系统异常！')
+      })
+    },
     goToDetail (url) {
       this.$router.push(url)
     }
@@ -93,7 +119,6 @@ export default {
       position: relative;
       top: 8px;
       height: 1.25rem;
-      width: 1.25rem;
       line-height: 1.25rem;
       border-radius: 2rem;
     }

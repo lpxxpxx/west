@@ -19,6 +19,7 @@ export default {
     Actionsheet
   },
   mounted () {
+    this.phoneType()
     this.changeFooter()
     this.afterRefresh()
     this.store()
@@ -68,6 +69,17 @@ export default {
       }
       if (userEmail) {
         window.localStorage.setItem('userEmail', JSON.parse(userEmail).userEmail)
+      }
+    },
+    phoneType () {
+      let type = navigator.userAgent
+      console.log(type)
+      if (type.indexOf('Android') > -1 || type.indexOf('Linux') > -1) {
+        this.$store.dispatch('setPhoneType', 'Android')
+      } else if (type.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)) {
+        this.$store.dispatch('setPhoneType', 'IOS')
+      } else {
+        this.$store.dispatch('setPhoneType', 'Other')
       }
     }
   },

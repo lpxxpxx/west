@@ -40,7 +40,11 @@ axios.interceptors.request.use(function (config) {
 Vue.directive('enterNumber', {
   inserted: function (el) {
     el.addEventListener('blur', function () {
-      el.value = (el.value.match(/\d{1,4}(\.\d{0,2})?/) || [''])[0]
+      if (el.classList[0] === 'weight') {
+        el.value = (el.value.match(/\d{1,4}(\.\d{0,3})?/) || [''])[0]
+      } else {
+        el.value = (el.value.match(/\d{1,4}(\.\d{0,2})?/) || [''])[0]
+      }
       el.dispatchEvent(new Event('input'))
     })
   }

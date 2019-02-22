@@ -12,7 +12,7 @@
     <divider>参数</divider>
     <div class="search search-first">
       <span class="label">重量</span>
-      <input type="number" placeholder="0" v-model="data.productWeight" v-enter-number />
+      <input type="number" placeholder="0" v-model="data.productWeight" class="weight" v-enter-number />
       <span class="type">KG</span>
     </div>
     <div class="search">
@@ -102,7 +102,7 @@ export default {
         }
       })
       .catch(res => {
-        alert(JSON.stringify(res))
+        alert('业务系统异常！')
       })
     },
     toSearch () {
@@ -114,23 +114,38 @@ export default {
     },
     submit (type) {
       if (!this.data.productId) {
-        alert(`请输入正确的SKU`)
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入正确的SKU'
+        })
         return false
       }
-      if (!this.data.productWeight) {
-        alert(`请输入产品重量`)
+      if (!this.data.productWeight || Number(this.data.productWeight) === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入产品重量'
+        })
         return false
       }
-      if (!this.data.productLength) {
-        alert(`请输入产品长度`)
+      if (!this.data.productLength || Number(this.data.productLength) === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入产品长度'
+        })
         return false
       }
-      if (!this.data.productWidth) {
-        alert(`请输入产品宽度`)
+      if (!this.data.productWidth || Number(this.data.productWidth) === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入产品宽度'
+        })
         return false
       }
-      if (!this.data.productHeight) {
-        alert(`请输入产品高度`)
+      if (!this.data.productHeight || Number(this.data.productHeight) === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '请输入产品高度'
+        })
         return false
       }
       this.$vux.loading.show({
@@ -171,7 +186,7 @@ export default {
       })
       .catch(res => {
         this.$vux.loading.hide()
-        alert(JSON.stringify(res))
+        alert('业务系统异常！')
       })
     }
   },

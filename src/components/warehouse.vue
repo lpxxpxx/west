@@ -24,6 +24,7 @@ export default {
     let warehouses = document.querySelector('#userInfo').value
     if (warehouses) {
       warehouses = JSON.parse(warehouses)
+      this.warehouses = warehouses
     } else {
       alert('无法取得用户信息')
       return false
@@ -32,7 +33,6 @@ export default {
       alert('暂无权限查看')
       return false
     } else if (warehouses.warehouseList.length === 1) {
-      this.warehouses = warehouses
       this.goToMenu(warehouses.warehouseList[0])
     }
   },
