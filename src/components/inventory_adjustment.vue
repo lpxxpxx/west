@@ -33,7 +33,7 @@
           </tbody>
         </x-table>
       </div>
-      <div class="button">
+      <div class="button" v-show="skuButtonShow">
         <flexbox>
           <flexbox-item>
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">重置</x-button>
@@ -73,7 +73,7 @@
           </tbody>
         </x-table>
       </div>
-      <div class="button">
+      <div class="button" v-show="lcCodeButtonShow">
         <flexbox>
           <flexbox-item>
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('lcCode')">重置</x-button>
@@ -127,7 +127,9 @@ export default {
       skuData: [],
       lcCodeData: [],
       oldskuData: [],
-      oldlcCodeData: []
+      oldlcCodeData: [],
+      skuButtonShow: false,
+      lcCodeButtonShow: false
     }
   },
   methods: {
@@ -137,13 +139,20 @@ export default {
     reset (type) {
       this[`${type}Data`] = JSON.parse(JSON.stringify(this[`old${type}Data`]))
     },
+    blurInput () {
+      document.querySelectorAll('.search input')[`${this.index}`].blur()
+    },
+    clearData (type) {
+      this[`${type}Data`] = []
+      this[`${type}Count`] = ''
+      this[`${type}All`] = ''
+      this[`has${type}`] = false
+      this[`${type}ButtonShow`] = false
+    },
     searchDetail (type) {
       let queryCode = type === 'sku' ? this.sku : this.lcCode
       if (!queryCode) {
-        this[`${type}Data`] = []
-        this[`${type}Count`] = ''
-        this[`${type}All`] = ''
-        this[`has${type}`] = false
+        this.clearData(type)
         return false
       }
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventoryAdjustmentSearch`, {
@@ -154,20 +163,26 @@ export default {
         }
       })
       .then(res => {
-        let all = 0
-        res.data.rows.map(item => {
-          all += item.piSellable
-          item.piSellableOld = item.piSellable
-          return item
-        })
-        this[`${type}Data`] = res.data.rows
-        this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.rows))
-        this[`${type}Count`] = [...new Set(res.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
-        this[`${type}All`] = all
-        if (res.data.rows.length === 0) {
-          this[`has${type}`] = false
+        if (res.data.total !== 0) {
+          let all = 0
+          res.data.rows.map(item => {
+            all += item.piSellable
+            item.piSellableOld = item.piSellable
+            return item
+          })
+          this[`${type}Data`] = res.data.rows
+          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.rows))
+          this[`${type}Count`] = [...new Set(res.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
+          this[`${type}All`] = all
+          if (res.data.rows.length === 0) {
+            this[`has${type}`] = false
+          } else {
+            this[`has${type}`] = true
+          }
+          this.blurInput()
+          this[`${type}ButtonShow`] = true
         } else {
-          this[`has${type}`] = true
+          this.clearData(type)
         }
       })
       .catch(res => {

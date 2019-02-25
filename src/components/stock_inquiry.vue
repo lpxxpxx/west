@@ -34,7 +34,7 @@
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku, '')">调库存</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku, '')" v-show="skuButtonShow">调库存</x-button>
       </div>
     </div>
     <div class="tab-swiper" v-show="index === 1">
@@ -67,7 +67,7 @@
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)">调库存</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)" v-show="lcCodeButtonShow">调库存</x-button>
       </div>
     </div>
   </div>
@@ -99,7 +99,9 @@ export default {
       haslcCode: false,
       timeoutId: '',
       skuData: [],
-      lcCodeData: []
+      lcCodeData: [],
+      skuButtonShow: false,
+      lcCodeButtonShow: false
     }
   },
   methods: {
@@ -108,6 +110,9 @@ export default {
     },
     goToDetail (productBarcode, lcCode) {
       this.$router.push(`/inventoryAdjustment?productBarcode=${productBarcode}&lcCode=${lcCode}`)
+    },
+    blurInput () {
+      document.querySelectorAll('input')[`${this.index}`].blur()
     },
     search (type) {
       if (this.$store.getters.getWarehouse.warehouseId === undefined) {
@@ -119,6 +124,7 @@ export default {
         this[`${type}Data`] = []
         this[`${type}Count`] = 0
         this[`${type}All`] = 0
+        this[`${type}ButtonShow`] = false
         return false
       }
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventorySearch`, {
@@ -129,17 +135,26 @@ export default {
         }
       })
       .then(res => {
-        let all = 0
-        this[`${type}Data`] = res.data.rows
-        this[`${type}Count`] = [...new Set(res.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
-        res.data.rows.forEach(item => {
-          all += item.piSellable
-        })
-        this[`${type}All`] = all
-        if (res.data.rows.length === 0) {
-          this[`has${type}`] = false
+        if (res.data.total !== 0) {
+          let all = 0
+          this[`${type}Data`] = res.data.rows
+          this[`${type}Count`] = [...new Set(res.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
+          res.data.rows.forEach(item => {
+            all += item.piSellable
+          })
+          this[`${type}All`] = all
+          if (res.data.rows.length === 0) {
+            this[`has${type}`] = false
+          } else {
+            this[`has${type}`] = true
+          }
+          this.blurInput()
+          this[`${type}ButtonShow`] = true
         } else {
-          this[`has${type}`] = true
+          this[`${type}Data`] = []
+          this[`${type}Count`] = 0
+          this[`${type}All`] = 0
+          this[`${type}ButtonShow`] = false
         }
       })
       .catch(res => {

@@ -99,7 +99,7 @@ export default {
 <style lang="less">
 @import '~vux/src/styles/reset.less';
 @import '~vux/src/styles/1px.less';
-@import '//at.alicdn.com/t/font_978696_1eux34znd68.css';
+@import '//at.alicdn.com/t/font_978696_8xlxuqb8u19.css';
 
 body {
   background-color: #fbf9fe;

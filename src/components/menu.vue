@@ -63,6 +63,13 @@ export default {
           icon: 'icon-detail',
           target: '/productSpecificationTask',
           num: 0
+        },
+        {
+          id: 6,
+          name: '物流出库',
+          icon: 'icon-detail',
+          target: '/OutLibrary',
+          num: 0
         }
       ]
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="cont">
     <span class="label">{{name}}</span>
-    <input type="text" :placeholder="placeholder" :disabled="disabled" v-model="val" />
+    <input type="text" :placeholder="placeholder" :disabled="disabled" :autofocus="autofocus" v-model="val" onfocus="this.select()" />
     <span class="iconfont icon-scan" @click="scan"></span>
   </div>
 </template>
@@ -18,7 +18,7 @@ export default {
     prop: 'value',
     event: 'changev'
   },
-  props: [ 'name', 'placeholder', 'disabled', 'value' ],
+  props: [ 'name', 'placeholder', 'disabled', 'autofocus', 'value' ],
   methods: {
     scan () {
       let that = this
@@ -64,6 +64,9 @@ export default {
       font-size: 1.5rem;
       right: .5rem;
       color: #999;
+    }
+    input:disabled {
+      background: #ddd;
     }
   }
 </style>
