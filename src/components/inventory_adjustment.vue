@@ -164,6 +164,7 @@ export default {
         piSellable: 0,
         piSellableOld: 0,
         isNewSku: true,
+        warehouseId: this.$store.getters.getWarehouse.warehouseId,
         lcCode: this[`${type}`]
       }
       this[`${type}DataNew`].push(data)
