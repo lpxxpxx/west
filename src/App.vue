@@ -99,7 +99,7 @@ export default {
 <style lang="less">
 @import '~vux/src/styles/reset.less';
 @import '~vux/src/styles/1px.less';
-@import '//at.alicdn.com/t/font_978696_8xlxuqb8u19.css';
+@import '//at.alicdn.com/t/font_978696_c1rxmptjdvj.css';
 
 body {
   background-color: #fbf9fe;
@@ -129,6 +129,22 @@ body {
       border-top: 1px solid #999;
       border-bottom: 1px solid #999;
       padding: .5rem 2rem .5rem 1rem!important;
+    }
+  }
+}
+.adjustment .table td {
+  .iconfont.icon-minus-circle-fill {
+    position: absolute;
+    top: 0;
+    left: -8px;
+  }
+  .cont {
+    margin: 0 .8rem;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    width: auto;
+    .label {
+      display: none;
     }
   }
 }

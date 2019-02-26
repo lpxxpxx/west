@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container adjustment">
     <tab :line-width=1>
       <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">按SKU调</tab-item>
       <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">按库位调</tab-item>
@@ -67,11 +67,17 @@
               <td>{{item.piSellableOld}}</td>
               <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
             </tr>
+            <tr v-for="(item, index) in lcCodeDataNew" :key="index">
+              <td><i class="iconfont icon-minus-circle-fill" @click="deleteDataNew('lcCode', index)"></i><scan-input :placeholder="'此处扫描SKU条码'" v-model="item.productBarcode"></scan-input></td>
+              <td>{{item.piSellableOld}}</td>
+              <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
+            </tr>
             <tr v-if="!haslcCode">
               <td colspan="3">没有找到匹配的记录</td>
             </tr>
           </tbody>
         </x-table>
+        <x-button v-show="lcCodeButtonShow" :gradients="['#169bd5', '#169bd5']" @click.native="addSku('lcCode')"><i class="iconfont icon-jiajianzujianjiahao"></i></x-button>
       </div>
       <div class="button" v-show="lcCodeButtonShow">
         <flexbox>
@@ -126,6 +132,7 @@ export default {
       timeoutId: '',
       skuData: [],
       lcCodeData: [],
+      lcCodeDataNew: [],
       oldskuData: [],
       oldlcCodeData: [],
       skuButtonShow: false,
@@ -138,16 +145,31 @@ export default {
     },
     reset (type) {
       this[`${type}Data`] = JSON.parse(JSON.stringify(this[`old${type}Data`]))
+      this[`${type}DataNew`] = []
     },
     blurInput () {
       document.querySelectorAll('.search input')[`${this.index}`].blur()
     },
     clearData (type) {
       this[`${type}Data`] = []
+      this[`${type}DataNew`] = []
       this[`${type}Count`] = ''
       this[`${type}All`] = ''
       this[`has${type}`] = false
       this[`${type}ButtonShow`] = false
+    },
+    addSku (type) {
+      let data = {
+        productBarcode: '',
+        piSellable: 0,
+        piSellableOld: 0,
+        isNewSku: true,
+        lcCode: this[`${type}`]
+      }
+      this[`${type}DataNew`].push(data)
+    },
+    deleteDataNew (type, index) {
+      this[`${type}DataNew`].splice(index, 1)
     },
     searchDetail (type) {
       let queryCode = type === 'sku' ? this.sku : this.lcCode
@@ -206,6 +228,34 @@ export default {
           submitData.push(this[`${type}Data`][i])
         }
       }
+      if (type === 'lcCode') {
+        if (this.lcCodeDataNew.length > 0) {
+          let skuList = this.lcCodeData.map(item => item.productBarcode)
+          let flag = false
+          this.lcCodeDataNew.forEach((item, index) => {
+            if (skuList.indexOf(item.productBarcode) !== -1) {
+              this.$vux.toast.show({
+                type: 'text',
+                text: `${item.productBarcode}已存在`
+              })
+              flag = true
+              return false
+            }
+            if (!item.piSellable || Number(item.piSellable) === 0) {
+              this.$vux.toast.show({
+                type: 'text',
+                text: `SKU ${item.productBarcode} 请输入库存数量`
+              })
+              flag = true
+              return false
+            }
+          })
+          if (flag) {
+            return false
+          }
+          submitData = [...submitData, ...this.lcCodeDataNew]
+        }
+      }
       if (submitData.length === 0) {
         this.$vux.toast.show({
           type: 'text',
@@ -229,6 +279,7 @@ export default {
             text: '操作成功'
           })
           this.searchDetail(this.index === 0 ? 'sku' : 'lcCode')
+          this.clearData(type)
         } else {
           this.$vux.toast.show({
             type: 'text',
@@ -279,6 +330,13 @@ export default {
       width: 3rem;
       font-size: 1rem;
       text-align: center;
+    }
+    button {
+      margin-top: 1rem;
+      width: 3rem;
+      float: right;
+      height: 2rem;
+      line-height: 2rem;
     }
   }
   .button {
