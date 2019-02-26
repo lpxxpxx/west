@@ -185,18 +185,18 @@ export default {
         }
       })
       .then(res => {
-        if (res.data.total !== 0) {
+        if (res.data.success) {
           let all = 0
-          res.data.rows.map(item => {
+          res.data.data.rows.map(item => {
             all += item.piSellable
             item.piSellableOld = item.piSellable
             return item
           })
-          this[`${type}Data`] = res.data.rows
-          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.rows))
-          this[`${type}Count`] = [...new Set(res.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
+          this[`${type}Data`] = res.data.data.rows
+          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data.rows))
+          this[`${type}Count`] = [...new Set(res.data.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
           this[`${type}All`] = all
-          if (res.data.rows.length === 0) {
+          if (res.data.data.rows.length === 0) {
             this[`has${type}`] = false
           } else {
             this[`has${type}`] = true
