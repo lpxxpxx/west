@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <x-header :left-options="{backText: ''}">{{$store.getters.getTitle}}<a slot="right" @click="showMenus = true">English</a><a v-if="showLogout" class="iconfont icon-poweroff logout" slot="right" href="/logout"></a></x-header>
+    <x-header :left-options="{backText: ''}">{{$store.getters.getTitle}}<a slot="right" @click="showMenus = true">{{lang}}</a><a v-if="showLogout" class="iconfont icon-poweroff logout" slot="right" href="/logout"></a></x-header>
     <router-view></router-view>
     <div>
-      <actionsheet :menus="menus" v-model="showMenus"></actionsheet>
+      <actionsheet :menus="menus" v-model="showMenus" @on-click-menu="changeLang"></actionsheet>
     </div>
     <footer v-show="showFooter" class="footer"><span class="pull-left">当前仓库：{{$store.getters.getWarehouse.warehouseDesc}}</span><span class="pull-right">操作人：{{$store.getters.getUser}}</span></footer>
   </div>
@@ -28,8 +28,8 @@ export default {
   data () {
     return {
       menus: {
-        menu1: '中文',
-        menu2: 'English'
+        zh: '中文',
+        en: 'English'
       },
       showMenus: false,
       showFooter: false,
@@ -43,6 +43,10 @@ export default {
       } else {
         this.showFooter = true
       }
+    },
+    changeLang (menuKey) {
+      window.localStorage.setItem('lang', menuKey)
+      location.reload()
     },
     afterRefresh () {
       let warehouse = this.$cookies.get('warehouse')
@@ -96,6 +100,9 @@ export default {
   computed: {
     title () {
       return this.$store.getters.getTitle
+    },
+    lang () {
+      return window.localStorage.getItem('lang') === 'en' ? this.menus.zh : this.menus.en
     }
   },
   watch: {

@@ -53,10 +53,10 @@ Vue.directive('enterNumber', {
 })
 
 const i18n = new VueI18n({
-  locale: 'en',
+  locale: window.localStorage.getItem('lang') || 'zh',
   messages: {
     'zh': require('./lang/zh'),
-    'eh': require('./lang/en')
+    'en': require('./lang/en')
   }
 })
 

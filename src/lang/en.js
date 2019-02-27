@@ -1,6 +1,6 @@
 module.exports = {
   message: {
-    title: 'title'
+    title: '123123'
   },
   placeholder: {
     enter: 'enter'
