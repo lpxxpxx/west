@@ -9,12 +9,14 @@ import store from './store'
 import { ToastPlugin, LoadingPlugin } from 'vux'
 import ScanInput from './components/scan_input'
 import qs from 'Qs'
+import VueI18n from 'vue-i18n'
 
 FastClick.attach(document.body)
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(VueCookies)
 Vue.use(VueAxios, axios)
+Vue.use(VueI18n)
 Vue.component('scan-input', ScanInput)
 Vue.config.productionTip = false
 
@@ -50,9 +52,18 @@ Vue.directive('enterNumber', {
   }
 })
 
+const i18n = new VueI18n({
+  locale: 'en',
+  messages: {
+    'zh': require('./lang/zh'),
+    'eh': require('./lang/en')
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   router,
   store,
+  i18n,
   render: h => h(App)
 }).$mount('#app-box')
