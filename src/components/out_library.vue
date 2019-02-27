@@ -21,6 +21,7 @@
 
 <script>
 import { XButton, Flexbox, FlexboxItem } from 'vux'
+import qs from 'Qs'
 
 export default {
   name: 'inventoryAdjustment',
@@ -81,11 +82,14 @@ export default {
       })
     },
     submit () {
-      this.axios.get(`${this.$store.getters.getUrl}/weixinapi/shipment/searchBySkuAndSignout`, {
-        params: {
-          trackingNumber: this.no,
-          warehouseId: this.$store.getters.getWarehouse.warehouseId,
-          productSku: this.sku
+      let query = {
+        trackingNumber: this.no,
+        warehouseId: this.$store.getters.getWarehouse.warehouseId,
+        productSku: this.sku
+      }
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/shipment/searchBySkuAndSignout`, qs.stringify(query), {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
         }
       })
       .then(res => {
