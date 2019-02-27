@@ -1,24 +1,24 @@
 <template>
   <div class="container adjustment">
     <tab :line-width=1>
-      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">按SKU调</tab-item>
-      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">按库位调</tab-item>
+      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">{{$t('pressSKU')}}</tab-item>
+      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">{{$t('adjustByDtoragePosition')}}</tab-item>
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
-        <scan-input :placeholder="'此处扫描SKU条码'" :name="'SKU'" v-model="sku"></scan-input>
+        <scan-input :placeholder="$t('scanTheSKUBarCodeHere')" :name="'SKU'" v-model="sku"></scan-input>
       </div>
       <div class="total">
-        <span class="pull-left">库位数 <span class="underline">{{skuCount}}</span></span>
-        <span class="pull-right">总计 <span class="underline">{{skuAll}}</span></span>
+        <span class="pull-left">{{$t('locationNumber')}} <span class="underline">{{skuCount}}</span></span>
+        <span class="pull-right">{{$t('total')}} <span class="underline">{{skuAll}}</span></span>
       </div>
       <div class="table">
         <x-table full-bordered>
           <thead>
             <tr>
-              <th>库位</th>
-              <th>库存数</th>
-              <th>调整为</th>
+              <th>{{$t('location')}}</th>
+              <th>{{$t('inventoryNumber')}}</th>
+              <th>{{$t('setTo')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -28,7 +28,7 @@
               <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
             </tr>
             <tr v-if="!hassku">
-              <td colspan="3">没有找到匹配的记录</td>
+              <td colspan="3">{{$t('noMatchingRecordsWereFound')}}</td>
             </tr>
           </tbody>
         </x-table>
@@ -36,29 +36,29 @@
       <div class="button" v-show="skuButtonShow">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">重置</x-button>
+            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">确认</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
-        <scan-input :placeholder="'此处扫描库位条码'" :name="'库位'" v-model="lcCode"></scan-input>
+        <scan-input :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" :name="$t('location')" v-model="lcCode"></scan-input>
       </div>
       <div class="total">
-        <span class="pull-left">SKU种类 <span class="underline">{{lcCodeCount}}</span></span>
-        <span class="pull-right">总计 <span class="underline">{{lcCodeAll}}</span></span>
+        <span class="pull-left">{{$t('SKUType')}} <span class="underline">{{lcCodeCount}}</span></span>
+        <span class="pull-right">{{$t('total')}} <span class="underline">{{lcCodeAll}}</span></span>
       </div>
       <div class="table">
         <x-table full-bordered>
           <thead>
             <tr>
               <th>SKU</th>
-              <th>库存数</th>
-              <th>调整为</th>
+              <th>{{$t('inventoryNumber')}}</th>
+              <th>{{$t('setTo')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -68,12 +68,12 @@
               <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
             </tr>
             <tr v-for="(item, index) in lcCodeDataNew" :key="index">
-              <td><i class="iconfont icon-minus-circle-fill" @click="deleteDataNew('lcCode', index)"></i><scan-input :placeholder="'此处扫描SKU条码'" v-model="item.productBarcode"></scan-input></td>
+              <td><i class="iconfont icon-minus-circle-fill" @click="deleteDataNew('lcCode', index)"></i><scan-input :placeholder="$t('scanTheSKUBarCodeHere')" v-model="item.productBarcode"></scan-input></td>
               <td>{{item.piSellableOld}}</td>
               <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
             </tr>
             <tr v-if="!haslcCode && lcCodeDataNew.length === 0">
-              <td colspan="3">没有找到匹配的记录</td>
+              <td colspan="3">{{$t('noMatchingRecordsWereFound')}}</td>
             </tr>
           </tbody>
         </x-table>
@@ -82,10 +82,10 @@
       <div class="button" v-show="lcCodeButtonShow">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('lcCode')">重置</x-button>
+            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('lcCode')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('lcCode')">确认</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('lcCode')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -162,7 +162,7 @@ export default {
       if (this[`${type}DataNew`].length >= 5) {
         this.$vux.toast.show({
           type: 'text',
-          text: '一次最多新增5条SKU'
+          text: this.$t('addUp')
         })
         return false
       }
@@ -215,7 +215,7 @@ export default {
         }
       })
       .catch(res => {
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     toSearch (type) {
@@ -233,7 +233,7 @@ export default {
         if (!regZero.test(Number(this[`${type}Data`][i].piSellable))) {
           this.$vux.toast.show({
             type: 'text',
-            text: `SKU ${this[`${type}Data`][i].productBarcode} 数量输入有误`
+            text: `SKU ${this[`${type}Data`][i].productBarcode} ${this.$t('quantityInputError')}`
           })
           return false
         }
@@ -252,7 +252,7 @@ export default {
             if (skuList.indexOf(item.productBarcode) !== -1) {
               this.$vux.toast.show({
                 type: 'text',
-                text: `${item.productBarcode}已存在`
+                text: `${item.productBarcode}${this.$t('existing')}`
               })
               flag = true
               return false
@@ -260,7 +260,7 @@ export default {
             if (!reg.test(item.piSellable) || Number(item.piSellable) === 0) {
               this.$vux.toast.show({
                 type: 'text',
-                text: `SKU ${item.productBarcode} 请输入正确的库存数量`
+                text: `SKU ${item.productBarcode} ${this.$t('pleaseEnterTheCorrectInventoryQuantity')}`
               })
               flag = true
               return false
@@ -275,7 +275,7 @@ export default {
       if (submitData.length === 0) {
         this.$vux.toast.show({
           type: 'text',
-          text: '无更改'
+          text: this.$t('thereIsNoChange')
         })
         return false
       }
@@ -292,7 +292,7 @@ export default {
         if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
-            text: '操作成功'
+            text: this.$t('operationSuccessful')
           })
           this.searchDetail(this.index === 0 ? 'sku' : 'lcCode')
           this.clearData(type)
@@ -305,7 +305,7 @@ export default {
       })
       .catch(res => {
         this.$vux.loading.hide()
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     }
   },

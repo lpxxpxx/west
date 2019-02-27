@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="input">
-        <scan-input :placeholder="'缺货订单号/SKU/库位'" v-model="queryCode"></scan-input>
+        <scan-input :placeholder="$t('OSS')" v-model="queryCode"></scan-input>
     </div>
     <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.productBarcode)">
       <div class="task-item">
@@ -10,13 +10,13 @@
       </div>
     </div>
     <div class="task-list task-list-none" v-show="isLoading">
-      加载中...
+      {{$t('inTheLoad')}}
     </div>
     <div class="task-list task-list-none" v-show="!hasTask">
-      暂无任务
+      {{$t('noTask')}}
     </div>
     <div class="button">
-      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('')">跳过</x-button>
+      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('')">{{$t('skip')}}</x-button>
     </div>
   </div>
 </template>
@@ -82,7 +82,7 @@ export default {
       .catch(res => {
         this.isLoading = false
         this.page--
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     }
   },

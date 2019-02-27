@@ -24,7 +24,7 @@ export default {
       menuList: [
         {
           id: 0,
-          name: '库存查询',
+          name: this.$t('inventoryQuery'),
           icon: 'icon-monitor',
           target: '/stockInquiry',
           num: 0
