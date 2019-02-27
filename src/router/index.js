@@ -26,7 +26,7 @@ const routes = new Router({
       name: 'Warehouse',
       component: Warehouse,
       meta: {
-        title: this.$t('chooseWarehouse')
+        title: 'chooseWarehouse'
       }
     },
     {
@@ -34,7 +34,7 @@ const routes = new Router({
       name: 'menu',
       component: Menu,
       meta: {
-        title: this.$t('theOperatingMenu')
+        title: 'theOperatingMenu'
       }
     },
     {
@@ -42,7 +42,7 @@ const routes = new Router({
       name: 'stockInquiry',
       component: StockInquiry,
       meta: {
-        title: this.$t('inventoryQuery')
+        title: 'inventoryQuery'
       }
     },
     {
@@ -50,7 +50,7 @@ const routes = new Router({
       name: 'receivingTask',
       component: ReceivingTask,
       meta: {
-        title: this.$t('receivingTheTask')
+        title: 'receivingTheTask'
       }
     },
     {
@@ -58,7 +58,7 @@ const routes = new Router({
       name: 'receiving',
       component: Receiving,
       meta: {
-        title: this.$t('theGoods')
+        title: 'theGoods'
       }
     },
     {
@@ -66,7 +66,7 @@ const routes = new Router({
       name: 'upperShelfTask',
       component: UpperShelfTask,
       meta: {
-        title: this.$t('onTheTask')
+        title: 'onTheTask'
       }
     },
     {
@@ -74,7 +74,7 @@ const routes = new Router({
       name: 'upperShelf',
       component: UpperShelf,
       meta: {
-        title: this.$t('shelves')
+        title: 'shelves'
       }
     },
     {
@@ -82,7 +82,7 @@ const routes = new Router({
       name: 'inventoryAdjustmentTask',
       component: InventoryAdjustmentTask,
       meta: {
-        title: this.$t('inventoryAdjustmentTask')
+        title: 'inventoryAdjustmentTask'
       }
     },
     {
@@ -90,7 +90,7 @@ const routes = new Router({
       name: 'inventoryAdjustment',
       component: InventoryAdjustment,
       meta: {
-        title: this.$t('theInventory')
+        title: 'theInventory'
       }
     },
     {
@@ -98,7 +98,7 @@ const routes = new Router({
       name: 'moveLibraryTask',
       component: MoveLibraryTask,
       meta: {
-        title: this.$t('moveTheLibraryMission')
+        title: 'moveTheLibraryMission'
       }
     },
     {
@@ -106,7 +106,7 @@ const routes = new Router({
       name: 'moveLibrary',
       component: MoveLibrary,
       meta: {
-        title: this.$t('moveTheLibrary')
+        title: 'moveTheLibrary'
       }
     },
     {
@@ -114,7 +114,7 @@ const routes = new Router({
       name: 'productSpecificationTask',
       component: ProductSpecificationTask,
       meta: {
-        title: this.$t('productSpecificationCalibrationTask')
+        title: 'productSpecificationCalibrationTask'
       }
     },
     {
@@ -122,7 +122,7 @@ const routes = new Router({
       name: 'productSpecification',
       component: ProductSpecification,
       meta: {
-        title: this.$t('productSpecification')
+        title: 'productSpecification'
       }
     },
     {
@@ -130,7 +130,7 @@ const routes = new Router({
       name: 'outLibrary',
       component: OutLibrary,
       meta: {
-        title: this.$t('outboundLogistics')
+        title: 'outboundLogistics'
       }
     },
     {
@@ -138,7 +138,7 @@ const routes = new Router({
       name: 'slideList',
       component: slideList,
       meta: {
-        title: this.$t('slidingMenu')
+        title: 'slidingMenu'
       }
     }
   ]
@@ -146,7 +146,7 @@ const routes = new Router({
 
 routes.beforeEach((to, from, next) => {
   if (to.meta.title) {
-    document.title = this.$t('westMail') + ' - ' + to.meta.title
+    document.title = 'westMail' + ' - ' + to.meta.title
     Store.dispatch('setTitle', to.meta.title)
   }
   next()

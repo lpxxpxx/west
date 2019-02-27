@@ -7,7 +7,7 @@ module.exports = {
   moveTheLibrary: '移库',
   productSpecification: '产品规格',
   outboundLogistics: '物流出库',
-  theCurrentWarehouse: '当前仓库',
+  warehouse: '当前仓库',
   operationOf: '操作人',
   accordingToTheSKUCheck: '按SKU查',
   accordingToTheLocationToCheck: '按库位查',

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="input">
-        <scan-input :placeholder="'库位/SKU'" v-model="queryCode"></scan-input>
+        <scan-input :placeholder="$t('LS')" v-model="queryCode"></scan-input>
     </div>
     <ul>
       <li class="task-item" v-for="(item, index) in taskList" :key="index" data-type="0">

@@ -1,11 +1,11 @@
 <template>
   <div id="app">
-    <x-header :left-options="{backText: ''}">{{$store.getters.getTitle}}<a slot="right" @click="showMenus = true">{{lang}}</a><a v-if="showLogout" class="iconfont icon-poweroff logout" slot="right" href="/logout"></a></x-header>
+    <x-header :left-options="{backText: ''}">{{$t($store.getters.getTitle)}}<a slot="right" @click="showMenus = true">{{lang}}</a><a v-if="showLogout" class="iconfont icon-poweroff logout" slot="right" href="/logout"></a></x-header>
     <router-view></router-view>
     <div>
       <actionsheet :menus="menus" v-model="showMenus" @on-click-menu="changeLang"></actionsheet>
     </div>
-    <footer v-show="showFooter" class="footer"><span class="pull-left">当前仓库：{{$store.getters.getWarehouse.warehouseDesc}}</span><span class="pull-right">操作人：{{$store.getters.getUser}}</span></footer>
+    <footer v-show="showFooter" class="footer"><span class="pull-left">{{$t('warehouse')}}：{{$store.getters.getWarehouse.warehouseDesc}}</span><span class="pull-right">{{$t('operationOf')}}：{{$store.getters.getUser}}</span></footer>
   </div>
 </template>
 

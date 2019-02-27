@@ -7,7 +7,7 @@ module.exports = {
   moveTheLibrary: 'Move The Library',
   productSpecification: 'Product Specification',
   outboundLogistics: 'Outbound Logistics',
-  theCurrentWarehouse: 'The Current Warehouse',
+  warehouse: 'Warehouse',
   operationOf: 'Operation Of',
   accordingToTheSKUCheck: 'According to the SKU check',
   accordingToTheLocationToCheck: 'According to the location to check',
