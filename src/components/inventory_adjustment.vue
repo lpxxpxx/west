@@ -72,7 +72,7 @@
               <td>{{item.piSellableOld}}</td>
               <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
             </tr>
-            <tr v-if="!haslcCode">
+            <tr v-if="!haslcCode && lcCodeDataNew.length === 0">
               <td colspan="3">没有找到匹配的记录</td>
             </tr>
           </tbody>
@@ -159,6 +159,13 @@ export default {
       this[`${type}ButtonShow`] = false
     },
     addSku (type) {
+      if (this[`${type}DataNew`].length >= 5) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: '一次最多新增5条SKU'
+        })
+        return false
+      }
       let data = {
         productBarcode: '',
         piSellable: 0,
@@ -186,6 +193,7 @@ export default {
         }
       })
       .then(res => {
+        this.clearData(type)
         if (res.data.success) {
           let all = 0
           res.data.data.map(item => {
@@ -204,8 +212,6 @@ export default {
           }
           this.blurInput()
           this[`${type}ButtonShow`] = true
-        } else {
-          this.clearData(type)
         }
       })
       .catch(res => {
@@ -221,7 +227,16 @@ export default {
     },
     submit (type) {
       let submitData = []
+      let regZero = /^([1-9]\d*|[0]{1,1})$/
+      let reg = /^[1-9]\d{0,4}$/
       for (let i = 0; i < this[`${type}Data`].length; i++) {
+        if (!regZero.test(Number(this[`${type}Data`][i].piSellable))) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: `SKU ${this[`${type}Data`][i].productBarcode} 数量输入有误`
+          })
+          return false
+        }
         let quantity = this[`${type}Data`][i].piSellable - this[`${type}Data`][i].piSellableOld
         if (quantity !== 0) {
           this[`${type}Data`][i].quantity = quantity
@@ -242,10 +257,10 @@ export default {
               flag = true
               return false
             }
-            if (!item.piSellable || Number(item.piSellable) === 0) {
+            if (!reg.test(item.piSellable) || Number(item.piSellable) === 0) {
               this.$vux.toast.show({
                 type: 'text',
-                text: `SKU ${item.productBarcode} 请输入库存数量`
+                text: `SKU ${item.productBarcode} 请输入正确的库存数量`
               })
               flag = true
               return false

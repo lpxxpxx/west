@@ -194,6 +194,10 @@ export default {
         if (res.data.success) {
           if (res.data.data) {
             res.data.data.rdReceivedNetReceiptsQty = res.data.data.rdReceivingQtySubset - res.data.data.rdReceivedQtySubset
+            res.data.data.productHeight = Number(res.data.data.productHeight)
+            res.data.data.productLength = Number(res.data.data.productLength)
+            res.data.data.productWidth = Number(res.data.data.productWidth)
+            res.data.data.productWeight = Number(res.data.data.productWeight)
             this[`${type}Data`] = res.data.data
             this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
           } else {

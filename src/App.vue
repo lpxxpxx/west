@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <x-header :left-options="{backText: ''}">{{$store.getters.getTitle}}<a slot="right" @click="showMenus = true">English</a></x-header>
+    <x-header :left-options="{backText: ''}">{{$store.getters.getTitle}}<a slot="right" @click="showMenus = true">English</a><a v-if="showLogout" class="iconfont icon-poweroff logout" slot="right" href="/logout"></a></x-header>
     <router-view></router-view>
     <div>
       <actionsheet :menus="menus" v-model="showMenus"></actionsheet>
@@ -23,6 +23,7 @@ export default {
     this.changeFooter()
     this.afterRefresh()
     this.store()
+    this.isPc()
   },
   data () {
     return {
@@ -31,7 +32,8 @@ export default {
         menu2: 'English'
       },
       showMenus: false,
-      showFooter: false
+      showFooter: false,
+      showLogout: false
     }
   },
   methods: {
@@ -81,6 +83,14 @@ export default {
       } else {
         this.$store.dispatch('setPhoneType', 'Other')
       }
+    },
+    isPc () {
+      let terminal = document.querySelector('#requestTerminal').value
+      if (terminal === 'PC') {
+        this.showLogout = true
+      } else {
+        this.showLogout = false
+      }
     }
   },
   computed: {
@@ -99,7 +109,7 @@ export default {
 <style lang="less">
 @import '~vux/src/styles/reset.less';
 @import '~vux/src/styles/1px.less';
-@import '//at.alicdn.com/t/font_978696_c1rxmptjdvj.css';
+@import '//at.alicdn.com/t/font_978696_gy3pq7sorda.css';
 
 body {
   background-color: #fbf9fe;
@@ -115,6 +125,11 @@ body {
 }
 .underline {
   text-decoration: underline;
+}
+.logout {
+  margin-left: .7rem;
+  color: #fff;
+  font-size: 1.2rem;
 }
 .input {
   padding-top: .5rem;
