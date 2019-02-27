@@ -1,24 +1,24 @@
 <template>
   <div class="container">
     <tab :line-width=1>
-      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">按SKU收货</tab-item>
-      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">按箱收货</tab-item>
+      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">{{$t('accordingToTheSKUReceiving')}}</tab-item>
+      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">{{$t('accordingToTheCasesOfReceiving')}}</tab-item>
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
-        <scan-input :name="'单号'" :placeholder="'此处扫描入库单号'" v-model="skuData.receivingCode"></scan-input>
+        <scan-input :name="$t('orderNo')" :placeholder="$t('theWarehouseEntryNumberIsScannedHere')" v-model="skuData.receivingCode"></scan-input>
       </div>
       <div class="search search-last">
-        <scan-input :name="'SKU'" :placeholder="'此处扫描箱唛上的SKU'" v-model="skuData.productBarcode"></scan-input>
+        <scan-input :name="'SKU'" :placeholder="$t('scanTheSKUOnTheShippingMarkHere')" v-model="skuData.productBarcode"></scan-input>
       </div>
       <div class="info clearfloat">
         <div class="info-detail">
-          <span class="label">SKU名称：</span> 
+          <span class="label">{{$t('theNameOfTheSKU')}}：</span> 
           <span class="underline name" title="">{{skuData.productTitleEn}}</span>
         </div>
         <div class="total">
-          <span class="pull-left">预报数量： <span class="underline">{{skuData.rdReceivingQtySubset || 0}}</span></span>
-          <span class="pull-right">已收数量： <span class="underline">{{skuData.rdReceivedQtySubset || 0}}</span></span>
+          <span class="pull-left">{{$t('forecastTheNumberOf')}}： <span class="underline">{{skuData.rdReceivingQtySubset || 0}}</span></span>
+          <span class="pull-right">{{$t('numberOfReceived')}}： <span class="underline">{{skuData.rdReceivedQtySubset || 0}}</span></span>
         </div>
       </div>
       <div class="size">
@@ -36,11 +36,11 @@
         </div>
       </div>
       <div class="search search-last">
-        <span class="label" style="width: 10rem">本次收货数量</span>
+        <span class="label" style="width: 10rem">{{$t('quantityReceivedThisTime')}}</span>
         <input type="number" placeholder="0" v-model="skuData.rdReceivedNetReceiptsQty" />
       </div>
       <div class="photo">
-        <span class="label">拍照（可选）</span>
+        <span class="label">{{$t('takePhotos')}}</span>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? skuImgIOS :skuImg" :key="index">
             <img :src="item" @click="previewImg('sku', index)">
@@ -52,17 +52,17 @@
       <div class="button">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">重置</x-button>
+            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">确认</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
-        <scan-input :name="'箱号'" :placeholder="'此处扫描箱唛上的箱号'" v-model="boxData.boxNo"></scan-input>
+        <scan-input :name="$t('caseNumber')" :placeholder="$t('scanTheContainerNumberOnTheShippingMarkHere')" v-model="boxData.boxNo"></scan-input>
       </div>
       <div class="search search-last">
         <span class="label">SKU</span>
@@ -70,12 +70,12 @@
       </div>
       <div class="info clearfloat">
         <div class="info-detail">
-          <span class="label">SKU名称：</span> 
+          <span class="label">{{$t('theNameOfTheSKU')}}：</span> 
           <span class="underline name" title="">{{boxData.productTitleEn}}</span>
         </div>
         <div class="total">
-          <span class="pull-left">预报数量： <span class="underline">{{boxData.rdReceivingQtySubset || 0}}</span></span>
-          <span class="pull-right">已收数量： <span class="underline">{{boxData.rdReceivedQtySubset || 0}}</span></span>
+          <span class="pull-left">{{$t('forecastTheNumberOf')}}： <span class="underline">{{boxData.rdReceivingQtySubset || 0}}</span></span>
+          <span class="pull-right">{{$t('numberOfReceived')}}： <span class="underline">{{boxData.rdReceivedQtySubset || 0}}</span></span>
         </div>
       </div>
       <div class="size">
@@ -93,11 +93,11 @@
         </div>
       </div>
       <div class="search search-last">
-        <span class="label" style="width: 10rem">本次收货数量</span>
+        <span class="label" style="width: 10rem">{{$t('quantityReceivedThisTime')}}</span>
         <input type="number" placeholder="0" v-model="boxData.rdReceivedNetReceiptsQty" style="width: 9rem" />
       </div>
       <div class="photo">
-        <span class="label">拍照（可选）</span>
+        <span class="label">{{$t('takePhotos')}}</span>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? boxImgIOS :boxImg" :key="index">
             <img :src="item" @click="previewImg('box', index)">
@@ -109,10 +109,10 @@
       <div class="button">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('box')">重置</x-button>
+            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('box')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('box')">确认</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('box')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -221,7 +221,7 @@ export default {
         }
       })
       .catch(res => {
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     toSearch (type) {
@@ -240,14 +240,14 @@ export default {
         if (!this[`${type}Data`].receivingCode) {
           this.$vux.toast.show({
             type: 'text',
-            text: '请输入入库单号'
+            text: this.$t('pleaseEnterTheWarehouseEntryNumber')
           })
           return false
         }
         if (!this[`${type}Data`].productBarcode) {
           this.$vux.toast.show({
             type: 'text',
-            text: '请输入SKU'
+            text: this.$t('pleaseEnterTheSKU')
           })
           return false
         }
@@ -255,7 +255,7 @@ export default {
         if (!this[`${type}Data`].boxNo) {
           this.$vux.toast.show({
             type: 'text',
-            text: '请输入箱号'
+            text: this.$t('pleaseEnterTheCaseNumber')
           })
           return false
         }
@@ -263,35 +263,35 @@ export default {
       if (!this[`${type}Data`].productLength) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入产品长度'
+          text: this.$t('pleaseEnterProductLength')
         })
         return false
       }
       if (!this[`${type}Data`].productWidth) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入产品宽度'
+          text: this.$t('pleaseEnterProductWidth')
         })
         return false
       }
       if (!this[`${type}Data`].productHeight) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入产品高度'
+          text: this.$t('pleaseEnterProductHeight')
         })
         return false
       }
       if (!this[`${type}Data`].productWeight) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入产品重量'
+          text: this.$t('pleaseInputProductWeight')
         })
         return false
       }
       if (!this[`${type}Data`].rdReceivedNetReceiptsQty || Number(this[`${type}Data`].rdReceivedNetReceiptsQty) === 0) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入本次收货数量'
+          text: this.$t('pleaseInputTheQuantityReceived')
         })
         return false
       }
@@ -299,7 +299,7 @@ export default {
       if (!reg.test(Number(this[`${type}Data`].rdReceivedNetReceiptsQty)) || Number(this[`${type}Data`].rdReceivedNetReceiptsQty) === 0) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入正确的数量'
+          text: this.$t('pleaseEnterTheCorrectQuantity')
         })
         return false
       }
@@ -307,7 +307,7 @@ export default {
         this[`${type}Data`].rdReceivedNetReceiptsQty = (this[`${type}Data`].rdReceivingQtySubset - this[`${type}Data`].rdReceivedQtySubset)
         this.$vux.toast.show({
           type: 'text',
-          text: '超出实际收货数量'
+          text: this.$t('moreThanTheActualQuantityReceived')
         })
         return false
       }
@@ -333,7 +333,7 @@ export default {
         if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
-            text: '操作成功'
+            text: this.$t('operationSuccessful')
           })
           this[`${type}Img`] = []
           this[`${type}ImgIOS`] = []
@@ -349,7 +349,7 @@ export default {
       })
       .catch(res => {
         this.$vux.loading.hide()
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     chooseImage (type) {

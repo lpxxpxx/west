@@ -31,42 +31,42 @@ export default {
         },
         {
           id: 1,
-          name: '收货',
+          name: this.$t('theGoods'),
           icon: 'icon-Import',
           target: '/receivingTask',
           num: 0
         },
         {
           id: 2,
-          name: '上架',
+          name: this.$t('shelves'),
           icon: 'icon-export',
           target: '/upperShelfTask',
           num: 0
         },
         {
           id: 3,
-          name: '调库存',
+          name: this.$t('theInventory'),
           icon: 'icon-sync',
           target: '/inventoryAdjustmentTask',
           num: 0
         },
         {
           id: 4,
-          name: '移库',
+          name: this.$t('moveTheLibrary'),
           icon: 'icon-redo',
           target: '/moveLibraryTask',
           num: 0
         },
         {
           id: 5,
-          name: '产品规格',
+          name: this.$t('productSpecification'),
           icon: 'icon-detail',
           target: '/productSpecificationTask',
           num: 0
         },
         {
           id: 6,
-          name: '物流出库',
+          name: this.$t('outboundLogistics'),
           icon: 'icon-detail',
           target: '/OutLibrary',
           num: 0
@@ -95,7 +95,7 @@ export default {
         }
       })
       .catch(res => {
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     goToDetail (url) {

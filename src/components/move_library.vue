@@ -2,23 +2,23 @@
   <div class="container move-library">
     <div class="tab-swiper" v-show="index === 0">
       <div class="search search-first">
-        <scan-input :name="'库位'" :placeholder="'此处扫描库位条码'" v-model="lcCode"></scan-input>
+        <scan-input :name="$t('location')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCode"></scan-input>
       </div>
       <div class="cheak">
-        <check-icon :value.sync="isAll" type="plain">移动当前库位所有SKU</check-icon>
+        <check-icon :value.sync="isAll" type="plain">{{$t('moveAllSKUOfCurrentStorageLocation')}}</check-icon>
       </div>
       <div class="search">
-        <scan-input :name="'SKU'" :placeholder="'此处扫描SKU条码'" :disabled="isAll ? 'disabled' : false" v-model="productBarcode"></scan-input>
+        <scan-input :name="'SKU'" :placeholder="$t('scanTheSKUBarCodeHere')" :disabled="isAll ? 'disabled' : false" v-model="productBarcode"></scan-input>
       </div>
       <div class="search">
-        <span class="label">数量</span>
+        <span class="label">{{$t('theNumber')}}</span>
         <input type="text" v-model="quantity" :disabled="isAll ? 'disabled' : false" placeholder="" />
       </div>
       <div class="search search-last">
-        <scan-input :name="'新库位'" :placeholder="'此处扫描库位条码'" v-model="lcCodeNew"></scan-input>
+        <scan-input :name="$t('newLocation')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCodeNew"></scan-input>
       </div>
       <div class="photo">
-        <span class="label">拍照（可选）</span>
+        <span class="label">{{$t('takePhotos')}}</span>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? skuImgIOS :skuImg" :key="index">
             <img :src="item" @click="previewImg(index)">
@@ -30,7 +30,7 @@
       <div class="button">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit">提交</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit">{{$t('submit')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -96,7 +96,7 @@ export default {
         }
       })
       .catch(res => {
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     toSearch () {
@@ -112,14 +112,14 @@ export default {
       if (!this.lcCode) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入库位'
+          text: this.$t('pleaseEnterTheLocation')
         })
         return false
       }
       if (!this.lcCodeNew) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入新库位'
+          text: this.$t('pleaseEnterNewLocation')
         })
         return false
       }
@@ -127,7 +127,7 @@ export default {
         if (!this.productBarcode) {
           this.$vux.toast.show({
             type: 'text',
-            text: '请输入SKU'
+            text: this.$t('pleaseEnterTheSKU')
           })
           return false
         }
@@ -135,7 +135,7 @@ export default {
         if (!reg.test(Number(this.quantity)) || Number(this.quantity) === 0) {
           this.$vux.toast.show({
             type: 'text',
-            text: '请输入正确的数量'
+            text: this.$t('pleaseEnterTheCorrectQuantity')
           })
           return false
         }
@@ -192,7 +192,7 @@ export default {
       })
       .catch(res => {
         this.$vux.loading.hide()
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     chooseImage () {

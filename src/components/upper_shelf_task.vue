@@ -1,25 +1,25 @@
 <template>
   <div class="container">
     <div class="input">
-        <scan-input :placeholder="'入库单/跟踪号/参考号'" v-model="businessNumber"></scan-input>
+        <scan-input :placeholder="$t('LTR')" v-model="businessNumber"></scan-input>
     </div>
     <div v-for="(item, index) in taskList" :key="index" class="task-list">
       <div class="task-item" @click="goToDetail(item.receivingCode, item.boxCode, item.productBarcode)">
-        <p class="full">入库单：{{item.receivingCode}}</p>
-        <p>跟踪号：{{item.trackingNumber}}</p>
-        <p>参考号：{{item.referenceNo}}</p>
+        <p class="full">{{$t('warehouseEntry')}}：{{item.receivingCode}}</p>
+        <p>{{$t('trackingNumber')}}：{{item.trackingNumber}}</p>
+        <p>{{$t('referenceNumber')}}：{{item.referenceNo}}</p>
         <p>SKU：{{item.productBarcode}}</p>
-        <p>待上架数量：{{item.pdQuantity}}</p>
+        <p>{{$t('quantityToBePutOnShelves')}}：{{item.pdQuantity}}</p>
       </div>
     </div>
     <div class="task-list task-list-none" v-show="isLoading">
-      加载中...
+      {{$t('inTheLoad')}}
     </div>
     <div class="task-list task-list-none" v-show="!hasTask">
-      暂无任务
+      {{$t('noTask')}}
     </div>
     <div class="button">
-      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', '', '', '')">跳过</x-button>
+      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', '', '', '')">{{$t('skip')}}</x-button>
     </div>
   </div>
 </template>
@@ -87,7 +87,7 @@ export default {
         this.isLoading = false
         this.page--
         alert(`${this.$store.getters.getUrl}/weixinapi/putaway/putawaySearch`)
-        alert('业务系统异常！')
+        alert($t('businessSystemException'))
       })
     }
   },

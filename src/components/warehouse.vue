@@ -26,11 +26,11 @@ export default {
       warehouses = JSON.parse(warehouses)
       this.warehouses = warehouses
     } else {
-      alert('无法取得用户信息')
+      alert(this.$t('unableToObtainUserInformation'))
       return false
     }
     if (warehouses.warehouseList.length === 0) {
-      alert('暂无权限查看')
+      alert(this.$t('noPermissionToView'))
       return false
     } else if (warehouses.warehouseList.length === 1) {
       this.goToMenu(warehouses.warehouseList[0])

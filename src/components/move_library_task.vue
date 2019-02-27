@@ -7,20 +7,20 @@
       <li class="task-item" v-for="(item, index) in taskList" :key="index" data-type="0">
         <div class="task-list" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="goToDetail(item.productBarcode, item.lcCode, item.lcCodeNew)">
           <div class="list-content">
-            <p>库位：{{item.lcCode}}</p>
-            <p>新库位：{{item.lcCodeNew}}</p>
+            <p>{{$t('location')}}：{{item.lcCode}}</p>
+            <p>{{$t('newLocation')}}：{{item.lcCodeNew}}</p>
             <p>SKU：{{item.productBarcode}}</p>
-            <p>数量：{{item.quantity}}</p>
+            <p>{{$t('theNumber')}}：{{item.quantity}}</p>
           </div>
         </div>
-        <div class="delete" @click="deleteItem" :data-index="index">删除</div>
+        <div class="delete" @click="deleteItem" :data-index="index">{{$t('delete')}}</div>
       </li>
     </ul>
     <div class="task-list task-list-none" v-show="!hasTask">
-      暂无任务
+      {{$t('noTask')}}
     </div>
     <div class="button">
-      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', '', '')">跳过</x-button>
+      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', '', '')">{{$t('skip')}}</x-button>
     </div>
   </div>
 </template>
@@ -88,7 +88,7 @@ export default {
       .catch(res => {
         this.isLoading = false
         this.page--
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     /* 滑动开始 */
@@ -144,7 +144,7 @@ export default {
         if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
-            text: '操作成功'
+            text: this.$t('operationSuccessful')
           })
           this.restSlide()
           this.taskList.splice(index, 1)
@@ -158,7 +158,7 @@ export default {
       .catch(res => {
         this.isLoading = false
         this.page--
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     }
   },

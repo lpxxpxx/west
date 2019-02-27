@@ -1,24 +1,24 @@
 <template>
   <div class="container">
     <tab :line-width=1>
-      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">按SKU查</tab-item>
-      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">按库位查</tab-item>
+      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">{{$t('accordingToTheSKUCheck')}}</tab-item>
+      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">{{$t('accordingToTheLocationToCheck')}}</tab-item>
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
-        <scan-input :placeholder="'此处扫描SKU条码'" :name="'SKU'" v-model="sku"></scan-input>
+        <scan-input :placeholder="$t('scanTheSKUBarCodeHere')" :name="'SKU'" v-model="sku"></scan-input>
       </div>
       <div class="total">
-        <span class="pull-left">库位数 <span class="underline">{{skuCount}}</span></span>
-        <span class="pull-right">总计 <span class="underline">{{skuAll}}</span></span>
+        <span class="pull-left">{{$t('locationNumber')}} <span class="underline">{{skuCount}}</span></span>
+        <span class="pull-right">{{$t('total')}} <span class="underline">{{skuAll}}</span></span>
       </div>
       <div class="table">
         <x-table full-bordered>
           <thead>
             <tr>
-              <th>库位</th>
-              <th>可用</th>
-              <th>待出库</th>
+              <th>{{$t('location')}}</th>
+              <th>{{$t('available')}}</th>
+              <th>{{$t('forOutbound')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -28,30 +28,30 @@
               <td v-once>{{item.piReserved}}</td>
             </tr>
             <tr v-if="!hassku">
-              <td colspan="3">没有找到匹配的记录</td>
+              <td colspan="3">{{$t('noMatchingRecordsWereFound')}}</td>
             </tr>
           </tbody>
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku, '')" v-show="skuButtonShow">调库存</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku, '')" v-show="skuButtonShow">{{$t('theInventory')}}</x-button>
       </div>
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
-        <scan-input :placeholder="'此处扫描库位条码'" :name="'库位'" v-model="lcCode"></scan-input>
+        <scan-input :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" :name="$t('location')" v-model="lcCode"></scan-input>
       </div>
       <div class="total">
-        <span class="pull-left">SKU种类 <span class="underline">{{lcCodeCount}}</span></span>
-        <span class="pull-right">总计 <span class="underline">{{lcCodeAll}}</span></span>
+        <span class="pull-left">{{$t('SKUType')}} <span class="underline">{{lcCodeCount}}</span></span>
+        <span class="pull-right">{{$t('total')}} <span class="underline">{{lcCodeAll}}</span></span>
       </div>
       <div class="table">
         <x-table full-bordered>
           <thead>
             <tr>
               <th>SKU</th>
-              <th>可用</th>
-              <th>待出库</th>
+              <th>{{$t('available')}}</th>
+              <th>{{$t('forOutbound')}}</th>
             </tr>
           </thead>
           <tbody>
@@ -61,13 +61,13 @@
               <td>{{item.piReserved}}</td>
             </tr>
             <tr v-if="!haslcCode">
-              <td colspan="3">没有找到匹配的记录</td>
+              <td colspan="3">{{$t('noMatchingRecordsWereFound')}}</td>
             </tr>
           </tbody>
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)" v-show="lcCodeButtonShow">调库存</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)" v-show="lcCodeButtonShow">{{$t('theInventory')}}</x-button>
       </div>
     </div>
   </div>
@@ -158,7 +158,7 @@ export default {
         }
       })
       .catch(res => {
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     toSearch (type) {

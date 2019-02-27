@@ -26,7 +26,7 @@ const routes = new Router({
       name: 'Warehouse',
       component: Warehouse,
       meta: {
-        title: '选择仓库'
+        title: this.$t('chooseWarehouse')
       }
     },
     {
@@ -34,7 +34,7 @@ const routes = new Router({
       name: 'menu',
       component: Menu,
       meta: {
-        title: '操作菜单'
+        title: this.$t('theOperatingMenu')
       }
     },
     {
@@ -42,7 +42,7 @@ const routes = new Router({
       name: 'stockInquiry',
       component: StockInquiry,
       meta: {
-        title: '库存查询'
+        title: this.$t('inventoryQuery')
       }
     },
     {
@@ -50,7 +50,7 @@ const routes = new Router({
       name: 'receivingTask',
       component: ReceivingTask,
       meta: {
-        title: '收货任务'
+        title: this.$t('receivingTheTask')
       }
     },
     {
@@ -58,7 +58,7 @@ const routes = new Router({
       name: 'receiving',
       component: Receiving,
       meta: {
-        title: '收货'
+        title: this.$t('theGoods')
       }
     },
     {
@@ -66,7 +66,7 @@ const routes = new Router({
       name: 'upperShelfTask',
       component: UpperShelfTask,
       meta: {
-        title: '上架任务'
+        title: this.$t('onTheTask')
       }
     },
     {
@@ -74,7 +74,7 @@ const routes = new Router({
       name: 'upperShelf',
       component: UpperShelf,
       meta: {
-        title: '上架'
+        title: this.$t('shelves')
       }
     },
     {
@@ -82,7 +82,7 @@ const routes = new Router({
       name: 'inventoryAdjustmentTask',
       component: InventoryAdjustmentTask,
       meta: {
-        title: '调库存任务'
+        title: this.$t('inventoryAdjustmentTask')
       }
     },
     {
@@ -90,7 +90,7 @@ const routes = new Router({
       name: 'inventoryAdjustment',
       component: InventoryAdjustment,
       meta: {
-        title: '调库存'
+        title: this.$t('theInventory')
       }
     },
     {
@@ -98,7 +98,7 @@ const routes = new Router({
       name: 'moveLibraryTask',
       component: MoveLibraryTask,
       meta: {
-        title: '移库任务'
+        title: this.$t('moveTheLibraryMission')
       }
     },
     {
@@ -106,7 +106,7 @@ const routes = new Router({
       name: 'moveLibrary',
       component: MoveLibrary,
       meta: {
-        title: '移库'
+        title: this.$t('moveTheLibrary')
       }
     },
     {
@@ -114,7 +114,7 @@ const routes = new Router({
       name: 'productSpecificationTask',
       component: ProductSpecificationTask,
       meta: {
-        title: '产品规格校验任务'
+        title: this.$t('productSpecificationCalibrationTask')
       }
     },
     {
@@ -122,7 +122,7 @@ const routes = new Router({
       name: 'productSpecification',
       component: ProductSpecification,
       meta: {
-        title: '产品规格'
+        title: this.$t('productSpecification')
       }
     },
     {
@@ -130,7 +130,7 @@ const routes = new Router({
       name: 'outLibrary',
       component: OutLibrary,
       meta: {
-        title: '物流出库'
+        title: this.$t('outboundLogistics')
       }
     },
     {
@@ -138,7 +138,7 @@ const routes = new Router({
       name: 'slideList',
       component: slideList,
       meta: {
-        title: '滑动菜单'
+        title: this.$t('slidingMenu')
       }
     }
   ]
@@ -146,7 +146,7 @@ const routes = new Router({
 
 routes.beforeEach((to, from, next) => {
   if (to.meta.title) {
-    document.title = '西邮 - ' + to.meta.title
+    document.title = this.$t('westMail') + ' - ' + to.meta.title
     Store.dispatch('setTitle', to.meta.title)
   }
   next()

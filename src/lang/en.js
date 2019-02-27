@@ -89,5 +89,14 @@ module.exports = {
   quantityInputError: 'Quantity input error',
   existing: 'Existing',
   thereIsNoChange: 'There Is No Change',
-  pleaseEnterTheCorrectInventoryQuantity: 'Please enter the correct inventory quantity'
+  pleaseEnterTheCorrectInventoryQuantity: 'Please enter the correct inventory quantity',
+  scanTheShippingMarkHere: 'Scan The Shipping Mark Here',
+  chooseWarehouse: 'Choose Warehouse',
+  receivingTheTask: 'Receiving The Task',
+  onTheTask: 'On The Task',
+  inventoryAdjustmentTask: 'Inventory Adjustment Task',
+  moveTheLibraryMission: 'Move The Library Mission',
+  productSpecificationCalibrationTask: 'Product Specification Calibration Task',
+  slidingMenu: 'Sliding Menu',
+  westMail: 'West Mail'
 }

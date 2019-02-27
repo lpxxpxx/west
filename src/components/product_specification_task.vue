@@ -1,23 +1,23 @@
 <template>
   <div class="container">
     <div class="input">
-      <scan-input :placeholder="'库位/SKU'" v-model="queryCode"></scan-input>
+      <scan-input :placeholder="$t('LS')" v-model="queryCode"></scan-input>
     </div>
     <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.productBarcode)">
       <div class="task-item">
         <p>SKU：{{item.productBarcode}}</p>
-        <p>规格：{{item.productLength || 0}} x {{item.productWidth || 0}} x {{item.productHeight || 0}} cm</p>
-        <p>重量：{{item.productWeight || 0}} kg</p>
+        <p>{{$t('specification')}}：{{item.productLength || 0}} x {{item.productWidth || 0}} x {{item.productHeight || 0}} cm</p>
+        <p>{{$t('weight')}}：{{item.productWeight || 0}} kg</p>
       </div>
     </div>
     <div class="task-list task-list-none" v-show="isLoading">
-      加载中...
+      {{$t('inTheLoad')}}
     </div>
     <div class="task-list task-list-none" v-show="!hasTask">
-      暂无任务
+      {{$t('noTask')}}
     </div>
     <div class="button">
-      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('')">跳过</x-button>
+      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('')">{{$t('skip')}}</x-button>
     </div>
   </div>
 </template>

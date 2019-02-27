@@ -1,42 +1,42 @@
 <template>
   <div class="container">
     <div class="search search-first">
-        <scan-input :placeholder="'此处扫描SKU条码'" :name="'SKU'" v-model="data.productBarcode"></scan-input>
+        <scan-input :placeholder="$t('scanTheSKUBarCodeHere')" :name="'SKU'" v-model="data.productBarcode"></scan-input>
     </div>
     <div class="search search-last" style="height: auto">
       <div class="info-detail">
-        <span class="label">SKU名称：</span> 
+        <span class="label">{{$t('theNameOfTheSKU')}}：</span> 
         <span class="underline name" title="">{{data.productTitleEn}}</span>
       </div>
     </div>
-    <divider>参数</divider>
+    <divider>{{$t('parameters')}}</divider>
     <div class="search search-first">
-      <span class="label">重量</span>
+      <span class="label">{{$t('weight')}}</span>
       <input type="number" placeholder="0" v-model="data.productWeight" class="weight" v-enter-number />
       <span class="type">KG</span>
     </div>
     <div class="search">
-      <span class="label">长</span>
+      <span class="label">{{$t('long')}}</span>
       <input type="number" placeholder="0" v-model="data.productLength" v-enter-number />
       <span class="type">CM</span>
     </div>
     <div class="search">
-      <span class="label">宽</span>
+      <span class="label">{{$t('wide')}}</span>
       <input type="number" placeholder="0" v-model="data.productWidth" v-enter-number />
       <span class="type">CM</span>
     </div>
     <div class="search search-last">
-      <span class="label">高</span>
+      <span class="label">{{$t('high')}}</span>
       <input type="number" placeholder="0" v-model="data.productHeight" v-enter-number />
       <span class="type">CM</span>
     </div>
     <div class="button">
       <flexbox>
         <flexbox-item>
-          <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset()">重置</x-button>
+          <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset()">{{$t('reset')}}</x-button>
         </flexbox-item>
         <flexbox-item>
-          <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit()">确认</x-button>
+          <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit()">{{$t('confirm')}}</x-button>
         </flexbox-item>
       </flexbox>
     </div>
@@ -102,7 +102,7 @@ export default {
         }
       })
       .catch(res => {
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     toSearch () {
@@ -116,35 +116,35 @@ export default {
       if (!this.data.productId) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入正确的SKU'
+          text: this.$t('pleaseEnterTheCorrectSKU')
         })
         return false
       }
       if (!this.data.productWeight || Number(this.data.productWeight) === 0) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入产品重量'
+          text: this.$t('pleaseInputProductWeight')
         })
         return false
       }
       if (!this.data.productLength || Number(this.data.productLength) === 0) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入产品长度'
+          text: this.$t('pleaseEnterProductLength')
         })
         return false
       }
       if (!this.data.productWidth || Number(this.data.productWidth) === 0) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入产品宽度'
+          text: this.$t('pleaseEnterProductWidth')
         })
         return false
       }
       if (!this.data.productHeight || Number(this.data.productHeight) === 0) {
         this.$vux.toast.show({
           type: 'text',
-          text: '请输入产品高度'
+          text: this.$t('pleaseEnterProductHeight')
         })
         return false
       }
@@ -168,7 +168,7 @@ export default {
         if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
-            text: '操作成功'
+            text: this.$t('operationSuccessful')
           })
           this.data.productBarcode = ''
           this.data.productTitleEn = ''
@@ -186,7 +186,7 @@ export default {
       })
       .catch(res => {
         this.$vux.loading.hide()
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     }
   },

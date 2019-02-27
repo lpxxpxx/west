@@ -1,18 +1,18 @@
 <template>
   <div class="container">
     <div class="input">
-      <scan-input :placeholder="'物流跟踪号'" :disabled="noDis" :autofocus="'autofocus'" v-model="no"></scan-input>
+      <scan-input :placeholder="$t('logisticsTrackingNumber')" :disabled="noDis" :autofocus="'autofocus'" v-model="no"></scan-input>
     </div>
     <div class="input">
-      <scan-input :placeholder="'SKU条码'" :disabled="skuDis" v-model="sku"></scan-input>
+      <scan-input :placeholder="$t('SKUBarcode')" :disabled="skuDis" v-model="sku"></scan-input>
     </div>
     <div class="button">
       <flexbox>
         <flexbox-item>
-          <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset()">重置</x-button>
+          <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset()">{{$t('reset')}}</x-button>
         </flexbox-item>
         <flexbox-item>
-          <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit()">确认</x-button>
+          <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit()">{{$t('confirm')}}</x-button>
         </flexbox-item>
       </flexbox>
     </div>
@@ -78,7 +78,7 @@ export default {
         }
       })
       .catch(res => {
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     submit () {
@@ -102,7 +102,7 @@ export default {
         })
       })
       .catch(res => {
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     }
   },

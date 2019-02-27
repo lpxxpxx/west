@@ -89,5 +89,14 @@ module.exports = {
   quantityInputError: '数量输入有误',
   existing: '已存在',
   thereIsNoChange: '无更改',
-  pleaseEnterTheCorrectInventoryQuantity: '请输入正确的库存数量'
+  pleaseEnterTheCorrectInventoryQuantity: '请输入正确的库存数量',
+  scanTheShippingMarkHere: '此处扫描箱唛',
+  chooseWarehouse: '选择仓库',
+  receivingTheTask: '收货任务',
+  onTheTask: '上架任务',
+  inventoryAdjustmentTask: '调库存任务',
+  moveTheLibraryMission: '移库任务',
+  productSpecificationCalibrationTask: '产品规格校验任务',
+  slidingMenu: '滑动菜单',
+  westMail: '西邮'
 }

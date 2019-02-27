@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="input">
-        <scan-input :placeholder="'入库单/跟踪号/参考号'" v-model="queryCode"></scan-input>
+        <scan-input :placeholder="$t('LTR')" v-model="queryCode"></scan-input>
     </div>
     <!-- <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.receivingCode)">
       <div class="task-item">
@@ -14,22 +14,22 @@
       <li class="task-item" v-for="(item, index) in taskList" :key="index" data-type="0">
         <div class="task-list" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="goToDetail(item.receivingCode)">
           <div class="list-content">
-            <p>入库单：{{item.receivingCode}}</p>
-            <p>跟踪号：{{item.trackingNumber}}</p>
-            <p>参考号：{{item.referenceNo}}</p>
+            <p>{{$t('warehouseEntry')}}：{{item.receivingCode}}</p>
+            <p>{{$t('trackingNumber')}}：{{item.trackingNumber}}</p>
+            <p>{{$t('referenceNumber')}}：{{item.referenceNo}}</p>
           </div>
         </div>
-        <div class="delete" @click="deleteItem" :data-index="index">强制完成</div>
+        <div class="delete" @click="deleteItem" :data-index="index">{{$t('forceComplete')}}</div>
       </li>
     </ul>
     <div class="task-list task-list-none" v-show="isLoading">
-      加载中...
+      {{$t('inTheLoad')}}
     </div>
     <div class="task-list task-list-none" v-show="!hasTask">
-      暂无任务
+      {{$t('noTask')}}
     </div>
     <div class="button">
-      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('')">跳过</x-button>
+      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('')">{{$t('skip')}}</x-button>
     </div>
   </div>
 </template>
@@ -99,7 +99,7 @@ export default {
       .catch(res => {
         this.isLoading = false
         this.page--
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     },
     /* 滑动开始 */
@@ -154,7 +154,7 @@ export default {
         if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
-            text: '操作成功'
+            text: this.$t('operationSuccessful')
           })
           this.restSlide()
           this.taskList.splice(index, 1)
@@ -168,7 +168,7 @@ export default {
       .catch(res => {
         this.isLoading = false
         this.page--
-        alert('业务系统异常！')
+        alert(this.$t('businessSystemException'))
       })
     }
   },
