@@ -249,7 +249,6 @@ export default {
         return false
       }
       this[`${type}Data`].putawayType = type === 'sku' ? 'sku' : 'boxNo'
-      this[`${type}Data`].userEmail = window.localStorage.getItem('userEmail')
       this.$vux.loading.show({
         text: 'Loading'
       })
