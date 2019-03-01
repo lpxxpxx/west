@@ -22,15 +22,18 @@ Vue.config.productionTip = false
 
 axios.interceptors.request.use(function (config) {
   let userEmail = window.localStorage.getItem('userEmail')
+  let language = window.localStorage.getItem('lang') || 'zh'
   if (config.method === 'post') {
     let data = qs.parse(config.data)
     config.data = qs.stringify({
       userEmail: userEmail,
+      language: language,
       ...data
     })
   } else if (config.method === 'get') {
     config.params = {
       userEmail: userEmail,
+      language: language,
       ...config.params
     }
   }
@@ -48,6 +51,14 @@ Vue.directive('enterNumber', {
         el.value = (el.value.match(/\d{1,4}(\.\d{0,2})?/) || [''])[0]
       }
       el.dispatchEvent(new Event('input'))
+    })
+  }
+})
+
+Vue.directive('selectVal', {
+  inserted: function (el) {
+    el.addEventListener('focus', function () {
+      this.select()
     })
   }
 })

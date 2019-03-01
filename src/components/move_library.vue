@@ -12,7 +12,7 @@
       </div>
       <div class="search">
         <span class="label">{{$t('theNumber')}}</span>
-        <input type="text" v-model="quantity" :disabled="isAll ? 'disabled' : false" placeholder="" />
+        <input type="text" v-model="quantity" :disabled="isAll ? 'disabled' : false" placeholder="" v-select-val />
       </div>
       <div class="search search-last">
         <scan-input :name="$t('newLocation')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCodeNew"></scan-input>

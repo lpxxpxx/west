@@ -25,7 +25,7 @@
             <tr v-for="(item, index) in skuData" :key="index">
               <td>{{item.lcCode}}</td>
               <td>{{item.piSellableOld}}</td>
-              <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
+              <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" v-select-val /></td>
             </tr>
             <tr v-if="!hassku">
               <td colspan="3">{{$t('noMatchingRecordsWereFound')}}</td>
@@ -65,12 +65,12 @@
             <tr v-for="(item, index) in lcCodeData" :key="index">
               <td>{{item.productBarcode}}</td>
               <td>{{item.piSellableOld}}</td>
-              <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
+              <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" v-select-val /></td>
             </tr>
             <tr v-for="(item, index) in lcCodeDataNew" :key="index">
               <td><i class="iconfont icon-minus-circle-fill" @click="deleteDataNew('lcCode', index)"></i><scan-input :placeholder="$t('scanTheSKUBarCodeHere')" v-model="item.productBarcode"></scan-input></td>
               <td>{{item.piSellableOld}}</td>
-              <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" /></td>
+              <td><input type="number" placeholder="0" value="25" v-model="item.piSellable" v-select-val /></td>
             </tr>
             <tr v-if="!haslcCode && lcCodeDataNew.length === 0">
               <td colspan="3">{{$t('noMatchingRecordsWereFound')}}</td>

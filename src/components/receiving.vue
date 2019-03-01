@@ -23,21 +23,21 @@
       </div>
       <div class="size">
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" v-model="skuData.productLength" style="width: calc(100% - 22px)" v-enter-number /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="skuData.productLength" style="width: calc(100% - 22px)" v-enter-number v-select-val /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" v-model="skuData.productWidth" style="width: calc(100% - 22px)" v-enter-number /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="skuData.productWidth" style="width: calc(100% - 22px)" v-enter-number v-select-val /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="skuData.productHeight" style="width: calc(100% - 37px)" v-enter-number /><span style="width: 35px"> CM </span>
+          <input type="number" placeholder="0" v-model="skuData.productHeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> CM </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="skuData.productWeight" style="width: calc(100% - 37px)" class="weight" v-enter-number /><span style="width: 35px"> KG</span>
+          <input type="number" placeholder="0" v-model="skuData.productWeight" style="width: calc(100% - 37px)" class="weight" v-enter-number v-select-val /><span style="width: 35px"> KG</span>
         </div>
       </div>
       <div class="search search-last">
         <span class="label" style="width: 10rem">{{$t('quantityReceivedThisTime')}}</span>
-        <input type="number" placeholder="0" v-model="skuData.rdReceivedNetReceiptsQty" />
+        <input type="number" placeholder="0" v-model="skuData.rdReceivedNetReceiptsQty" v-select-val />
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>
@@ -66,7 +66,7 @@
       </div>
       <div class="search search-last">
         <span class="label">SKU</span>
-        <input type="text" disabled="disabled" v-model="boxData.productBarcode" />
+        <input type="text" disabled="disabled" v-model="boxData.productBarcode" v-select-val />
       </div>
       <div class="info clearfloat">
         <div class="info-detail">
@@ -80,21 +80,21 @@
       </div>
       <div class="size">
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" v-model="boxData.productLength" style="width: calc(100% - 22px)" v-enter-number /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="boxData.productLength" style="width: calc(100% - 22px)" v-enter-number v-select-val /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 23%;">
-          <input type="number" placeholder="0" v-model="boxData.productWidth" style="width: calc(100% - 22px)" v-enter-number /><span style="width: 20px"> x </span>
+          <input type="number" placeholder="0" v-model="boxData.productWidth" style="width: calc(100% - 22px)" v-enter-number v-select-val /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="boxData.productHeight" style="width: calc(100% - 37px)" v-enter-number /><span style="width: 35px"> CM </span>
+          <input type="number" placeholder="0" v-model="boxData.productHeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> CM </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="boxData.productWeight" style="width: calc(100% - 37px)" v-enter-number /><span style="width: 35px"> KG</span>
+          <input type="number" placeholder="0" v-model="boxData.productWeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> KG</span>
         </div>
       </div>
       <div class="search search-last">
         <span class="label" style="width: 10rem">{{$t('quantityReceivedThisTime')}}</span>
-        <input type="number" placeholder="0" v-model="boxData.rdReceivedNetReceiptsQty" style="width: 9rem" />
+        <input type="number" placeholder="0" v-model="boxData.rdReceivedNetReceiptsQty" style="width: 9rem" v-select-val />
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>

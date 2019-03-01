@@ -27,7 +27,7 @@
       </div>
       <div class="search search-last">
         <span class="label">{{$t('theNumber')}}</span>
-        <input type="text" v-model="skuData.pdQuantity" />
+        <input type="text" v-model="skuData.pdQuantity" v-select-val />
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>
@@ -73,7 +73,7 @@
       </div>
       <div class="search search-last">
         <span class="label">{{$t('theNumber')}}</span>
-        <input type="number" v-model="boxNoData.pdQuantity" />
+        <input type="number" v-model="boxNoData.pdQuantity" v-select-val />
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>
