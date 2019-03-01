@@ -87,7 +87,7 @@ export default {
         this.isLoading = false
         this.page--
         alert(`${this.$store.getters.getUrl}/weixinapi/putaway/putawaySearch`)
-        alert($t('businessSystemException'))
+        alert(this.$t('businessSystemException'))
       })
     }
   },

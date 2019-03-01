@@ -188,10 +188,12 @@ export default {
 
 <style lang="less" scoped>
   .container {
+    overflow: hidden;
     margin-bottom: 7rem;
   }
   .task-list{
-    display: flex;
+    display: inline-block;
+    width: 100%;
     font-size: 1rem;
     border-bottom: 1px solid #999;
     color: #333;
@@ -203,6 +205,7 @@ export default {
   .task-list-none {
     display: inherit;
     text-align: center;
+    height: auto;
   }
   .button {
     position: fixed;
@@ -211,9 +214,6 @@ export default {
     width: 100%;
     box-sizing: border-box;
     background: #fbf9fe;
-  }
-  .container{
-    overflow-x: hidden;
   }
   .page-title:after{
     content: " ";

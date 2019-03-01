@@ -275,7 +275,7 @@ export default {
     .label {
       margin-right: .5rem;
       font-size: 1.5rem;
-      width: 5rem;
+      width: 6rem;
       text-align: right;
     }
     input {

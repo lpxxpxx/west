@@ -52,7 +52,7 @@
         <span class="pull-left">{{$t('SKUType')}} <span class="underline">{{lcCodeCount}}</span></span>
         <span class="pull-right">{{$t('total')}} <span class="underline">{{lcCodeAll}}</span></span>
       </div>
-      <div class="table">
+      <div class="table lcCode">
         <x-table full-bordered>
           <thead>
             <tr>
@@ -175,6 +175,10 @@ export default {
         lcCode: this[`${type}`]
       }
       this[`${type}DataNew`].push(data)
+      let length = this[`${type}DataNew`].length - 1
+      setTimeout(function () {
+        document.querySelectorAll('.lcCode .cont input')[length].focus()
+      }, 200)
     },
     deleteDataNew (type, index) {
       this[`${type}DataNew`].splice(index, 1)
@@ -212,6 +216,11 @@ export default {
           }
           this.blurInput()
           this[`${type}ButtonShow`] = true
+        } else {
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
         }
       })
       .catch(res => {

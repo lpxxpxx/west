@@ -47,7 +47,7 @@ export default {
           id: 3,
           name: this.$t('theInventory'),
           icon: 'icon-sync',
-          target: '/inventoryAdjustmentTask',
+          target: '/inventoryAdjustment',
           num: 0
         },
         {

@@ -13,22 +13,22 @@
     <div class="search search-first">
       <span class="label">{{$t('weight')}}</span>
       <input type="number" placeholder="0" v-model="data.productWeight" class="weight" v-enter-number />
-      <span class="type">KG</span>
+      <span class="type">{{data.cloudWeightUnit || 'KG'}}</span>
     </div>
     <div class="search">
       <span class="label">{{$t('long')}}</span>
       <input type="number" placeholder="0" v-model="data.productLength" v-enter-number />
-      <span class="type">CM</span>
+      <span class="type">{{data.cloudSizeUnit || 'CM'}}</span>
     </div>
     <div class="search">
       <span class="label">{{$t('wide')}}</span>
       <input type="number" placeholder="0" v-model="data.productWidth" v-enter-number />
-      <span class="type">CM</span>
+      <span class="type">{{data.cloudSizeUnit || 'CM'}}</span>
     </div>
     <div class="search search-last">
       <span class="label">{{$t('high')}}</span>
       <input type="number" placeholder="0" v-model="data.productHeight" v-enter-number />
-      <span class="type">CM</span>
+      <span class="type">{{data.cloudSizeUnit || 'CM'}}</span>
     </div>
     <div class="button">
       <flexbox>
@@ -99,6 +99,12 @@ export default {
         if (res.data.productBarcode) {
           this.data = res.data
           this.oldData = JSON.parse(JSON.stringify(res.data))
+        } else {
+          this.data.productTitleEn = ''
+          this.data.productLength = 0
+          this.data.productWidth = 0
+          this.data.productHeight = 0
+          this.data.productWeight = 0
         }
       })
       .catch(res => {
@@ -113,6 +119,8 @@ export default {
       }, 1000)
     },
     submit (type) {
+      let cloudSizeUnitRate = 0.3937008
+      let cloudWeightUnitRate = 2.2046226
       if (!this.data.productId) {
         this.$vux.toast.show({
           type: 'text',
@@ -153,10 +161,20 @@ export default {
       })
       let submitData = {}
       submitData.productId = this.data.productId
-      submitData.productLength = this.data.productLength
-      submitData.productWeight = this.data.productWeight
-      submitData.productWidth = this.data.productWidth
-      submitData.productHeight = this.data.productHeight
+      if (this.data.cloudSizeUnit === 'IN') {
+        submitData.productLength = (this.data.productLength * cloudSizeUnitRate).toFixed(2)
+        submitData.productWidth = (this.data.productWidth * cloudSizeUnitRate).toFixed(2)
+        submitData.productHeight = (this.data.productHeight * cloudSizeUnitRate).toFixed(2)
+      } else {
+        submitData.productLength = this.data.productLength
+        submitData.productWidth = this.data.productWidth
+        submitData.productHeight = this.data.productHeight
+      }
+      if (this.data.cloudWeightUnit === 'LB') {
+        submitData.productWeight = (this.data.productWeight * cloudWeightUnitRate).toFixed(3)
+      } else {
+        submitData.productWeight = this.data.productWeight
+      }
       submitData.pwaId = this.data.pwaId
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/product/updateAttr`, qs.stringify(submitData), {
         headers: {

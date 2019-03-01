@@ -162,11 +162,14 @@ body {
   }
   .cont {
     margin: 0 .8rem;
-    height: 1.5rem;
-    line-height: 1.5rem;
-    width: auto;
+    height: 2rem;
+    line-height: 2rem;
+    width: 50vw;
     .label {
       display: none;
+    }
+    input {
+      width: 100%;
     }
   }
 }
