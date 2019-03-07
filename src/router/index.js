@@ -16,6 +16,8 @@ import ProductSpecificationTask from '@/components/product_specification_task'
 import ProductSpecification from '@/components/product_specification'
 import OutLibrary from '@/components/out_library'
 import slideList from '@/components/slide_list'
+import zh from '@/lang/zh'
+import en from '@/lang/en'
 
 Vue.use(Router)
 
@@ -146,10 +148,14 @@ const routes = new Router({
 
 routes.beforeEach((to, from, next) => {
   if (to.meta.title) {
-    document.title = 'westMail' + ' - ' + to.meta.title
+    let lang = window.localStorage.getItem('lang') || 'zh'
+    if (lang === 'zh') {
+      document.title = zh['westMail'] + ' - ' + zh[to.meta.title]
+    } else if (lang === 'en') {
+      document.title = en['westMail'] + ' - ' + en[to.meta.title]
+    }
     Store.dispatch('setTitle', to.meta.title)
   }
   next()
 })
-
 export default routes

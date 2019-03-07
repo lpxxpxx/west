@@ -3,6 +3,7 @@
     <tab :line-width=1>
       <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">{{$t('hitSKU')}}</tab-item>
       <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">{{$t('shelfByCase')}}</tab-item>
+      <tab-item :selected="index === 2" @on-item-click="changeIndex(2)">{{$t('shelfByTray')}}</tab-item>
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
@@ -96,6 +97,53 @@
         </flexbox>
       </div>
     </div>
+    <div class="tab-swiper" v-show="index === 2">
+      <div class="search">
+        <scan-input :name="$t('trayNumber')" :placeholder="$t('scanTheShippingMarkHere')" v-model="trayData.trayCode"></scan-input>
+      </div>
+      <div class="search search-middle">
+        <span class="label">SKU</span>
+        <input type="text" disabled="disabled" v-model="trayData.productBarcode" v-select-val />
+      </div>
+      <div class="search search-last">
+        <span class="label">{{$t('theNumber')}}</span>
+        <input type="text" disabled="disabled" v-model="trayData.pdQuantity" v-select-val />
+      </div>
+      <p class="error-info" v-show="trayData.trayCode && trayData.errorInfo">{{trayData.errorInfo}}</p>
+      <div class="info clearfloat">
+        <div class="info-detail">
+          <span class="label">{{$t('theNameOfTheSKU')}}：</span> 
+          <span class="underline name" title="">{{trayData.productTitleEn}}</span>
+        </div>
+        <div class="total">
+          <span class="pull-left">{{$t('quantityReceived')}}： <span class="underline">{{trayData.rdbReceivedQty}}</span></span>
+          <span class="pull-right">{{$t('quantityOnShelves')}}： <span class="underline">{{trayData.rdbPutawayQty}}</span></span>
+        </div>
+      </div>
+      <div class="search">
+        <scan-input :name="$t('location')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="trayData.lcCode"></scan-input>
+      </div>
+      <div class="photo">
+        <span class="label">{{$t('takePhotos')}}</span>
+        <span class="photo-cont">
+          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? trayImgIOS :trayImg" :key="index">
+            <img :src="item" @click="previewImg('tray', index)">
+            <span class="delete-icon" @click="deleteImg('tray', index)">x</span>
+          </span>
+          <span class="iconfont icon-camera" @click="chooseImage('tray')" v-show="trayImg.length <= 2"></span>
+        </span>
+      </div>
+      <div class="button">
+        <flexbox>
+          <flexbox-item>
+            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('tray')">{{$t('reset')}}</x-button>
+          </flexbox-item>
+          <flexbox-item>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('tray')">{{$t('confirm')}}</x-button>
+          </flexbox-item>
+        </flexbox>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -141,6 +189,15 @@ export default {
       },
       boxNoImg: [],
       boxNoImgIOS: [],
+      trayData: {
+        boxCode: '',
+        productBarcode: '',
+        lcCode: '',
+        pdQuantity: '',
+        errorInfo: ''
+      },
+      trayImg: [],
+      trayImgIOS: [],
       oldskuData: {
         receivingCode: '',
         productBarcode: '',
@@ -149,6 +206,13 @@ export default {
         errorInfo: ''
       },
       oldboxNoData: {
+        boxCode: '',
+        productBarcode: '',
+        lcCode: '',
+        pdQuantity: '',
+        errorInfo: ''
+      },
+      oldtrayData: {
         boxCode: '',
         productBarcode: '',
         lcCode: '',
@@ -166,12 +230,14 @@ export default {
       this[`${type}Data`] = JSON.parse(JSON.stringify(this[`old${type}Data`]))
     },
     loadDetail (type) {
+      console.log(this[`${type}Data`])
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/putaway/putawayDetail`, {
         params: {
           receivingCode: this[`${type}Data`].receivingCode,
           warehouseId: this.$store.getters.getWarehouse.warehouseId,
           productBarcode: this[`${type}Data`].productBarcode,
           boxNo: this[`${type}Data`].boxCode,
+          trayCode: this[`${type}Data`].trayCode,
           codeType: type
         }
       })
@@ -209,11 +275,19 @@ export default {
           })
           return false
         }
-      } else {
+      } else if (type === 'boxNo') {
         if (!this[`${type}Data`].boxCode) {
           this.$vux.toast.show({
             type: 'text',
             text: this.$t('pleaseEnterTheCaseNumber')
+          })
+          return false
+        }
+      } else if (type === 'tray') {
+        if (!this[`${type}Data`].trayCode) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: this.$t('pleaseEnterTheTrayNumber')
           })
           return false
         }
@@ -260,6 +334,7 @@ export default {
     },
     doAjax (type) {
       this[`${type}Data`].serverIds = this.uploadIds
+      this[`${type}Data`].userEmail = window.localStorage.getItem('userEmail')
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/putaway/doPutaway`, qs.stringify(this[`${type}Data`]), {
         headers: {
           'content-type': 'application/x-www-form-urlencoded'
@@ -366,6 +441,11 @@ export default {
       if (this.boxNoData.boxCode && this.boxNoData.productBarcode) {
         this.toSearch('boxNo')
       }
+    },
+    'trayData.trayCode' () {
+      if (this.trayData.trayCode) {
+        this.toSearch('tray')
+      }
     }
   }
 }
@@ -386,12 +466,16 @@ export default {
     display: flex;
     .label {
       font-size: 1.5rem;
-      width: 4rem;
+      margin-right: 1rem;
     }
     input {
       flex: 1;
       padding: 0 .5rem;
     }
+  }
+  .search.search-middle {
+    padding-top: 0;
+    padding-bottom: 5px;
   }
   .search.search-last {
     padding-top: 0; 
