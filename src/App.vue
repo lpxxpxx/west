@@ -5,7 +5,7 @@
     <div>
       <actionsheet :menus="menus" v-model="showMenus" @on-click-menu="changeLang"></actionsheet>
     </div>
-    <footer v-show="showFooter" class="footer"><span class="pull-left">{{$t('warehouse')}}：{{$store.getters.getWarehouse.warehouseDesc}}</span><span class="pull-right">{{$t('operationOf')}}：{{$store.getters.getUser}}</span></footer>
+    <footer v-show="showFooter" class="footer"><span class="pull-left">{{$t('warehouse')}}：{{$store.getters.getLang === 'zh' ? $store.getters.getWarehouse.warehouseDesc : $store.getters.getWarehouse.warehouseTimezone}}</span><span class="pull-right">{{$t('operationOf')}}：{{$store.getters.getUser}}</span></footer>
   </div>
 </template>
 
@@ -20,6 +20,7 @@ export default {
   },
   mounted () {
     this.phoneType()
+    this.setLang()
     this.changeFooter()
     this.afterRefresh()
     this.store()
@@ -95,6 +96,11 @@ export default {
       } else {
         this.showLogout = false
       }
+    },
+    setLang () {
+      let lang = window.localStorage.getItem('lang') || 'zh'
+      console.log(lang)
+      this.$store.dispatch('setLang', lang)
     }
   },
   computed: {

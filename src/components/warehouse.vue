@@ -4,7 +4,7 @@
       <flexbox-item :span="1/2" v-for="item in warehouses.warehouseList" v-bind:key="item.warehouseId">
         <div class="flex-demo" @click="goToMenu(item)">
           <p>【{{item.warehouseCode}}】</p>
-          <p>{{item.warehouseDesc}}</p>
+          <p>{{$store.getters.getLang === 'zh' ? item.warehouseDesc : item.warehouseTimezone}}</p>
         </div>
       </flexbox-item>
     </flexbox>
