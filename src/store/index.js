@@ -7,11 +7,12 @@ const state = {
   title: '西邮移动端',
   user: 'Narotu',
   warehouse: { warehouseId: 4 },
-  url: 'http://localhost:8080',
+  /* url: 'http://localhost:8080', */
   /* url: 'http://wms.qa.aukeyit.com', */
-  /*   url: '', */
+  url: '',
   userEmail: '',
-  phoneType: ''
+  phoneType: '',
+  lang: ''
 }
 
 const getters = {
@@ -20,7 +21,8 @@ const getters = {
   getWarehouse: state => state.warehouse,
   getUrl: state => state.url,
   getUserEmail: state => state.userEmail,
-  getPhoneType: state => state.phoneType
+  getPhoneType: state => state.phoneType,
+  getLang: state => state.lang
 }
 
 const mutations = {
@@ -29,7 +31,8 @@ const mutations = {
   changeWarehouse: (state, text) => { state.warehouse = text },
   changeUrl: (state, text) => { state.url = text },
   changeUserEmail: (state, text) => { state.userEmail = text },
-  changePhoneType: (state, text) => { state.phoneType = text }
+  changePhoneType: (state, text) => { state.phoneType = text },
+  changeLang: (state, text) => { state.lang = text }
 }
 
 const actions = {
@@ -38,7 +41,8 @@ const actions = {
   setWarehouse: (context, text) => { context.commit('changeWarehouse', text) },
   setUrl: (context, text) => { context.commit('changeUrl', text) },
   setUserEmail: (context, text) => { context.commit('changeUserEmail', text) },
-  setPhoneType: (context, text) => { context.commit('changePhoneType', text) }
+  setPhoneType: (context, text) => { context.commit('changePhoneType', text) },
+  setLang: (context, text) => { context.commit('changeLang', text) }
 }
 
 const store = new Vuex.Store({
