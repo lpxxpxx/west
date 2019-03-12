@@ -101,5 +101,7 @@ module.exports = {
   moveTheLibraryMission: 'Move The Library Mission',
   productSpecificationCalibrationTask: 'Product Specification Calibration Task',
   slidingMenu: 'Sliding Menu',
-  westMail: 'West Mail'
+  westMail: 'West Mail',
+  KG: 'KG',
+  CM: 'CM'
 }

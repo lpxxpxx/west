@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import Vue from 'vue'
 import FastClick from 'fastclick'
 import VueCookies from 'vue-cookies'

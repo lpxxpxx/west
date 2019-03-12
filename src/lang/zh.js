@@ -101,5 +101,7 @@ module.exports = {
   moveTheLibraryMission: '移库任务',
   productSpecificationCalibrationTask: '产品规格校验任务',
   slidingMenu: '滑动菜单',
-  westMail: '西邮'
+  westMail: '西邮',
+  KG: '千克',
+  CM: '厘米'
 }
