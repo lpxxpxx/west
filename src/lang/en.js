@@ -94,6 +94,7 @@ module.exports = {
   thereIsNoChange: 'No Change',
   pleaseEnterTheCorrectInventoryQuantity: 'Please enter the correct inventory quantity',
   scanTheShippingMarkHere: 'Scan The Shipping Mark Here',
+  scanTheTrayNumberHere: 'Scan The Tray Number Here',
   chooseWarehouse: 'Choose Warehouse',
   receivingTheTask: 'Goods receive task',
   onTheTask: 'On The Task',

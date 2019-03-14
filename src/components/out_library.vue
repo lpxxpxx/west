@@ -57,8 +57,10 @@ export default {
       }, 200)
     },
     searchNo () {
-      if (this.no.length > 33) {
+      if (this.no.length === 34) {
         this.no = this.no.substring(this.no.length - 12)
+      } else if (this.no.length === 30) {
+        this.no = this.no.substring(this.no.length - 20)
       }
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/shipment/searchByTrackingNumber`, {
         params: {

@@ -99,7 +99,7 @@
     </div>
     <div class="tab-swiper" v-show="index === 2">
       <div class="search">
-        <scan-input :name="$t('trayNumber')" :placeholder="$t('scanTheShippingMarkHere')" v-model="trayData.trayCode"></scan-input>
+        <scan-input :name="$t('trayNumber')" :placeholder="$t('scanTheTrayNumberHere')" v-model="trayData.trayCode"></scan-input>
       </div>
       <div class="search search-middle">
         <span class="label">SKU</span>
@@ -322,7 +322,7 @@ export default {
         })
         return false
       }
-      this[`${type}Data`].putawayType = type === 'sku' ? 'sku' : 'boxNo'
+      this[`${type}Data`].putawayType = type
       this.$vux.loading.show({
         text: 'Loading'
       })
