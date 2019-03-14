@@ -13,22 +13,22 @@
     <div class="search search-first">
       <span class="label">{{$t('weight')}}</span>
       <input type="number" placeholder="0" v-model="data.productWeight" class="weight" v-enter-number v-select-val />
-      <span class="type">{{data.cloudWeightUnit || 'KG'}}</span>
+      <span class="type">{{$t(data.cloudWeightUnit || 'KG')}}</span>
     </div>
     <div class="search">
       <span class="label">{{$t('long')}}</span>
       <input type="number" placeholder="0" v-model="data.productLength" v-enter-number v-select-val />
-      <span class="type">{{data.cloudSizeUnit || 'CM'}}</span>
+      <span class="type">{{$t(data.cloudSizeUnit || 'CM')}}</span>
     </div>
     <div class="search">
       <span class="label">{{$t('wide')}}</span>
       <input type="number" placeholder="0" v-model="data.productWidth" v-enter-number v-select-val />
-      <span class="type">{{data.cloudSizeUnit || 'CM'}}</span>
+      <span class="type">{{$t(data.cloudSizeUnit || 'CM')}}</span>
     </div>
     <div class="search search-last">
       <span class="label">{{$t('high')}}</span>
       <input type="number" placeholder="0" v-model="data.productHeight" v-enter-number v-select-val />
-      <span class="type">{{data.cloudSizeUnit || 'CM'}}</span>
+      <span class="type">{{$t(data.cloudSizeUnit || 'CM')}}</span>
     </div>
     <div class="button">
       <flexbox>
@@ -240,6 +240,7 @@ export default {
     }
     .type {
       width: 2rem;
+      margin-left: .5rem;
       text-align: right;
     }
   }

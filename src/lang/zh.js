@@ -94,6 +94,7 @@ module.exports = {
   thereIsNoChange: '无更改',
   pleaseEnterTheCorrectInventoryQuantity: '请输入正确的库存数量',
   scanTheShippingMarkHere: '此处扫描箱唛',
+  scanTheTrayNumberHere: '此处扫描托单号',
   chooseWarehouse: '选择仓库',
   receivingTheTask: '收货任务',
   onTheTask: '上架任务',
