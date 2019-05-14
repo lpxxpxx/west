@@ -171,7 +171,7 @@ export default {
         piSellable: 0,
         piSellableOld: 0,
         isNewSku: true,
-        warehouseId: this.$store.getters.getWarehouse.warehouseId,
+        warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
         lcCode: this[`${type}`]
       }
       this[`${type}DataNew`].push(data)
@@ -192,7 +192,7 @@ export default {
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventoryAdjustmentSearch`, {
         params: {
           codeType: type,
-          warehouseId: this.$store.getters.getWarehouse.warehouseId,
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
           queryCode: queryCode
         }
       })
@@ -249,7 +249,7 @@ export default {
         let quantity = this[`${type}Data`][i].piSellable - this[`${type}Data`][i].piSellableOld
         if (quantity !== 0) {
           this[`${type}Data`][i].quantity = quantity
-          this[`${type}Data`][i].warehouseId = this.$store.getters.getWarehouse.warehouseId
+          this[`${type}Data`][i].warehouseId = JSON.parse(window.localStorage.getItem('warehouse')).warehouseId
           submitData.push(this[`${type}Data`][i])
         }
       }

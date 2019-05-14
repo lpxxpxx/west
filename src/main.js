@@ -24,17 +24,22 @@ Vue.config.productionTip = false
 axios.interceptors.request.use(function (config) {
   let userEmail = window.localStorage.getItem('userEmail')
   let language = window.localStorage.getItem('lang') || 'zh'
+  let warehouse = window.localStorage.getItem('warehouse')
+  let warehouseId = JSON.parse(warehouse || '{}').warehouseId
+  console.log(warehouseId)
   if (config.method === 'post') {
     let data = qs.parse(config.data)
     config.data = qs.stringify({
-      userEmail: userEmail,
-      language: language,
+      userEmail,
+      language,
+      warehouseId,
       ...data
     })
   } else if (config.method === 'get') {
     config.params = {
-      userEmail: userEmail,
-      language: language,
+      userEmail,
+      language,
+      warehouseId,
       ...config.params
     }
   }

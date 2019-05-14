@@ -115,7 +115,7 @@ export default {
       document.querySelectorAll('input')[`${this.index}`].blur()
     },
     search (type) {
-      if (this.$store.getters.getWarehouse.warehouseId === undefined) {
+      if (JSON.parse(window.localStorage.getItem('warehouse')).warehouseId === undefined) {
         this.$router.push('/')
         return false
       }
@@ -130,7 +130,7 @@ export default {
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventorySearch`, {
         params: {
           codeType: type,
-          warehouseId: this.$store.getters.getWarehouse.warehouseId,
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
           queryCode: queryCode
         }
       })

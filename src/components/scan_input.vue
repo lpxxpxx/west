@@ -54,10 +54,12 @@ export default {
     .label {
       margin-right: 1rem;
       font-size: 1.5rem;
+      white-space: nowrap;
     }
     input {
       flex: 1;
       padding: 0 2rem 0 .5rem;
+      width: 100px;
     }
     .iconfont {
       position: absolute;

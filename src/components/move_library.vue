@@ -11,11 +11,11 @@
         <scan-input :name="'SKU'" :placeholder="$t('scanTheSKUBarCodeHere')" :disabled="isAll ? 'disabled' : false" v-model="productBarcode"></scan-input>
       </div>
       <div class="search">
-        <span class="label">{{$t('theNumber')}}</span>
-        <input type="text" v-model="quantity" :disabled="isAll ? 'disabled' : false" placeholder="" v-select-val />
+        <scan-input :name="$t('newLocation')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCodeNew"></scan-input>
       </div>
       <div class="search search-last">
-        <scan-input :name="$t('newLocation')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCodeNew"></scan-input>
+        <span class="label">{{$t('theNumber')}}</span>
+        <input type="text" v-model="quantity" :disabled="isAll ? 'disabled' : false" placeholder="" v-select-val />
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>
@@ -31,15 +31,19 @@
         <flexbox>
           <flexbox-item>
             <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit">{{$t('submit')}}</x-button>
+            <x-button :gradients="['#ff0000', '#ff0000']" @click.native="showExceptionMenus = true" v-if="aid">{{$t('exception')}}</x-button>
           </flexbox-item>
         </flexbox>
+      </div>
+      <div>
+        <actionsheet :menus="exceptionMenus" v-model="showExceptionMenus" @on-click-menu="exception"></actionsheet>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { XButton, Flexbox, FlexboxItem, CheckIcon } from 'vux'
+import { XButton, Flexbox, FlexboxItem, CheckIcon, Actionsheet } from 'vux'
 import qs from 'Qs'
 
 export default {
@@ -48,7 +52,8 @@ export default {
     XButton,
     Flexbox,
     FlexboxItem,
-    CheckIcon
+    CheckIcon,
+    Actionsheet
   },
   mounted () {
     let query = this.$route.query || {}
@@ -67,20 +72,38 @@ export default {
       quantity: 0,
       aid: '',
       timeoutId: '',
+      warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
+      showExceptionMenus: false,
       skuImg: [],
       skuImgIOS: [],
-      uploadIds: []
+      uploadIds: [],
+      exceptionMenus: {
+        '源库位为空 / SOURCE LOCATION IS EMPTY': this.$t('sourceLocationIsEmpty'),
+        '目标库位有货 / TO LOCATION IS NOI EMPTY': this.$t('toLocationIsNotEmpty'),
+        '源库位混SKU / SOURCE LOCATION IS MIXED': this.$t('sourceLocationIsMixed')
+      }
     }
   },
   methods: {
     changeIndex (i) {
       this.index = i
     },
+    reset () {
+      this.isAll = false
+      this.productBarcode = ''
+      this.lcCode = ''
+      this.lcCodeNew = ''
+      this.quantity = 0
+      this.aid = ''
+      this.skuImg = []
+      this.skuImgIOS = []
+      this.uploadIds = []
+    },
     loadDetail () {
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/queryMoveWarehouseTask`, {
         params: {
           productBarcode: this.productBarcode,
-          warehouseId: this.$store.getters.getWarehouse.warehouseId,
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
           lcCode: this.lcCode,
           lcCodeNew: this.lcCodeNew
         }})
@@ -91,7 +114,7 @@ export default {
           this.productBarcode = res.data.productBarcode
           this.quantity = res.data.quantity
           this.aid = res.data.aid
-          this.warehouseId = this.$store.getters.getWarehouse.warehouseId
+          this.warehouseId = res.data.warehouseId
           this.productId = res.data.productId
         }
       })
@@ -173,15 +196,38 @@ export default {
             type: 'text',
             text: res.data.message
           })
-          this.isAll = false
-          this.productBarcode = ''
-          this.lcCode = ''
-          this.lcCodeNew = ''
-          this.quantity = 0
-          this.aid = ''
-          this.skuImg = []
-          this.skuImgIOS = []
+          this.reset()
+        } else {
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
           this.uploadIds = []
+        }
+      })
+      .catch(res => {
+        this.$vux.loading.hide()
+        alert(this.$t('businessSystemException'))
+      })
+    },
+    exception (menuKey) {
+      let query = {
+        aid: this.aid,
+        errorReason: menuKey
+      }
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/moveWarehouseException`, qs.stringify(query), {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        }
+      })
+      .then(res => {
+        this.$vux.loading.hide()
+        if (res.data.success) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
+          this.reset()
         } else {
           this.$vux.toast.show({
             type: 'text',
@@ -275,7 +321,6 @@ export default {
     .label {
       margin-right: .5rem;
       font-size: 1.5rem;
-      width: 6rem;
       text-align: right;
     }
     input {

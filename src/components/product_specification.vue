@@ -91,7 +91,7 @@ export default {
     searchDetail () {
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/product/productSkuAttr`, {
         params: {
-          warehouseId: this.$store.getters.getWarehouse.warehouseId,
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
           productBarcode: this.data.productBarcode || ''
         }
       })

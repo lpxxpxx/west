@@ -73,7 +73,7 @@ export default {
           pageNumber: ++this.page,
           limit: 20,
           queryCode: this.queryCode,
-          warehouseId: this.$store.getters.getWarehouse.warehouseId
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId
         }})
       .then(res => {
         this.isLoading = false
@@ -198,6 +198,9 @@ export default {
   .task-item p {
     width: 49%;
     display: inline-block;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
   }
   .task-list-none {
     display: inherit;

@@ -29,10 +29,10 @@
           <input type="number" placeholder="0" v-model="skuData.productWidth" style="width: calc(100% - 22px)" v-enter-number v-select-val /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="skuData.productHeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> CM </span>
+          <input type="number" placeholder="0" v-model="skuData.productHeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> {{skuData.cloudSizeUnit || 'CM'}} </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="skuData.productWeight" style="width: calc(100% - 37px)" class="weight" v-enter-number v-select-val /><span style="width: 35px"> KG</span>
+          <input type="number" placeholder="0" v-model="skuData.productWeight" style="width: calc(100% - 37px)" class="weight" v-enter-number v-select-val /><span style="width: 35px"> {{skuData.cloudWeightUnit || 'KG'}}</span>
         </div>
       </div>
       <div class="search search-last">
@@ -86,10 +86,10 @@
           <input type="number" placeholder="0" v-model="boxData.productWidth" style="width: calc(100% - 22px)" v-enter-number v-select-val /><span style="width: 20px"> x </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="boxData.productHeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> CM </span>
+          <input type="number" placeholder="0" v-model="boxData.productHeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> {{boxData.cloudSizeUnit || 'CM'}} </span>
         </div>
         <div class="size-item" style="width: 27%;">
-          <input type="number" placeholder="0" v-model="boxData.productWeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> KG</span>
+          <input type="number" placeholder="0" v-model="boxData.productWeight" style="width: calc(100% - 37px)" v-enter-number v-select-val /><span style="width: 35px"> {{boxData.cloudWeightUnit || 'KG'}}</span>
         </div>
       </div>
       <div class="search search-last">
@@ -185,7 +185,7 @@ export default {
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/receiving/receivingDetailSearch`, {
         params: {
           codeType: type,
-          warehouseId: this.$store.getters.getWarehouse.warehouseId,
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
           queryCode: code,
           receivingCode: receivingCode
         }

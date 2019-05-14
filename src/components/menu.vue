@@ -88,13 +88,64 @@ export default {
           })
         }
       } catch (err) {
-        console.log('无权限')
+        this.menuList = [
+          {
+            id: 0,
+            name: this.$t('inventoryQuery'),
+            icon: 'icon-monitor',
+            target: '/stockInquiry',
+            num: 0
+          },
+          {
+            id: 1,
+            name: this.$t('theGoods'),
+            icon: 'icon-Import',
+            target: '/receivingTask',
+            num: 0
+          },
+          {
+            id: 2,
+            name: this.$t('shelves'),
+            icon: 'icon-export',
+            target: '/upperShelfTask',
+            num: 0
+          },
+          {
+            id: 3,
+            name: this.$t('theInventory'),
+            icon: 'icon-sync',
+            target: '/inventoryAdjustment',
+            num: 0
+          },
+          {
+            id: 4,
+            name: this.$t('moveTheLibrary'),
+            icon: 'icon-redo',
+            target: '/moveLibraryTask',
+            num: 0
+          },
+          {
+            id: 5,
+            name: this.$t('productSpecification'),
+            icon: 'icon-detail',
+            target: '/productSpecificationTask',
+            num: 0
+          },
+          {
+            id: 6,
+            name: this.$t('outboundLogistics'),
+            icon: 'icon-detail',
+            target: '/OutLibrary',
+            num: 0
+          }
+        ]
+        console.log('On dev mode!')
       }
     },
     getWaitOperateData () {
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/index/getWaitOperateData`, {
         params: {
-          warehouseId: this.$store.getters.getWarehouse.warehouseId
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId
         }})
       .then(res => {
         if (res.data.success) {

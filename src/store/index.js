@@ -6,10 +6,10 @@ Vue.use(Vuex)
 const state = {
   title: '西邮移动端',
   user: 'Narotu',
-  warehouse: { warehouseId: 4 },
-  url: 'http://localhost:8080',
+  warehouse: {},
+  /* url: 'http://localhost:8080', */
   /* url: 'http://wms.qa.aukeyit.com', */
-  /* url: '', */
+  url: '',
   userEmail: '',
   phoneType: '',
   lang: ''

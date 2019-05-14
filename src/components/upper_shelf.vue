@@ -230,11 +230,10 @@ export default {
       this[`${type}Data`] = JSON.parse(JSON.stringify(this[`old${type}Data`]))
     },
     loadDetail (type) {
-      console.log(this[`${type}Data`])
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/putaway/putawayDetail`, {
         params: {
           receivingCode: this[`${type}Data`].receivingCode,
-          warehouseId: this.$store.getters.getWarehouse.warehouseId,
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
           productBarcode: this[`${type}Data`].productBarcode,
           boxNo: this[`${type}Data`].boxCode,
           trayCode: this[`${type}Data`].trayCode,
@@ -242,10 +241,12 @@ export default {
         }
       })
       .then(res => {
-        if (res.data.success) {
+        if (res.data.success && res.data.data) {
           res.data.data.boxCode = this[`${type}Data`].boxCode
           this[`${type}Data`] = res.data.data
-          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
+          if (type === 'sku') {
+            this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
+          }
         } else {
           this[`${type}Data`].pdQuantity = 0
           this[`${type}Data`].productId = 0

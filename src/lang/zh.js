@@ -104,5 +104,11 @@ module.exports = {
   slidingMenu: '滑动菜单',
   westMail: '西邮',
   KG: '千克',
-  CM: '厘米'
+  CM: '厘米',
+  LB: '英镑',
+  IN: '英寸',
+  exception: '异常',
+  sourceLocationIsEmpty: '源库位为空',
+  toLocationIsNotEmpty: '目标库位有货',
+  sourceLocationIsMixed: '源库位混SKU'
 }

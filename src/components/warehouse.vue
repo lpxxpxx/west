@@ -49,6 +49,7 @@ export default {
       this.$cookies.set('warehouse', JSON.stringify(item))
       this.$cookies.set('user', this.warehouses.userName)
       this.$cookies.set('userEmail', this.warehouses.userEmail)
+      window.localStorage.setItem('warehouse', JSON.stringify(item))
       this.$router.push('/menu')
     }
   }

@@ -67,7 +67,7 @@ export default {
           pageNumber: ++this.page,
           limit: 20,
           queryCode: this.queryCode,
-          warehouseId: this.$store.getters.getWarehouse.warehouseId
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId
         }})
       .then(res => {
         this.isLoading = false

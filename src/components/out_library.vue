@@ -86,7 +86,7 @@ export default {
     submit () {
       let query = {
         trackingNumber: this.no,
-        warehouseId: this.$store.getters.getWarehouse.warehouseId,
+        warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
         productSku: this.sku
       }
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/shipment/searchBySkuAndSignout`, qs.stringify(query), {

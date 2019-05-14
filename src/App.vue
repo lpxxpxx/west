@@ -68,14 +68,18 @@ export default {
       }
     },
     store () {
-      let url = document.querySelector('#domain').value
-      let userEmail = document.querySelector('#userInfo').value
-      if (url) {
-        this.$cookies.set('url', url)
-        this.$store.dispatch('setUrl', url)
-      }
-      if (userEmail) {
-        window.localStorage.setItem('userEmail', JSON.parse(userEmail).userEmail)
+      try {
+        let url = document.querySelector('#domain').value
+        let userEmail = document.querySelector('#userInfo').value
+        if (url) {
+          this.$cookies.set('url', url)
+          this.$store.dispatch('setUrl', url)
+        }
+        if (userEmail) {
+          window.localStorage.setItem('userEmail', JSON.parse(userEmail).userEmail)
+        }
+      } catch (err) {
+        console.log('On dev mode!')
       }
     },
     phoneType () {
@@ -90,16 +94,19 @@ export default {
       }
     },
     isPc () {
-      let terminal = document.querySelector('#requestTerminal').value
-      if (terminal === 'PC') {
-        this.showLogout = true
-      } else {
-        this.showLogout = false
+      try {
+        let terminal = document.querySelector('#requestTerminal').value
+        if (terminal === 'PC') {
+          this.showLogout = true
+        } else {
+          this.showLogout = false
+        }
+      } catch (err) {
+        console.log('On dev mode!')
       }
     },
     setLang () {
       let lang = window.localStorage.getItem('lang') || 'zh'
-      console.log(lang)
       this.$store.dispatch('setLang', lang)
     }
   },
@@ -182,7 +189,6 @@ body {
 .move-library .search .label {
   margin-right: .5rem!important;
   font-size: 1.5rem;
-  width: 5rem;
   text-align: right;
 }
 .footer {
