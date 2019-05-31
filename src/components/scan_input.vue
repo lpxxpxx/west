@@ -67,8 +67,5 @@ export default {
       right: .5rem;
       color: #999;
     }
-    input:disabled {
-      background: #ddd;
-    }
   }
 </style>

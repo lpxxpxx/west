@@ -2,7 +2,7 @@
   <div class="container move-library">
     <div class="tab-swiper" v-show="index === 0">
       <div class="search search-first">
-        <scan-input :name="$t('location')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCode"></scan-input>
+        <scan-input :name="$t('location')" :placeholder="lcCodeP ? lcCodeP : $t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCode"></scan-input>
       </div>
       <div class="cheak">
         <check-icon :value.sync="isAll" type="plain">{{$t('moveAllSKUOfCurrentStorageLocation')}}</check-icon>
@@ -11,7 +11,7 @@
         <scan-input :name="'SKU'" :placeholder="$t('scanTheSKUBarCodeHere')" :disabled="isAll ? 'disabled' : false" v-model="productBarcode"></scan-input>
       </div>
       <div class="search">
-        <scan-input :name="$t('newLocation')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCodeNew"></scan-input>
+        <scan-input :name="$t('newLocation')" :placeholder="lcCodeNewP ? lcCodeNewP : $t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCodeNew"></scan-input>
       </div>
       <div class="search search-last">
         <span class="label">{{$t('theNumber')}}</span>
@@ -30,7 +30,7 @@
       <div class="button">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit">{{$t('submit')}}</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit">{{$t('submit')}}</x-button>
             <x-button :gradients="['#ff0000', '#ff0000']" @click.native="showExceptionMenus = true" v-if="aid">{{$t('exception')}}</x-button>
           </flexbox-item>
         </flexbox>
@@ -58,17 +58,23 @@ export default {
   mounted () {
     let query = this.$route.query || {}
     this.productBarcode = query.productBarcode
-    this.lcCode = query.lcCode
-    this.lcCodeNew = query.lcCodeNew
+    this.lcCodeP = query.lcCode
+    this.lcCodeNewP = query.lcCodeNew
+    this.quantity = query.quantity
+    this.aid = query.aid
+    this.isTask = !(query.aid === '')
     this.loadDetail()
   },
   data () {
     return {
       index: 0,
-      isAll: false,
+      isAll: true,
+      isTask: false,
       productBarcode: '',
       lcCode: '',
+      lcCodeP: '',
       lcCodeNew: '',
+      lcCodeNewP: '',
       quantity: 0,
       aid: '',
       timeoutId: '',
@@ -80,7 +86,8 @@ export default {
       exceptionMenus: {
         '源库位为空 / SOURCE LOCATION IS EMPTY': this.$t('sourceLocationIsEmpty'),
         '目标库位有货 / TO LOCATION IS NOI EMPTY': this.$t('toLocationIsNotEmpty'),
-        '源库位混SKU / SOURCE LOCATION IS MIXED': this.$t('sourceLocationIsMixed')
+        '源库位混SKU / SOURCE LOCATION IS MIXED': this.$t('sourceLocationIsMixed'),
+        '源库位SKU不一致 / FROM LOCATION IS DIFFERENT SKU': this.$t('fromLocationIsDifferentSKU')
       }
     }
   },
@@ -90,14 +97,26 @@ export default {
     },
     reset () {
       this.isAll = false
+      this.isTask = false
       this.productBarcode = ''
       this.lcCode = ''
+      this.lcCodeP = ''
       this.lcCodeNew = ''
+      this.lcCodeNewP = ''
       this.quantity = 0
       this.aid = ''
       this.skuImg = []
       this.skuImgIOS = []
       this.uploadIds = []
+    },
+    setVal (res) {
+      this.lcCode = res.data.lcCode
+      this.lcCodeNew = res.data.lcCodeNew
+      this.productBarcode = res.data.productBarcode
+      this.quantity = res.data.quantity
+      this.aid = res.data.aid
+      this.warehouseId = res.data.warehouseId
+      this.productId = res.data.productId
     },
     loadDetail () {
       this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/queryMoveWarehouseTask`, {
@@ -109,13 +128,19 @@ export default {
         }})
       .then(res => {
         if (res.data.aid) {
-          this.lcCode = res.data.lcCode
-          this.lcCodeNew = res.data.lcCodeNew
-          this.productBarcode = res.data.productBarcode
-          this.quantity = res.data.quantity
-          this.aid = res.data.aid
-          this.warehouseId = res.data.warehouseId
-          this.productId = res.data.productId
+          if (this.isTask) {
+            if (Number(this.aid) === Number(res.data.aid)) {
+              this.setVal(res)
+            } else {
+              this.$vux.toast.show({
+                type: 'text',
+                text: this.$t('confirmLocation')
+              })
+              return false
+            }
+          } else {
+            this.setVal(res)
+          }
         }
       })
       .catch(res => {
@@ -139,10 +164,24 @@ export default {
         })
         return false
       }
+      if (this.lcCodeP && this.lcCodeP.toUpperCase() !== this.lcCode.toUpperCase()) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('confirmLocation')
+        })
+        return false
+      }
       if (!this.lcCodeNew) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseEnterNewLocation')
+        })
+        return false
+      }
+      if (this.lcCodeNewP && this.lcCodeNewP.toUpperCase() !== this.lcCodeNew.toUpperCase()) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('confirmLocation')
         })
         return false
       }
@@ -177,8 +216,8 @@ export default {
         moveType: this.isAll ? 'All' : 'Part',
         productBarcode: this.productBarcode,
         quantity: this.quantity,
-        lcCode: this.lcCode,
-        lcCodeNew: this.lcCodeNew,
+        lcCode: this.lcCode.toUpperCase(),
+        lcCodeNew: this.lcCodeNew.toUpperCase(),
         aid: this.aid,
         warehouseId: this.warehouseId,
         productId: this.productId,
@@ -336,7 +375,7 @@ export default {
   }
   .cheak {
     padding: 0 1rem 10px;
-    margin-left: 5rem;
+    margin-left: 3rem;
   }
   .photo {
     padding: 1.5rem 1rem;

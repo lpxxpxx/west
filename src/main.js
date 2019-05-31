@@ -14,7 +14,7 @@ import VueI18n from 'vue-i18n'
 
 FastClick.attach(document.body)
 Vue.use(LoadingPlugin)
-Vue.use(ToastPlugin)
+Vue.use(ToastPlugin, {time: 5000, width: '80%'})
 Vue.use(VueCookies)
 Vue.use(VueAxios, axios)
 Vue.use(VueI18n)
@@ -26,7 +26,6 @@ axios.interceptors.request.use(function (config) {
   let language = window.localStorage.getItem('lang') || 'zh'
   let warehouse = window.localStorage.getItem('warehouse')
   let warehouseId = JSON.parse(warehouse || '{}').warehouseId
-  console.log(warehouseId)
   if (config.method === 'post') {
     let data = qs.parse(config.data)
     config.data = qs.stringify({

@@ -109,6 +109,9 @@ module.exports = {
   IN: 'IN',
   exception: 'Exception',
   sourceLocationIsEmpty: 'SOURCE LOCATION IS EMPTY',
-  toLocationIsNotEmpty: 'TO LOCATION IS NOI EMPTY',
-  sourceLocationIsMixed: 'SOURCE LOCATION IS MIXED'
+  toLocationIsNotEmpty: 'TO LOCATION IS NOT EMPTY',
+  sourceLocationIsMixed: 'SOURCE LOCATION IS MIXED',
+  fromLocationIsDifferentSKU: 'FROM LOCATION IS DIFFERENT SKU',
+  confirmTray: `The location scanned doesn't match the required. please confirm.`,
+  confirmLocation: `The location scanned doesn't match the required`
 }

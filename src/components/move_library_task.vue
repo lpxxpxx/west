@@ -5,7 +5,7 @@
     </div>
     <ul>
       <li class="task-item" v-for="(item, index) in taskList" :key="index" data-type="0">
-        <div class="task-list" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="goToDetail(item.productBarcode, item.lcCode, item.lcCodeNew)">
+        <div class="task-list" @touchstart.capture="touchStart" @touchend.capture="touchEnd" @click="goToDetail(item.productBarcode, item.lcCode, item.lcCodeNew, item.quantity, item.aid)">
           <div class="list-content">
             <p>{{$t('location')}}：{{item.lcCode}}</p>
             <p>{{$t('newLocation')}}：{{item.lcCodeNew}}</p>
@@ -20,7 +20,7 @@
       {{$t('noTask')}}
     </div>
     <div class="button">
-      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', '', '')">{{$t('skip')}}</x-button>
+      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', '', '', '', '')">{{$t('skip')}}</x-button>
     </div>
   </div>
 </template>
@@ -55,8 +55,8 @@ export default {
     }
   },
   methods: {
-    goToDetail (productBarcode, lcCode, lcCodeNew) {
-      this.$router.push(`/moveLibrary?productBarcode=${productBarcode}&lcCode=${lcCode}&lcCodeNew=${lcCodeNew}`)
+    goToDetail (productBarcode, lcCode, lcCodeNew, quantity, aid) {
+      this.$router.push(`/moveLibrary?productBarcode=${productBarcode}&lcCode=${lcCode}&lcCodeNew=${lcCodeNew}&quantity=${quantity}&aid=${aid}`)
     },
     scroll () {
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop

@@ -110,5 +110,8 @@ module.exports = {
   exception: '异常',
   sourceLocationIsEmpty: '源库位为空',
   toLocationIsNotEmpty: '目标库位有货',
-  sourceLocationIsMixed: '源库位混SKU'
+  sourceLocationIsMixed: '源库位混SKU',
+  fromLocationIsDifferentSKU: '源库位SKU不一致',
+  confirmTray: '扫描库位与托单库位不符，请确认',
+  confirmLocation: '扫描库位与移库任务不符'
 }

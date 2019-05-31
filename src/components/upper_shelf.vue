@@ -1,10 +1,88 @@
 <template>
   <div class="container">
     <tab :line-width=1>
-      <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">{{$t('hitSKU')}}</tab-item>
-      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">{{$t('shelfByCase')}}</tab-item>
       <tab-item :selected="index === 2" @on-item-click="changeIndex(2)">{{$t('shelfByTray')}}</tab-item>
+      <tab-item :selected="index === 3" @on-item-click="changeIndex(3)">{{$t('accordingToTheLocationToCheck')}}</tab-item>
+      <!-- <tab-item :selected="index === 0" @on-item-click="changeIndex(0)">{{$t('hitSKU')}}</tab-item>
+      <tab-item :selected="index === 1" @on-item-click="changeIndex(1)">{{$t('shelfByCase')}}</tab-item> -->
     </tab>
+    <div class="tab-swiper" v-show="index === 2">
+      <div class="search">
+        <scan-input :name="$t('trayNumber')" :placeholder="$t('scanTheTrayNumberHere')" v-model="trayData.trayCode"></scan-input>
+      </div>
+      <div class="search search-middle">
+        <span class="label">SKU</span>
+        <input type="text" disabled="disabled" v-model="trayData.productBarcode" v-select-val />
+      </div>
+      <div class="search search-last">
+        <span class="label">{{$t('theNumber')}}</span>
+        <input type="text" disabled="disabled" v-model="trayData.pdQuantity" v-select-val />
+      </div>
+      <p class="error-info" v-show="trayData.trayCode && trayData.errorInfo">{{trayData.errorInfo}}</p>
+      <div class="info clearfloat">
+        <div class="info-detail">
+          <span class="label">{{$t('theNameOfTheSKU')}}：</span> 
+          <span class="underline name" title="">{{trayData.productTitleEn}}</span>
+        </div>
+        <div class="total">
+          <span class="pull-left">{{$t('quantityReceived')}}： <span class="underline">{{trayData.rdbReceivedQty}}</span></span>
+          <span class="pull-right">{{$t('quantityOnShelves')}}： <span class="underline">{{trayData.rdbPutawayQty}}</span></span>
+        </div>
+      </div>
+      <div class="search">
+        <scan-input :name="$t('location')" :placeholder="trayData.lcCodeP ? trayData.lcCodeP : $t('scanTheBarcodeOfStorageLocationHere')" v-model="trayData.lcCode"></scan-input>
+      </div>
+      <div class="photo">
+        <span class="label">{{$t('takePhotos')}}</span>
+        <span class="photo-cont">
+          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? trayImgIOS :trayImg" :key="index">
+            <img :src="item" @click="previewImg('tray', index)">
+            <span class="delete-icon" @click="deleteImg('tray', index)">x</span>
+          </span>
+          <span class="iconfont icon-camera" @click="chooseImage('tray')" v-show="trayImg.length <= 2"></span>
+        </span>
+      </div>
+      <div class="button">
+        <flexbox>
+          <flexbox-item>
+            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('tray')">{{$t('reset')}}</x-button>
+          </flexbox-item>
+          <flexbox-item>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit('tray')">{{$t('confirm')}}</x-button>
+          </flexbox-item>
+        </flexbox>
+      </div>
+    </div>
+    <div class="tab-swiper" v-show="index === 3">
+      <div class="search">
+        <scan-input :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" :name="$t('location')" v-model="lcCode"></scan-input>
+      </div>
+      <div class="total">
+        <span class="pull-left">{{$t('SKUType')}} <span class="underline">{{lcCodeCount}}</span></span>
+        <span class="pull-right">{{$t('total')}} <span class="underline">{{lcCodeAll}}</span></span>
+      </div>
+      <div class="table">
+        <x-table full-bordered>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>{{$t('available')}}</th>
+              <th>{{$t('forOutbound')}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in lcCodeData" :key="index">
+              <td>{{item.productBarcode}}</td>
+              <td>{{item.piSellable}}</td>
+              <td>{{item.piReserved}}</td>
+            </tr>
+            <tr v-if="!haslcCode">
+              <td colspan="3">{{$t('noMatchingRecordsWereFound')}}</td>
+            </tr>
+          </tbody>
+        </x-table>
+      </div>
+    </div>
     <div class="tab-swiper" v-show="index === 0">
       <div class="search">
         <scan-input :name="$t('orderNo')" :placeholder="$t('theWarehouseEntryNumberIsScannedHere')" v-model="skuData.receivingCode"></scan-input>
@@ -46,7 +124,7 @@
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">{{$t('confirm')}}</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit('sku')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -92,54 +170,7 @@
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('boxNo')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('boxNo')">{{$t('confirm')}}</x-button>
-          </flexbox-item>
-        </flexbox>
-      </div>
-    </div>
-    <div class="tab-swiper" v-show="index === 2">
-      <div class="search">
-        <scan-input :name="$t('trayNumber')" :placeholder="$t('scanTheTrayNumberHere')" v-model="trayData.trayCode"></scan-input>
-      </div>
-      <div class="search search-middle">
-        <span class="label">SKU</span>
-        <input type="text" disabled="disabled" v-model="trayData.productBarcode" v-select-val />
-      </div>
-      <div class="search search-last">
-        <span class="label">{{$t('theNumber')}}</span>
-        <input type="text" disabled="disabled" v-model="trayData.pdQuantity" v-select-val />
-      </div>
-      <p class="error-info" v-show="trayData.trayCode && trayData.errorInfo">{{trayData.errorInfo}}</p>
-      <div class="info clearfloat">
-        <div class="info-detail">
-          <span class="label">{{$t('theNameOfTheSKU')}}：</span> 
-          <span class="underline name" title="">{{trayData.productTitleEn}}</span>
-        </div>
-        <div class="total">
-          <span class="pull-left">{{$t('quantityReceived')}}： <span class="underline">{{trayData.rdbReceivedQty}}</span></span>
-          <span class="pull-right">{{$t('quantityOnShelves')}}： <span class="underline">{{trayData.rdbPutawayQty}}</span></span>
-        </div>
-      </div>
-      <div class="search">
-        <scan-input :name="$t('location')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="trayData.lcCode"></scan-input>
-      </div>
-      <div class="photo">
-        <span class="label">{{$t('takePhotos')}}</span>
-        <span class="photo-cont">
-          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? trayImgIOS :trayImg" :key="index">
-            <img :src="item" @click="previewImg('tray', index)">
-            <span class="delete-icon" @click="deleteImg('tray', index)">x</span>
-          </span>
-          <span class="iconfont icon-camera" @click="chooseImage('tray')" v-show="trayImg.length <= 2"></span>
-        </span>
-      </div>
-      <div class="button">
-        <flexbox>
-          <flexbox-item>
-            <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('tray')">{{$t('reset')}}</x-button>
-          </flexbox-item>
-          <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('tray')">{{$t('confirm')}}</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit('boxNo')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -148,7 +179,7 @@
 </template>
 
 <script>
-import { Tab, TabItem, XButton, Flexbox, FlexboxItem } from 'vux'
+import { Tab, TabItem, XButton, Flexbox, XTable, FlexboxItem } from 'vux'
 import ScanInput from './scan_input'
 import qs from 'Qs'
 
@@ -159,6 +190,7 @@ export default {
     TabItem,
     XButton,
     Flexbox,
+    XTable,
     FlexboxItem,
     ScanInput
   },
@@ -170,7 +202,7 @@ export default {
   },
   data () {
     return {
-      index: 0,
+      index: 2,
       skuData: {
         receivingCode: '',
         productBarcode: '',
@@ -219,7 +251,12 @@ export default {
         pdQuantity: '',
         errorInfo: ''
       },
-      uploadIds: []
+      uploadIds: [],
+      lcCode: '',
+      lcCodeCount: '',
+      lcCodeAll: '',
+      lcCodeData: [],
+      haslcCode: false
     }
   },
   methods: {
@@ -230,35 +267,88 @@ export default {
       this[`${type}Data`] = JSON.parse(JSON.stringify(this[`old${type}Data`]))
     },
     loadDetail (type) {
-      this.axios.get(`${this.$store.getters.getUrl}/weixinapi/putaway/putawayDetail`, {
-        params: {
-          receivingCode: this[`${type}Data`].receivingCode,
-          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
-          productBarcode: this[`${type}Data`].productBarcode,
-          boxNo: this[`${type}Data`].boxCode,
-          trayCode: this[`${type}Data`].trayCode,
-          codeType: type
+      if (type === 'lcCode') {
+        if (JSON.parse(window.localStorage.getItem('warehouse')).warehouseId === undefined) {
+          this.$router.push('/')
+          return false
         }
-      })
-      .then(res => {
-        if (res.data.success && res.data.data) {
-          res.data.data.boxCode = this[`${type}Data`].boxCode
-          this[`${type}Data`] = res.data.data
-          if (type === 'sku') {
-            this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
+        /* let queryCode = type === 'sku' ? this.sku : this.lcCode */
+        let queryCode = this.lcCode
+        if (!queryCode) {
+          this[`${type}Data`] = []
+          this[`${type}Count`] = 0
+          this[`${type}All`] = 0
+          this[`${type}ButtonShow`] = false
+          return false
+        }
+        this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventorySearch`, {
+          params: {
+            codeType: type,
+            warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
+            queryCode: queryCode
           }
-        } else {
-          this[`${type}Data`].pdQuantity = 0
-          this[`${type}Data`].productId = 0
-          this[`${type}Data`].productTitleEn = ''
-          this[`${type}Data`].rdbPutawayQty = 0
-          this[`${type}Data`].rdbReceivedQty = 0
-          this[`${type}Data`].errorInfo = res.data.message
-        }
-      })
-      .catch(res => {
-        alert(this.$t('businessSystemException'))
-      })
+        })
+        .then(res => {
+          if (res.data.success) {
+            let all = 0
+            this[`${type}Data`] = res.data.data.rows
+            this[`${type}Count`] = [...new Set(res.data.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
+            res.data.data.rows.forEach(item => {
+              all += item.piSellable
+            })
+            this[`${type}All`] = all
+            if (res.data.data.rows.length === 0) {
+              this[`has${type}`] = false
+            } else {
+              this[`has${type}`] = true
+            }
+            this.blurInput()
+            this[`${type}ButtonShow`] = true
+          } else {
+            this[`${type}Data`] = []
+            this[`${type}Count`] = 0
+            this[`${type}All`] = 0
+            this[`${type}ButtonShow`] = false
+          }
+        })
+        .catch(res => {
+          alert(this.$t('businessSystemException'))
+        })
+      } else {
+        this.axios.get(`${this.$store.getters.getUrl}/weixinapi/putaway/putawayDetail`, {
+          params: {
+            receivingCode: this[`${type}Data`].receivingCode,
+            warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
+            productBarcode: this[`${type}Data`].productBarcode,
+            boxNo: this[`${type}Data`].boxCode,
+            trayCode: this[`${type}Data`].trayCode,
+            codeType: type
+          }
+        })
+        .then(res => {
+          if (res.data.success && res.data.data) {
+            res.data.data.boxCode = this[`${type}Data`].boxCode
+            this[`${type}Data`] = res.data.data
+            if (type === 'sku') {
+              this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
+            } else if (type === 'tray') {
+              this[`${type}Data`].lcCodeP = res.data.data.lcCode
+              this[`${type}Data`].lcCode = ''
+            }
+          } else {
+            this[`${type}Data`].pdQuantity = 0
+            this[`${type}Data`].productId = 0
+            this[`${type}Data`].productTitleEn = ''
+            this[`${type}Data`].rdbPutawayQty = 0
+            this[`${type}Data`].rdbReceivedQty = 0
+            this[`${type}Data`].errorInfo = res.data.message
+            this[`${type}Data`].lcCodeP = ''
+          }
+        })
+        .catch(res => {
+          alert(this.$t('businessSystemException'))
+        })
+      }
     },
     toSearch (type) {
       let that = this
@@ -292,6 +382,10 @@ export default {
           })
           return false
         }
+        if (this[`${type}Data`].lcCodeP && this[`${type}Data`].lcCodeP !== this[`${type}Data`].lcCode) {
+          let r = confirm(this.$t('confirmTray'))
+          if (!r) return false
+        }
       }
       if (!this[`${type}Data`].lcCode) {
         this.$vux.toast.show({
@@ -316,7 +410,9 @@ export default {
         return false
       }
       if (Number(this[`${type}Data`].pdQuantity) > (this[`${type}Data`].rdbReceivedQty - this[`${type}Data`].rdbPutawayQty)) {
-        this[`${type}Data`].pdQuantity = (this[`${type}Data`].rdbReceivedQty - this[`${type}Data`].rdbPutawayQty)
+        if (type !== 'tray') {
+          this[`${type}Data`].pdQuantity = (this[`${type}Data`].rdbReceivedQty - this[`${type}Data`].rdbPutawayQty)
+        }
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('moreThanTheActualQuantityReceived')
@@ -336,6 +432,7 @@ export default {
     doAjax (type) {
       this[`${type}Data`].serverIds = this.uploadIds
       this[`${type}Data`].userEmail = window.localStorage.getItem('userEmail')
+      this[`${type}Data`].lcCode = this[`${type}Data`].lcCode.toUpperCase()
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/putaway/doPutaway`, qs.stringify(this[`${type}Data`]), {
         headers: {
           'content-type': 'application/x-www-form-urlencoded'
@@ -447,6 +544,9 @@ export default {
       if (this.trayData.trayCode) {
         this.toSearch('tray')
       }
+    },
+    lcCode () {
+      this.toSearch('lcCode')
     }
   }
 }
@@ -533,6 +633,12 @@ export default {
         padding: 0px 7px 0;
       }
     }
+  }
+  .total {
+    padding: 0rem 1rem 1.5rem;
+  }
+  .table {
+    padding: 1rem;
   }
   .button {
     position: fixed;

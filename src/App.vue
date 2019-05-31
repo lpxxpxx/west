@@ -25,6 +25,10 @@ export default {
     this.afterRefresh()
     this.store()
     this.isPc()
+    document.addEventListener('click', this.hideToast)
+  },
+  beforeDestroy () {
+    document.removeEventListener('click', this.hideToast)
   },
   data () {
     return {
@@ -108,6 +112,9 @@ export default {
     setLang () {
       let lang = window.localStorage.getItem('lang') || 'zh'
       this.$store.dispatch('setLang', lang)
+    },
+    hideToast () {
+      this.$vux.toast.hide()
     }
   },
   computed: {

@@ -39,7 +39,7 @@
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">{{$t('confirm')}}</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit('sku')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -85,7 +85,7 @@
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('lcCode')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('lcCode')">{{$t('confirm')}}</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit('lcCode')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>

@@ -55,7 +55,7 @@
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('sku')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('sku')">{{$t('confirm')}}</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit('sku')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -112,7 +112,7 @@
             <x-button :gradients="['#cccccc', '#cccccc']" @click.native="reset('box')">{{$t('reset')}}</x-button>
           </flexbox-item>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native="submit('box')">{{$t('confirm')}}</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit('box')">{{$t('confirm')}}</x-button>
           </flexbox-item>
         </flexbox>
       </div>
@@ -193,7 +193,7 @@ export default {
       .then(res => {
         if (res.data.success) {
           if (res.data.data) {
-            res.data.data.rdReceivedNetReceiptsQty = res.data.data.rdReceivingQtySubset - res.data.data.rdReceivedQtySubset
+            res.data.data.rdReceivedNetReceiptsQty = res.data.data.rdReceivingQtySubset - res.data.data.rdReceivedQtySubset < 0 ? 0 : res.data.data.rdReceivingQtySubset - res.data.data.rdReceivedQtySubset
             res.data.data.productHeight = Number(res.data.data.productHeight)
             res.data.data.productLength = Number(res.data.data.productLength)
             res.data.data.productWidth = Number(res.data.data.productWidth)
@@ -212,6 +212,12 @@ export default {
             this[`${type}Data`].productHeight = 0
             this[`${type}Data`].productWeight = 0
             this[`${type}Data`].rdReceivedNetReceiptsQty = 0
+            if (res.data.message) {
+              this.$vux.toast.show({
+                type: 'text',
+                text: res.data.message
+              })
+            }
           }
         } else {
           this.$vux.toast.show({
@@ -303,8 +309,7 @@ export default {
         })
         return false
       }
-      if (this[`${type}Data`].rdReceivedNetReceiptsQty > (this[`${type}Data`].rdReceivingQtySubset - this[`${type}Data`].rdReceivedQtySubset)) {
-        this[`${type}Data`].rdReceivedNetReceiptsQty = (this[`${type}Data`].rdReceivingQtySubset - this[`${type}Data`].rdReceivedQtySubset)
+      if (this[`${type}Data`].rdReceivingQtySubset <= this[`${type}Data`].rdReceivedQtySubset) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('moreThanTheActualQuantityReceived')
