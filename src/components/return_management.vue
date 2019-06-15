@@ -71,7 +71,7 @@
         <span class="label" style="width: 100%">{{$t('notMatchItemProcessing')}}:</span>
       </div>
       <div class="search">
-        <scan-input :name="$t('trakcingNo')" :placeholder="$t('scanTrakcingNobarcode')" v-model="newData.trakcingNo"></scan-input>
+        <scan-input :name="$t('trakcingNo')" :placeholder="$t('scanTrakcingNobarcode')" v-model="newData.trackingNumber"></scan-input>
       </div>
       <div class="search">
         <scan-input :name="'SKU'" :placeholder="$t('scanTheSKUOnTheShippingMarkHere')" v-model="newData.productBarcode"></scan-input>
@@ -234,7 +234,7 @@ export default {
           if (res.data.data) {
             this[`${type}Data`].sopQuantity = res.data.data.sopQuantity
             this[`${type}Data`].sopReceivedQty = res.data.data.sopReceivedQty
-            this[`${type}Data`].rdReceivedNetReceiptsQty = res.data.data.sopQuantity - res.data.data.sopReceivedQty
+            this[`${type}Data`].rdReceivedNetReceiptsQty = 0
           } else {
             this[`${type}Data`].sopQuantity = 0
             this[`${type}Data`].sopReceivedQty = 0
@@ -316,7 +316,7 @@ export default {
       })
       this[`${type}Data`].codeType = type
       // eslint-disable-next-line
-      if (document.querySelector('#requestTerminal').value && document.querySelector('#requestTerminal').value !== 'PC' && this[`${type}Img`].length) {
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC' && this[`${type}Img`].length) {
         this.uploadImg(type)
       } else {
         this.doAjax(type)
@@ -326,7 +326,7 @@ export default {
       let params = {
         warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
         warehouseCode: JSON.parse(window.localStorage.getItem('warehouse')).warehouseCode,
-        trackingNumber: this[`${type}Data`].trakcingNo,
+        trackingNumber: this[`${type}Data`].trackingNumber,
         productBarcode: this[`${type}Data`].productBarcode,
         quantity: this[`${type}Data`].rdReceivedNetReceiptsQty,
         lcCode: this[`${type}Data`].lcCode,
