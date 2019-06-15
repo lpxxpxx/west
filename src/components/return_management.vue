@@ -222,7 +222,7 @@ export default {
       let params = {
         productSku: this[`${type}Data`].productBarcode,
         warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
-        spoId: this[`${type}Data`].spoId
+        spoCode: this[`${type}Data`].spoCode
       }
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/returnOrder/returnOrdersDetailSearch`, qs.stringify(params), {
         headers: {
@@ -339,7 +339,6 @@ export default {
           productId: this[`${type}Data`].productId,
           type: this[`${type}Data`].spoType,
           relateOrderCode: this[`${type}Data`].spoCode,
-          spoId: this[`${type}Data`].spoId,
           ...params
         }
         url = '/weixinapi/returnOrder/insertScanningList'
