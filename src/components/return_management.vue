@@ -167,7 +167,7 @@ export default {
       this.index = 0
       this.editData = this.$store.getters.getTemporary
     } else {
-      this.newData.trakcingNo = this.$store.getters.getTemporary.trakcingNo
+      this.newData.trackingNumber = this.$store.getters.getTemporary.trackingNumber
       this.index = 1
     }
   },
@@ -193,7 +193,7 @@ export default {
       newData: {
         spoType: '',
         productBarcode: '',
-        trakcingNo: ''
+        trackingNumber: ''
       },
       oldeditData: {
         spoType: '',
@@ -204,7 +204,7 @@ export default {
       oldnewData: {
         spoType: '',
         productBarcode: '',
-        trakcingNo: ''
+        trackingNumber: ''
       },
       uploadIds: [],
       exceptionList: [
@@ -274,7 +274,7 @@ export default {
     },
     submit (type) {
       if (type === 'new') {
-        if (!this[`${type}Data`].trakcingNo) {
+        if (!this[`${type}Data`].trackingNumber) {
           this.$vux.toast.show({
             type: 'text',
             text: this.$t('pleaseEnterTheTrakcingNo')
@@ -477,16 +477,16 @@ export default {
         this.toSearch('edit')
       }
     },
-    'newData.trakcingNo' () {
+    'newData.trackingNumber' () {
       let that = this
       clearTimeout(that.timeoutId)
       that.timeoutId = setTimeout(function () {
-        if (that.newData.trakcingNo && that.newData.trakcingNo.length === 34) {
+        if (that.newData.trackingNumber && that.newData.trackingNumber.length === 34) {
           /* FEDEX  条码扫出来的长度是34，系统长度是12 */
-          that.newData.trakcingNo = that.newData.trakcingNo.substring(that.newData.trakcingNo.length - 12)
-        } else if (that.newData.trakcingNo && that.newData.trakcingNo.length === 30) {
+          that.newData.trackingNumber = that.newData.trackingNumber.substring(that.newData.trackingNumber.length - 12)
+        } else if (that.newData.trackingNumber && that.newData.trackingNumber.length === 30) {
           /* FEDEX_SMARTPOST  条码扫出来的长度是30，系统长度是20 */
-          that.newData.trakcingNo = that.newData.trakcingNo.substring(that.newData.trakcingNo.length - 20)
+          that.newData.trackingNumber = that.newData.trackingNumber.substring(that.newData.trackingNumber.length - 20)
         }
       }, 1000)
     }
