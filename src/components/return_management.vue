@@ -316,7 +316,7 @@ export default {
       })
       this[`${type}Data`].codeType = type
       // eslint-disable-next-line
-      if (this.$store.getters.getStatus !== 'pc' && this[`${type}Img`].length) {
+      if (document.querySelector('#requestTerminal').value && document.querySelector('#requestTerminal').value !== 'PC' && this[`${type}Img`].length) {
         this.uploadImg(type)
       } else {
         this.doAjax(type)
@@ -326,10 +326,10 @@ export default {
       let params = {
         warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
         warehouseCode: JSON.parse(window.localStorage.getItem('warehouse')).warehouseCode,
-        trackingNumber: this[`${type}Data`].trackingNumber,
+        trackingNumber: this[`${type}Data`].trakcingNo,
         productBarcode: this[`${type}Data`].productBarcode,
         quantity: this[`${type}Data`].rdReceivedNetReceiptsQty,
-        qlcCodeuantity: this[`${type}Data`].lcCode,
+        lcCode: this[`${type}Data`].lcCode,
         exception: this[`${type}Data`].exception,
         serverIds: this.uploadIds
       }
@@ -347,7 +347,7 @@ export default {
         url = '/weixinapi/returnOrder/insertReturnClaimOrder'
       }
       // eslint-disable-next-line
-      if (this.$store.getters.getStatus === 'pc') {
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value === 'PC') {
         params.img = this[`${type}Img`]
       }
       this.axios.post(`${this.$store.getters.getUrl}${url}`, qs.stringify(params), {
@@ -382,7 +382,7 @@ export default {
       this.$router.go(-1)
     },
     chooseImage (type) {
-      try {
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC') {
         let that = this
         let count = 3 - that[`${type}Img`].length
         // eslint-disable-next-line
@@ -399,7 +399,7 @@ export default {
             }
           }
         })
-      } catch (err) {
+      } else {
         document.querySelector(`.${type}-img`).click()
       }
     },
