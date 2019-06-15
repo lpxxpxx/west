@@ -113,5 +113,18 @@ module.exports = {
   sourceLocationIsMixed: '源库位混SKU',
   fromLocationIsDifferentSKU: '源库位SKU不一致',
   confirmTray: '扫描库位与托单库位不符，请确认',
-  confirmLocation: '扫描库位与移库任务不符'
+  confirmLocation: '扫描库位与移库任务不符',
+  trakcingNo: '跟踪单号',
+  type: '类型',
+  refNo: '退件单号',
+  mismatch: 'SKU不匹配',
+  notMatchItemProcessing: '无匹配退件',
+  pleaseSelectTheCauseOfTheException: '请选择异常原因',
+  packagingDamage: '包装损坏',
+  goodsDamage: '货品损坏',
+  noMatch: '无匹配',
+  returnManagement: '退件管理',
+  scanTrakcingNobarcode: '此处扫描跟踪单号',
+  back: '后退',
+  canOnlyUploadUpTo3Images: '最多只能上传3张图片'
 }

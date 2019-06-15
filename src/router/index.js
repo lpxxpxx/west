@@ -15,6 +15,8 @@ import MoveLibrary from '@/components/move_library'
 import ProductSpecificationTask from '@/components/product_specification_task'
 import ProductSpecification from '@/components/product_specification'
 import OutLibrary from '@/components/out_library'
+import returnManagementTask from '@/components/return_management_task'
+import returnManagement from '@/components/return_management'
 import slideList from '@/components/slide_list'
 import zh from '@/lang/zh'
 import en from '@/lang/en'
@@ -141,6 +143,22 @@ const routes = new Router({
       component: slideList,
       meta: {
         title: 'slidingMenu'
+      }
+    },
+    {
+      path: '/returnManagementTask',
+      name: 'returnManagementTask',
+      component: returnManagementTask,
+      meta: {
+        title: 'returnManagement'
+      }
+    },
+    {
+      path: '/returnManagement',
+      name: 'returnManagement',
+      component: returnManagement,
+      meta: {
+        title: 'returnManagement'
       }
     }
   ]

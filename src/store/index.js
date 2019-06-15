@@ -12,7 +12,9 @@ const state = {
   url: '',
   userEmail: '',
   phoneType: '',
-  lang: ''
+  lang: '',
+  status: '',
+  temporary: {}
 }
 
 const getters = {
@@ -22,7 +24,9 @@ const getters = {
   getUrl: state => state.url,
   getUserEmail: state => state.userEmail,
   getPhoneType: state => state.phoneType,
-  getLang: state => state.lang
+  getLang: state => state.lang,
+  getStatus: state => state.status,
+  getTemporary: state => state.temporary
 }
 
 const mutations = {
@@ -32,7 +36,9 @@ const mutations = {
   changeUrl: (state, text) => { state.url = text },
   changeUserEmail: (state, text) => { state.userEmail = text },
   changePhoneType: (state, text) => { state.phoneType = text },
-  changeLang: (state, text) => { state.lang = text }
+  changeLang: (state, text) => { state.lang = text },
+  changeStatus: (state, text) => { state.status = text },
+  changeTemporary: (state, text) => { state.temporary = text }
 }
 
 const actions = {
@@ -42,7 +48,9 @@ const actions = {
   setUrl: (context, text) => { context.commit('changeUrl', text) },
   setUserEmail: (context, text) => { context.commit('changeUserEmail', text) },
   setPhoneType: (context, text) => { context.commit('changePhoneType', text) },
-  setLang: (context, text) => { context.commit('changeLang', text) }
+  setLang: (context, text) => { context.commit('changeLang', text) },
+  setStatus: (context, text) => { context.commit('changeStatus', text) },
+  setTemporary: (context, text) => { context.commit('changeTemporary', text) }
 }
 
 const store = new Vuex.Store({

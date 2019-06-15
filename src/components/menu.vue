@@ -71,6 +71,13 @@ export default {
           icon: 'icon-detail',
           target: '/OutLibrary',
           num: 0
+        },
+        return_management: {
+          id: 7,
+          name: this.$t('returnManagement'),
+          icon: 'icon-detail',
+          target: '/returnManagementTask',
+          num: 0
         }
       },
       menuList: []
@@ -84,7 +91,7 @@ export default {
         if (menuList.length) {
           let list = menuList.split(',')
           list.forEach((item, index) => {
-            that.menuList.push(that.menuMap[item])
+            if (that.menuMap[item]) that.menuList.push(that.menuMap[item])
           })
         }
       } catch (err) {
@@ -136,6 +143,13 @@ export default {
             name: this.$t('outboundLogistics'),
             icon: 'icon-detail',
             target: '/OutLibrary',
+            num: 0
+          },
+          {
+            id: 7,
+            name: this.$t('returnManagement'),
+            icon: 'icon-detail',
+            target: '/returnManagementTask',
             num: 0
           }
         ]

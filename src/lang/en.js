@@ -113,5 +113,18 @@ module.exports = {
   sourceLocationIsMixed: 'SOURCE LOCATION IS MIXED',
   fromLocationIsDifferentSKU: 'FROM LOCATION IS DIFFERENT SKU',
   confirmTray: `The location scanned doesn't match the required. please confirm.`,
-  confirmLocation: `The location scanned doesn't match the required`
+  confirmLocation: `The location scanned doesn't match the required`,
+  trakcingNo: 'Trakcing #',
+  type: 'Type',
+  refNo: 'Ref #',
+  mismatch: 'SKU Mismatch',
+  notMatchItemProcessing: 'Not Match Item Processing',
+  pleaseSelectTheCauseOfTheException: 'Please select',
+  packagingDamage: 'Packaging damage',
+  goodsDamage: 'Goods Damage',
+  noMatch: 'No Match',
+  returnManagement: 'Return Management',
+  scanTrakcingNobarcode: 'Scan Trakcing # Barcode',
+  back: 'Back',
+  canOnlyUploadUpTo3Images: 'Can only upload up to 3 images'
 }

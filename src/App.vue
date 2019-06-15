@@ -83,6 +83,7 @@ export default {
           window.localStorage.setItem('userEmail', JSON.parse(userEmail).userEmail)
         }
       } catch (err) {
+        this.$store.dispatch('setStatus', 'pc')
         console.log('On dev mode!')
       }
     },
@@ -153,6 +154,9 @@ body {
 .underline {
   text-decoration: underline;
 }
+.inline-block {
+  display: inline-block;
+}
 .logout {
   margin-left: .7rem;
   color: #fff;
@@ -198,6 +202,32 @@ body {
   font-size: 1.5rem;
   text-align: right;
 }
+.selector {
+  padding: 5px 1rem;
+  height: 3rem;
+  line-height: 3rem;
+  .weui-cells {
+    margin: 0;
+    line-height: 3rem;
+    background-color: inherit;
+    .vux-selector {
+      padding: 0;
+      font-size: 1.5rem;
+      .weui-label {
+        width: 7.5rem;
+      }
+      .weui-select {
+        z-index: 0;
+      }
+    }
+  }
+  .weui-cells:before {
+    border-top: 0;
+  }
+  .weui-cells:after {
+    border-bottom: 0;
+  }
+}
 .footer {
   position: fixed;
   bottom: 0;
@@ -208,6 +238,9 @@ body {
   height: 3rem;
   line-height: 3rem;
   font-size: 0.75rem;
+}
+.hidden {
+  display: none;
 }
 .clearfloat:after {
   display: block;
