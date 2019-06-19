@@ -11,6 +11,8 @@ import { ToastPlugin, LoadingPlugin } from 'vux'
 import ScanInput from './components/scan_input'
 import qs from 'Qs'
 import VueI18n from 'vue-i18n'
+import preview from 'vue-photo-preview'
+import 'vue-photo-preview/dist/skin.css'
 
 FastClick.attach(document.body)
 Vue.use(LoadingPlugin)
@@ -18,6 +20,7 @@ Vue.use(ToastPlugin, {time: 5000, width: '80%'})
 Vue.use(VueCookies)
 Vue.use(VueAxios, axios)
 Vue.use(VueI18n)
+Vue.use(preview)
 Vue.component('scan-input', ScanInput)
 Vue.config.productionTip = false
 

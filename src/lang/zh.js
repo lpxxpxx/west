@@ -24,6 +24,7 @@ module.exports = {
   businessSystemException: '业务系统异常！',
   inTheLoad: '加载中...',
   noTask: '暂无任务',
+  noDataFound: '暂无数据',
   LTR: '入库单/跟踪号/参考号',
   skip: '跳过',
   accordingToTheSKUReceiving: '按SKU收货',

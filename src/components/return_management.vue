@@ -34,7 +34,7 @@
       </div>
       <div class="search">
         <span class="label" style="width: 11rem">{{$t('quantityReceivedThisTime')}}</span>
-        <input type="number" placeholder="0" v-model="editData.rdReceivedNetReceiptsQty" v-select-val />
+        <input type="number" style="width: 5rem" placeholder="0" v-model="editData.rdReceivedNetReceiptsQty" v-select-val />
       </div>
       <div class="search search-last">
         <scan-input :name="$t('location')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="editData.lcCode"></scan-input>
@@ -49,7 +49,7 @@
         <input class="edit-img hidden" @change="changeImg('edit')" type="file" name="cover" ref="editinputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? editImgIOS : editImg" :key="index">
-            <img :src="item" @click="previewImg('edit', index)">
+            <img :src="item" @click="previewImg('edit', index)" preview="1">
             <span class="delete-icon" @click="deleteImg('edit', index)">x</span>
           </span>
           <span class="iconfont icon-camera" @click="chooseImage('edit')" v-show="editImg.length <= 2"></span>
@@ -81,7 +81,7 @@
       </div>
       <div class="search">
         <span class="label" style="width: 11rem">{{$t('quantityReceivedThisTime')}}</span>
-        <input type="number" placeholder="0" v-model="newData.rdReceivedNetReceiptsQty" style="width: 9rem" v-select-val />
+        <input type="number" style="width: 5rem" placeholder="0" v-model="newData.rdReceivedNetReceiptsQty" v-select-val />
       </div>
       <div class="selector">
         <group>
@@ -93,7 +93,7 @@
         <input class="new-img hidden" @change="changeImg('new')" type="file" name="cover" ref="newinputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? newImgIOS :newImg" :key="index">
-            <img :src="item" @click="previewImg('new', index)">
+            <img :src="item" @click="previewImg('new', index)" preview="2">
             <span class="delete-icon" @click="deleteImg('new', index)">x</span>
           </span>
           <span class="iconfont icon-camera" @click="chooseImage('new')" v-show="newImg.length <= 2"></span>
@@ -187,8 +187,10 @@ export default {
         receivingQtyList: [{}]
       },
       editImg: [],
+      editFile: [],
       editImgIOS: [],
       newImg: [],
+      newFile: [],
       newImgIOS: [],
       newData: {
         spoType: '',
@@ -346,9 +348,13 @@ export default {
         url = '/weixinapi/returnOrder/insertReturnClaimOrder'
       }
       // eslint-disable-next-line
-      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value === 'PC') {
+      /* if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value === 'PC') {
         params.img = this[`${type}Img`]
-      }
+      } */
+      console.log(`${type}File`)
+      console.log(this[`${type}File`])
+      params.file = this[`${type}File`]
+      params.file1 = 1
       this.axios.post(`${this.$store.getters.getUrl}${url}`, qs.stringify(params), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
@@ -425,7 +431,7 @@ export default {
           urls: that[`${type}Img`]
         })
       } catch (err) {
-        console.log(111)
+        console.log('On dev mode!')
       }
     },
     uploadImg (type) {
@@ -463,11 +469,14 @@ export default {
         reader.onload = (function (theFile) {
           return function (e) {
             that[`${type}Img`].push(e.target.result)
+            that.$previewRefresh()
           }
         })(item)
         reader.readAsDataURL(item)
       }
-      inputDOM.value = ''
+      console.log(inputFile)
+      that[`${type}File`] = inputFile
+      console.log(that[`${type}File`])
     }
   },
   watch: {
@@ -502,7 +511,6 @@ export default {
   }
   .search {
     padding: 5px 1rem;
-    height: 3rem;
     line-height: 3rem;
     display: flex;
     .label {

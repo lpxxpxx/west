@@ -22,7 +22,7 @@
       {{$t('inTheLoad')}}
     </div>
     <div class="task-list task-list-none" v-show="!hasTask">
-      {{$t('noTask')}}
+      {{$t('noDataFound')}}
     </div>
     <div class="button">
       <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(0, {trakcingNo: queryCode})">{{$t('noMatch')}}</x-button>
@@ -68,7 +68,7 @@ export default {
       }
     },
     search () {
-      if (this.queryCode === 34) {
+      if (this.queryCode.length === 34) {
         /* FEDEX  条码扫出来的长度是34，系统长度是12 */
         this.queryCode = this.queryCode.substring(this.queryCode.length - 12)
       } else if (this.queryCode.length === 30) {

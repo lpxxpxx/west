@@ -24,6 +24,7 @@ module.exports = {
   businessSystemException: 'System error!',
   inTheLoad: 'Loading...',
   noTask: 'No Tasks',
+  noDataFound: 'No Data Found',
   LTR: 'ASN #/Tracking #/Reference ID',
   skip: 'Skip',
   accordingToTheSKUReceiving: 'Receive By SKU',

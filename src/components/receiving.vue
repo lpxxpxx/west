@@ -41,9 +41,10 @@
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>
+        <input class="sku-img hidden" @change="changeImg('sku')" type="file" name="cover" ref="skuinputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? skuImgIOS :skuImg" :key="index">
-            <img :src="item" @click="previewImg('sku', index)">
+            <img :src="item" @click="previewImg('sku', index)" preview="1">
             <span class="delete-icon" @click="deleteImg('sku', index)">x</span>
           </span>
           <span class="iconfont icon-camera" @click="chooseImage('sku')" v-show="skuImg.length <= 2"></span>
@@ -98,9 +99,10 @@
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>
+        <input class="box-img hidden" @change="changeImg('box')" type="file" name="cover" ref="boxinputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? boxImgIOS :boxImg" :key="index">
-            <img :src="item" @click="previewImg('box', index)">
+            <img :src="item" @click="previewImg('box', index)" preview="2">
             <span class="delete-icon" @click="deleteImg('box', index)">x</span>
           </span>
           <span class="iconfont icon-camera" @click="chooseImage('box')" v-show="boxImg.length <= 2"></span>
@@ -320,7 +322,7 @@ export default {
         text: 'Loading'
       })
       this[`${type}Data`].codeType = type
-      if (this[`${type}Img`].length) {
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC' && this[`${type}Img`].length) {
         this.uploadImg(type)
       } else {
         this.doAjax(type)
@@ -328,6 +330,10 @@ export default {
     },
     doAjax (type) {
       this[`${type}Data`].serverIds = this.uploadIds
+      // eslint-disable-next-line
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value === 'PC') {
+        this[`${type}Data`].img = this[`${type}Img`]
+      }
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/receiving/confirmArrival`, qs.stringify({receivingWeixinDetailVo: JSON.stringify(this[`${type}Data`])}), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
@@ -358,22 +364,26 @@ export default {
       })
     },
     chooseImage (type) {
-      let that = this
-      let count = 3 - that[`${type}Img`].length
-      // eslint-disable-next-line
-      wx.chooseImage({
-        count: count,
-        sizeType: ['original', 'compressed'],
-        sourceType: ['album', 'camera'],
-        success: function (res) {
-          that[`${type}Img`] = [...that[`${type}Img`], ...res.localIds]
-          if (this.$store.getters.getPhoneType === 'IOS') {
-            that[`${type}Img`].forEach((item, index) => {
-              that.getLocalImgData(item, index, type)
-            })
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC') {
+        let that = this
+        let count = 3 - that[`${type}Img`].length
+        // eslint-disable-next-line
+        wx.chooseImage({
+          count: count,
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success: function (res) {
+            that[`${type}Img`] = [...that[`${type}Img`], ...res.localIds]
+            if (this.$store.getters.getPhoneType === 'IOS') {
+              that[`${type}Img`].forEach((item, index) => {
+                that.getLocalImgData(item, index, type)
+              })
+            }
           }
-        }
-      })
+        })
+      } else {
+        document.querySelector(`.${type}-img`).click()
+      }
     },
     getLocalImgData (item, index, type) {
       let that = this
@@ -391,11 +401,15 @@ export default {
     },
     previewImg (type, index) {
       let that = this
-      // eslint-disable-next-line
-      wx.previewImage({
-        current: that[`${type}Img`][index],
-        urls: that[`${type}Img`]
-      })
+      try {
+        // eslint-disable-next-line
+        wx.previewImage({
+          current: that[`${type}Img`][index],
+          urls: that[`${type}Img`]
+        })
+      } catch (err) {
+        console.log('On dev mode!')
+      }
     },
     uploadImg (type) {
       let that = this
@@ -412,6 +426,32 @@ export default {
           }
         })
       }
+    },
+    changeImg (type) {
+      let that = this
+      let inputDOM = this.$refs[`${type}inputer`]
+      let inputFile = inputDOM.files
+      let exit = that[`${type}Img`].length
+      if ((inputFile.length + exit) > 3) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('canOnlyUploadUpTo3Images')
+        })
+        inputDOM.value = ''
+        return false
+      }
+      for (let i = 0; i <= inputFile.length - 1; i++) {
+        let reader = new FileReader()
+        let item = inputFile[i]
+        reader.onload = (function (theFile) {
+          return function (e) {
+            that[`${type}Img`].push(e.target.result)
+            that.$previewRefresh()
+          }
+        })(item)
+        reader.readAsDataURL(item)
+      }
+      inputDOM.value = ''
     }
   },
   watch: {
