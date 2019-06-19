@@ -101,6 +101,8 @@ module.exports = {
   inventoryAdjustmentTask: 'Inventory Adjustment',
   moveTheLibraryMission: 'Inventory Movement',
   productSpecificationCalibrationTask: 'Pending Product Specification Review',
+  pickingOperateTask: 'Picking Operate Task',
+  pickingOperate: 'Picking Operate',
   slidingMenu: 'Sliding Menu',
   westMail: 'Western Post',
   KG: 'KG',
@@ -126,5 +128,8 @@ module.exports = {
   returnManagement: 'Return Management',
   scanTrakcingNobarcode: 'Scan Trakcing # Barcode',
   back: 'Back',
-  canOnlyUploadUpTo3Images: 'Can only upload up to 3 images'
+  canOnlyUploadUpTo3Images: 'Can only upload up to 3 images',
+  pickingListNo: 'Picking List #',
+  pickingStatus: 'Picking status',
+  PickQuantity: 'Pick Quantity'
 }

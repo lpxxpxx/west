@@ -101,6 +101,8 @@ module.exports = {
   inventoryAdjustmentTask: '调库存任务',
   moveTheLibraryMission: '移库任务',
   productSpecificationCalibrationTask: '产品规格校验任务',
+  pickingOperateTask: '扫码拣货任务',
+  pickingOperate: '扫码拣货',
   slidingMenu: '滑动菜单',
   westMail: '西邮',
   KG: '千克',
@@ -126,5 +128,8 @@ module.exports = {
   returnManagement: '退件管理',
   scanTrakcingNobarcode: '此处扫描跟踪单号',
   back: '后退',
-  canOnlyUploadUpTo3Images: '最多只能上传3张图片'
+  canOnlyUploadUpTo3Images: '最多只能上传3张图片',
+  pickingListNo: '拣货单号',
+  pickingStatus: '拣货状态',
+  PickQuantity: '拣货数量'
 }

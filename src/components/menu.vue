@@ -78,6 +78,13 @@ export default {
           icon: 'icon-detail',
           target: '/returnManagementTask',
           num: 0
+        },
+        picking_operate: {
+          id: 8,
+          name: this.$t('pickingOperate'),
+          icon: 'icon-detail',
+          target: '/pickingOperateTask',
+          num: 0
         }
       },
       menuList: []
@@ -150,6 +157,13 @@ export default {
             name: this.$t('returnManagement'),
             icon: 'icon-detail',
             target: '/returnManagementTask',
+            num: 0
+          },
+          {
+            id: 8,
+            name: this.$t('pickingOperate'),
+            icon: 'icon-detail',
+            target: '/pickingOperateTask',
             num: 0
           }
         ]

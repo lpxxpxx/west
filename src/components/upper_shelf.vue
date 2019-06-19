@@ -302,7 +302,6 @@ export default {
             } else {
               this[`has${type}`] = true
             }
-            this.blurInput()
             this[`${type}ButtonShow`] = true
           } else {
             this[`${type}Data`] = []

@@ -17,6 +17,8 @@ import ProductSpecification from '@/components/product_specification'
 import OutLibrary from '@/components/out_library'
 import returnManagementTask from '@/components/return_management_task'
 import returnManagement from '@/components/return_management'
+import pickingOperateTask from '@/components/picking_operate_task'
+import pickingOperate from '@/components/picking_operate'
 import slideList from '@/components/slide_list'
 import zh from '@/lang/zh'
 import en from '@/lang/en'
@@ -159,6 +161,22 @@ const routes = new Router({
       component: returnManagement,
       meta: {
         title: 'returnManagement'
+      }
+    },
+    {
+      path: '/pickingOperateTask',
+      name: 'pickingOperateTask',
+      component: pickingOperateTask,
+      meta: {
+        title: 'pickingOperateTask'
+      }
+    },
+    {
+      path: '/pickingOperate',
+      name: 'pickingOperate',
+      component: pickingOperate,
+      meta: {
+        title: 'pickingOperate'
       }
     }
   ]
