@@ -21,7 +21,7 @@
         <span class="label">{{$t('pleaseScanTheLocation')}}</span>
       </div>
       <div class="search search-last">
-        <scan-input :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCodeP"></scan-input>
+        <scan-input :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" :autofocus="'autofocus'" v-model="lcCodeP"></scan-input>
       </div>
     </div>
     <div class="step" v-show="step===2">
@@ -68,9 +68,31 @@
     </div>
     <div class="step" v-show="step===3">
       <div class="search">
-        <span class="label">{{$t('newLocation')}}: </span>
-        <span class="detail">{{$t('newLocation')}}</span>
+        <span class="label">{{$t('total')}}：</span>
+        <span class="detail">{{pickingItemCnt}}</span>
       </div>
+      <div class="search">
+        <span class="label">{{$t('picked')}}：</span>
+        <span class="detail">{{pickedQTY}}</span>
+      </div>
+      <div class="search">
+        <span class="label">{{$t('exceptionQTY')}}：</span>
+        <span class="detail">{{exceptionQTY}}</span>
+      </div>
+      <div class="search">
+        <span class="label">{{$t('totalTime')}}：</span>
+        <span class="detail">{{totalTime}}</span>
+      </div>
+      <div class="search">
+        <span class="label">{{$t('pickRate')}}：</span>
+        <span class="detail">{{pickRate}}</span>
+      </div>
+      <div class="button">
+        <flexbox>
+          <flexbox-item>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="returnTask">{{$t('finish')}}</x-button>
+          </flexbox-item>
+        </flexbox>
       </div>
     </div>
   </div>
@@ -137,6 +159,7 @@ export default {
             for (let i in res.data.data) {
               this[i] = res.data.data[i]
             }
+            this.focusInput(0)
           }
         } else {
           this.$vux.toast.show({
@@ -178,11 +201,15 @@ export default {
               this[i] = res.data.data[i]
             }
             this.productBarcodeP = ''
-            if (res.data.data.lcCode.toUpperCase() !== this.lcCodeP.toUpperCase()) {
-              this.step = 1
-              this.lcCodeP = ''
-            } else if (res.data.data.pageType === 'detail') {
-              this.step = 2
+            if (res.data.data.pageType === 'detail') {
+              if (res.data.data.lcCode.toUpperCase() !== this.lcCodeP.toUpperCase()) {
+                this.step = 1
+                this.lcCodeP = ''
+                this.focusInput(0)
+              } else {
+                this.step = 2
+                this.focusInput(1)
+              }
             } else if (res.data.data.pageType === 'finish') {
               this.step = 3
             }
@@ -200,12 +227,21 @@ export default {
     exception (menuKey) {
       this.exceptionType = menuKey
       this.submit('exception')
+    },
+    returnTask () {
+      this.$router.go(-1)
+    },
+    focusInput (index) {
+      setTimeout(function () {
+        document.querySelectorAll('input')[`${index}`].focus()
+      }, 200)
     }
   },
   watch: {
     lcCodeP () {
       if (this.lcCodeP.toUpperCase() === this.lcCode.toUpperCase()) {
         this.step = 2
+        this.focusInput(1)
       }
     },
     productBarcodeP () {
@@ -236,6 +272,10 @@ export default {
     input {
       flex: 1;
       padding: 0 .5rem;
+    }
+    .detail {
+      font-size: 1.5rem;
+      color: blue;
     }
   }
   .search.search-last {

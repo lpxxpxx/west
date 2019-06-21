@@ -137,7 +137,10 @@ module.exports = {
   pleaseOperateInNormalOrderMode: 'Please operate in normal order mode',
   uploadAtLeastOneImage: 'Upload at least one image',
   pallet: 'Pallet',
-  picked: 'Picked',
+  picked: 'Picked QTY',
+  exceptionQTY: 'Exception QTY',
+  totalTime: 'Total Time',
+  pickRate: 'Pick Rate',
   pleaseScanTheLocation: 'Please scan the location',
   pleaseScanTheSKU: 'Please scan the SKU',
   formLocation: 'Form location',
@@ -146,5 +149,6 @@ module.exports = {
   SKUHasBeenDamaged: 'SKU has been damaged',
   barcodeCannotBeScanned: 'Barcode cannot be scanned',
   barcodeIsInconsistentWithPrinting: 'Barcode is inconsistent with printing',
-  otherReasons: 'Other reasons'
+  otherReasons: 'Other reasons',
+  finish: 'Finish'
 }

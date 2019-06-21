@@ -200,22 +200,28 @@ export default {
         this.clearData(type)
         if (res.data.success) {
           let all = 0
+          let that = this
+          this[`${type}Data`] = []
+          this[`${type}Count`] = 0
+          this[`${type}All`] = 0
           res.data.data.map(item => {
             all += item.piSellable
             item.piSellableOld = item.piSellable
             return item
           })
-          this[`${type}Data`] = res.data.data
-          this[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
-          this[`${type}Count`] = [...new Set(res.data.data.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
-          this[`${type}All`] = all
-          if (res.data.data.length === 0) {
-            this[`has${type}`] = false
-          } else {
-            this[`has${type}`] = true
-          }
-          this.blurInput()
-          this[`${type}ButtonShow`] = true
+          setTimeout(function () {
+            that[`${type}Data`] = res.data.data
+            that[`old${type}Data`] = JSON.parse(JSON.stringify(res.data.data))
+            that[`${type}Count`] = [...new Set(res.data.data.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
+            that[`${type}All`] = all
+            if (res.data.data.length === 0) {
+              that[`has${type}`] = false
+            } else {
+              that[`has${type}`] = true
+            }
+            that.blurInput()
+            that[`${type}ButtonShow`] = true
+          }, 50)
         } else {
           this.$vux.toast.show({
             type: 'text',

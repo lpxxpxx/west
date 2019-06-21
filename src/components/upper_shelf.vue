@@ -295,18 +295,24 @@ export default {
         .then(res => {
           if (res.data.success) {
             let all = 0
-            this[`${type}Data`] = res.data.data.rows
-            this[`${type}Count`] = [...new Set(res.data.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
-            res.data.data.rows.forEach(item => {
-              all += item.piSellable
-            })
-            this[`${type}All`] = all
-            if (res.data.data.rows.length === 0) {
-              this[`has${type}`] = false
-            } else {
-              this[`has${type}`] = true
-            }
-            this[`${type}ButtonShow`] = true
+            let that = this
+            this[`${type}Data`] = []
+            this[`${type}Count`] = 0
+            this[`${type}All`] = 0
+            setTimeout(function () {
+              that[`${type}Data`] = res.data.data.rows
+              that[`${type}Count`] = [...new Set(res.data.data.rows.map(item => type === 'sku' ? item.lcCode : item.productBarcode))].length
+              res.data.data.rows.forEach(item => {
+                all += item.piSellable
+              })
+              that[`${type}All`] = all
+              if (res.data.data.rows.length === 0) {
+                that[`has${type}`] = false
+              } else {
+                that[`has${type}`] = true
+              }
+              that[`${type}ButtonShow`] = true
+            }, 50)
           } else {
             this[`${type}Data`] = []
             this[`${type}Count`] = 0

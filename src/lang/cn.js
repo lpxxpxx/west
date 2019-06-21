@@ -138,13 +138,17 @@ module.exports = {
   uploadAtLeastOneImage: '至少上传一张图片',
   pallet: '托盘',
   picked: '已拣数量',
+  exceptionQTY: '异常数量',
+  totalTime: '总耗时',
   pleaseScanTheLocation: '请扫描库位',
   pleaseScanTheSKU: '请扫描SKU',
   formLocation: '源库位',
   remainQty: '剩余拣货数量',
+  pickRate: '拣货效率',
   thereIsNoSuchSKUOnTheTocation: '库位上没有此SKU',
   SKUHasBeenDamaged: 'SKU已损坏',
   barcodeCannotBeScanned: '条码无法扫描',
   barcodeIsInconsistentWithPrinting: '条码与印刷不一致',
-  otherReasons: '其他原因'
+  otherReasons: '其他原因',
+  finish: '完成'
 }
