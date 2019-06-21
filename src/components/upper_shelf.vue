@@ -445,15 +445,19 @@ export default {
       for (let i in this[`${type}Data`]) {
         form.append(i, this[`${type}Data`][i] === null ? '' : this[`${type}Data`][i])
       }
-      form.append('serverIds', this.uploadIds)
       form.set('userEmail', window.localStorage.getItem('userEmail'))
       form.set('language', window.localStorage.getItem('lang') || 'cn')
-      if (this[`${type}Files`]) {
+      if (this[`${type}Files`].length) {
         for (let i = 0; i <= this[`${type}Files`].length - 1; i++) {
-          form.append('files', this[`${type}Files`][i] || '')
+          if (this[`${type}Files`]) form.append('files', this[`${type}Files`][i])
         }
       } else {
         form.delete('files')
+      }
+      if (this.uploadIds.length) {
+        form.set('serverIds', this.uploadIds)
+      } else {
+        form.delete('serverIds')
       }
       /* this.axios.post(`${this.$store.getters.getUrl}/weixinapi/putaway/doPutaway`, qs.stringify(this[`${type}Data`]), {
         headers: {

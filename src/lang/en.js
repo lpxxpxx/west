@@ -150,5 +150,6 @@ module.exports = {
   barcodeCannotBeScanned: 'Barcode cannot be scanned',
   barcodeIsInconsistentWithPrinting: 'Barcode is inconsistent with printing',
   otherReasons: 'Other reasons',
-  finish: 'Finish'
+  finish: 'Finish',
+  pleaseEnterTheTrakcingNo: 'Please enter the trakcing #'
 }

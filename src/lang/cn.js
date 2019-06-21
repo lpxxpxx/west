@@ -150,5 +150,6 @@ module.exports = {
   barcodeCannotBeScanned: '条码无法扫描',
   barcodeIsInconsistentWithPrinting: '条码与印刷不一致',
   otherReasons: '其他原因',
-  finish: '完成'
+  finish: '完成',
+  pleaseEnterTheTrakcingNo: '请输入跟踪单号'
 }

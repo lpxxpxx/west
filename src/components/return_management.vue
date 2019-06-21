@@ -283,13 +283,6 @@ export default {
     },
     submit (type) {
       if (type === 'new') {
-        if (!this[`${type}Data`].trackingNumber) {
-          this.$vux.toast.show({
-            type: 'text',
-            text: this.$t('pleaseEnterTheTrakcingNo')
-          })
-          return false
-        }
         if (this[`${type}Img`].length === 0) {
           this.$vux.toast.show({
             type: 'text',
@@ -303,6 +296,13 @@ export default {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseEnterTheCorrectQuantity')
+        })
+        return false
+      }
+      if (!this[`${type}Data`].trackingNumber) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('pleaseEnterTheTrakcingNo')
         })
         return false
       }

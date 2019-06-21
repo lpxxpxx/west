@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { XButton, Flexbox, FlexboxItem, Actionsheet } from 'vux'
+import { XButton, Flexbox, FlexboxItem, CheckIcon, Actionsheet } from 'vux'
 import qs from 'Qs'
 
 export default {
@@ -53,6 +53,7 @@ export default {
     XButton,
     Flexbox,
     FlexboxItem,
+    CheckIcon,
     Actionsheet
   },
   mounted () {
@@ -230,9 +231,9 @@ export default {
       }
       let form = new FormData()
       for (let i in query) {
-        form.append(i, query[i])
+        if (query[i]) form.append(i, query[i])
       }
-      if (this.skuFiles) {
+      if (this.skuFiles.length) {
         for (let i = 0; i <= this.skuFiles.length - 1; i++) {
           form.append('files', this.skuFiles[i] || '')
         }
