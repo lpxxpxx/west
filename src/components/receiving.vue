@@ -154,8 +154,10 @@ export default {
         receivingQtyList: [{}]
       },
       skuImg: [],
+      skuFiles: [],
       skuImgIOS: [],
       boxImg: [],
+      boxFiles: [],
       boxImgIOS: [],
       boxData: {
         receivingCode: '',
@@ -329,6 +331,29 @@ export default {
       }
     },
     doAjax (type) {
+      /* let form = new FormData()
+      form.append('receivingId', JSON.parse(window.localStorage.getItem('warehouse')).warehouseId)
+      form.append('receivingCode', JSON.parse(window.localStorage.getItem('warehouse')).warehouseCode)
+      form.append('customerCode', this[`${type}Data`].trackingNumber)
+      form.append('receivingStatus', this[`${type}Data`].productBarcode)
+      form.append('productBarcode', this[`${type}Data`].rdReceivedNetReceiptsQty)
+      form.append('productTitleEn', this[`${type}Data`].lcCode)
+      form.append('productWeight', this[`${type}Data`].exception)
+      form.append('productLength', this.uploadIds)
+      form.append('productWidth', window.localStorage.getItem('userEmail'))
+      form.append('productHeight', window.localStorage.getItem('lang') || 'cn')
+      form.append('productId', window.localStorage.getItem('lang') || 'cn')
+      form.append('warehouseId', window.localStorage.getItem('lang') || 'cn')
+      form.append('rdReceivedNetReceiptsQty', window.localStorage.getItem('lang') || 'cn')
+      form.append('rdReceivingQtySubset', window.localStorage.getItem('lang') || 'cn')
+      form.append('rdReceivedQtySubset', window.localStorage.getItem('lang') || 'cn')
+      form.append('codeType', window.localStorage.getItem('lang') || 'cn')
+      form.append('boxNo', window.localStorage.getItem('lang') || 'cn')
+      form.append('userEmail', window.localStorage.getItem('lang') || 'cn')
+      form.append('language', window.localStorage.getItem('lang') || 'cn')
+      form.append('serverIds', window.localStorage.getItem('lang') || 'cn')
+      form.append('cloudSizeUnit', window.localStorage.getItem('lang') || 'cn')
+      form.append('cloudWeightUnit', window.localStorage.getItem('lang') || 'cn') */
       this[`${type}Data`].serverIds = this.uploadIds
       // eslint-disable-next-line
       if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value === 'PC') {
@@ -443,6 +468,7 @@ export default {
       for (let i = 0; i <= inputFile.length - 1; i++) {
         let reader = new FileReader()
         let item = inputFile[i]
+        that[`${type}Files`].push(item)
         reader.onload = (function (theFile) {
           return function (e) {
             that[`${type}Img`].push(e.target.result)

@@ -54,6 +54,7 @@ module.exports = {
   delete: 'Delete',
   operationSuccessful: 'Success',
   takePhotos: 'Take Pictures (Optional)',
+  takePhotosMust: 'Take Pictures',
   moveAllSKUOfCurrentStorageLocation: 'Move all SKUs from current location',
   submit: 'Submit',
   pleaseEnterTheLocation: 'From location missing',
@@ -132,5 +133,18 @@ module.exports = {
   canOnlyUploadUpTo3Images: 'Can only upload up to 3 images',
   pickingListNo: 'Picking List #',
   pickingStatus: 'Picking status',
-  PickQuantity: 'Pick Quantity'
+  PickQuantity: 'Pick Quantity',
+  pleaseOperateInNormalOrderMode: 'Please operate in normal order mode',
+  uploadAtLeastOneImage: 'Upload at least one image',
+  pallet: 'Pallet',
+  picked: 'Picked',
+  pleaseScanTheLocation: 'Please scan the location',
+  pleaseScanTheSKU: 'Please scan the SKU',
+  formLocation: 'Form location',
+  remainQty: 'remain QTY',
+  thereIsNoSuchSKUOnTheTocation: 'There is no such SKU on the location',
+  SKUHasBeenDamaged: 'SKU has been damaged',
+  barcodeCannotBeScanned: 'Barcode cannot be scanned',
+  barcodeIsInconsistentWithPrinting: 'Barcode is inconsistent with printing',
+  otherReasons: 'Other reasons'
 }

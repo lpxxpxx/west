@@ -20,7 +20,7 @@ import returnManagement from '@/components/return_management'
 import pickingOperateTask from '@/components/picking_operate_task'
 import pickingOperate from '@/components/picking_operate'
 import slideList from '@/components/slide_list'
-import zh from '@/lang/zh'
+import cn from '@/lang/cn'
 import en from '@/lang/en'
 
 Vue.use(Router)
@@ -184,9 +184,9 @@ const routes = new Router({
 
 routes.beforeEach((to, from, next) => {
   if (to.meta.title) {
-    let lang = window.localStorage.getItem('lang') || 'zh'
-    if (lang === 'zh') {
-      document.title = zh['westMail'] + ' - ' + zh[to.meta.title]
+    let lang = window.localStorage.getItem('lang') || 'cn'
+    if (lang === 'cn') {
+      document.title = cn['westMail'] + ' - ' + cn[to.meta.title]
     } else if (lang === 'en') {
       document.title = en['westMail'] + ' - ' + en[to.meta.title]
     }

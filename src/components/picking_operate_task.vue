@@ -3,7 +3,7 @@
     <div class="input">
       <scan-input :placeholder="$t('trackingNumber')" v-model="queryCode"></scan-input>
     </div>
-    <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.spoType, item)">
+    <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.pickingCode, item.pickingItemCnt)">
       <div class="task-item">
         <p>{{$t('pickingListNo')}}：{{item.pickingCode}}</p>
         <p>{{$t('pickingStatus')}}：{{item.pickStatusText}}</p>
@@ -16,9 +16,9 @@
     <div class="task-list task-list-none" v-show="!hasTask">
       {{$t('noTask')}}
     </div>
-    <div class="button">
+    <!-- <div class="button">
       <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(0, {trakcingNo: queryCode})">{{$t('skip')}}</x-button>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -27,7 +27,7 @@ import { XButton } from 'vux'
 import qs from 'Qs'
 
 export default {
-  name: 'returnManagementTask',
+  name: 'pickingOperateTask',
   components: {
     XButton
   },
@@ -46,9 +46,8 @@ export default {
     }
   },
   methods: {
-    goToDetail (spoType = '', item = {}) {
-      this.$store.dispatch('setTemporary', item)
-      this.$router.push(`/returnManagement?spoType=${spoType}`)
+    goToDetail (pickingCode = '', pickingItemCnt = '') {
+      this.$router.push(`/pickingOperate?pickingCode=${pickingCode}&pickingItemCnt=${pickingItemCnt}`)
     },
     scroll () {
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop

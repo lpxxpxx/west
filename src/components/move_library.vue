@@ -19,9 +19,10 @@
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>
+        <input class="img hidden" @change="changeImg()" type="file" name="cover" ref="inputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? skuImgIOS :skuImg" :key="index">
-            <img :src="item" @click="previewImg(index)">
+            <img :src="item" @click="previewImg(index)" preview="1">
             <span class="delete-icon" @click="deleteImg(index)">x</span>
           </span>
           <span class="iconfont icon-camera" @click="chooseImage()" v-show="skuImg.length <= 2"></span>
@@ -43,7 +44,7 @@
 </template>
 
 <script>
-import { XButton, Flexbox, FlexboxItem, CheckIcon, Actionsheet } from 'vux'
+import { XButton, Flexbox, FlexboxItem, Actionsheet } from 'vux'
 import qs from 'Qs'
 
 export default {
@@ -52,7 +53,6 @@ export default {
     XButton,
     Flexbox,
     FlexboxItem,
-    CheckIcon,
     Actionsheet
   },
   mounted () {
@@ -81,6 +81,7 @@ export default {
       warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
       showExceptionMenus: false,
       skuImg: [],
+      skuFiles: [],
       skuImgIOS: [],
       uploadIds: [],
       exceptionMenus: {
@@ -106,6 +107,7 @@ export default {
       this.quantity = 0
       this.aid = ''
       this.skuImg = []
+      this.skuFiles = []
       this.skuImgIOS = []
       this.uploadIds = []
     },
@@ -205,7 +207,8 @@ export default {
       this.$vux.loading.show({
         text: 'Loading'
       })
-      if (this.skuImg.length) {
+      // eslint-disable-next-line
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC' && this.skuImg.length) {
         this.uploadImg()
       } else {
         this.doAjax()
@@ -221,11 +224,32 @@ export default {
         aid: this.aid,
         warehouseId: this.warehouseId,
         productId: this.productId,
-        serverIds: this.uploadIds
+        serverIds: this.uploadIds,
+        userEmail: window.localStorage.getItem('userEmail'),
+        language: window.localStorage.getItem('lang') || 'cn'
       }
-      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/moveWarehouse`, qs.stringify(query), {
+      let form = new FormData()
+      for (let i in query) {
+        form.append(i, query[i])
+      }
+      if (this.skuFiles) {
+        for (let i = 0; i <= this.skuFiles.length - 1; i++) {
+          form.append('files', this.skuFiles[i] || '')
+        }
+      }
+      /* this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/moveWarehouse`, qs.stringify(query), {
         headers: {
           'content-type': 'application/x-www-form-urlencoded'
+        }
+      }) */
+      const instance = this.axios.create({
+        async: true,
+        crossDomain: true,
+        withCredentials: true
+      })
+      instance.post(`${this.$store.getters.getUrl}/weixinapi/inventory/moveWarehouse`, form, {
+        headers: {
+          'Content-type': 'multipart/form-data'
         }
       })
       .then(res => {
@@ -281,22 +305,26 @@ export default {
       })
     },
     chooseImage () {
-      let that = this
-      let count = 3 - that.skuImg.length
-      // eslint-disable-next-line
-      wx.chooseImage({
-        count: count,
-        sizeType: ['original', 'compressed'],
-        sourceType: ['album', 'camera'],
-        success: function (res) {
-          that.skuImg = [...that.skuImg, ...res.localIds]
-          if (this.$store.getters.getPhoneType === 'IOS') {
-            that.skuImg.forEach((item, index) => {
-              that.getLocalImgData(item, index)
-            })
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC') {
+        let that = this
+        let count = 3 - that.skuImg.length
+        // eslint-disable-next-line
+        wx.chooseImage({
+          count: count,
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success: function (res) {
+            that.skuImg = [...that.skuImg, ...res.localIds]
+            if (this.$store.getters.getPhoneType === 'IOS') {
+              that.skuImg.forEach((item, index) => {
+                that.getLocalImgData(item, index)
+              })
+            }
           }
-        }
-      })
+        })
+      } else {
+        document.querySelector(`.img`).click()
+      }
     },
     getLocalImgData (item, index) {
       let that = this
@@ -311,14 +339,21 @@ export default {
     deleteImg (index) {
       this.skuImg.splice(index, 1)
       this.skuImgIOS.splice(index, 1)
+      if (this.skuFiles) {
+        this.skuFiles.splice(index, 1)
+      }
     },
     previewImg (index) {
       let that = this
-      // eslint-disable-next-line
-      wx.previewImage({
-        current: that.skuImg[index],
-        urls: that.skuImg
-      })
+      try {
+        // eslint-disable-next-line
+        wx.previewImage({
+          current: that.skuImg[index],
+          urls: that.skuImg
+        })
+      } catch (err) {
+        console.log('On dev mode!')
+      }
     },
     uploadImg () {
       let that = this
@@ -335,6 +370,33 @@ export default {
           }
         })
       }
+    },
+    changeImg () {
+      let that = this
+      let inputDOM = this.$refs.inputer
+      let inputFile = inputDOM.files
+      let exit = that[`skuImg`].length
+      if ((inputFile.length + exit) > 3) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('canOnlyUploadUpTo3Images')
+        })
+        inputDOM.value = ''
+        return false
+      }
+      for (let i = 0; i <= inputFile.length - 1; i++) {
+        let reader = new FileReader()
+        let item = inputFile[i]
+        that.skuFiles.push(item)
+        reader.onload = (function (theFile) {
+          return function (e) {
+            that.skuImg.push(e.target.result)
+            that.$previewRefresh()
+          }
+        })(item)
+        reader.readAsDataURL(item)
+      }
+      inputDOM.value = ''
     }
   },
   watch: {

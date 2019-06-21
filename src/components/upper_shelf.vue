@@ -34,9 +34,10 @@
       </div>
       <div class="photo">
         <span class="label">{{$t('takePhotos')}}</span>
+        <input class="tray-img hidden" @change="changeImg('tray')" type="file" name="cover" ref="trayinputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? trayImgIOS :trayImg" :key="index">
-            <img :src="item" @click="previewImg('tray', index)">
+            <img :src="item" @click="previewImg('tray', index)" preview="2">
             <span class="delete-icon" @click="deleteImg('tray', index)">x</span>
           </span>
           <span class="iconfont icon-camera" @click="chooseImage('tray')" v-show="trayImg.length <= 2"></span>
@@ -181,7 +182,7 @@
 <script>
 import { Tab, TabItem, XButton, Flexbox, XTable, FlexboxItem } from 'vux'
 import ScanInput from './scan_input'
-import qs from 'Qs'
+/* import qs from 'Qs' */
 
 export default {
   name: 'upperShelf',
@@ -211,6 +212,7 @@ export default {
         errorInfo: ''
       },
       skuImg: [],
+      skuFiles: [],
       skuImgIOS: [],
       boxNoData: {
         boxCode: '',
@@ -220,6 +222,7 @@ export default {
         errorInfo: ''
       },
       boxNoImg: [],
+      boxNoFiles: [],
       boxNoImgIOS: [],
       trayData: {
         boxCode: '',
@@ -229,6 +232,7 @@ export default {
         errorInfo: ''
       },
       trayImg: [],
+      trayFiles: [],
       trayImgIOS: [],
       oldskuData: {
         receivingCode: '',
@@ -422,19 +426,40 @@ export default {
       this.$vux.loading.show({
         text: 'Loading'
       })
-      if (this[`${type}Img`].length) {
+      // eslint-disable-next-line
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC' && this[`${type}Img`].length) {
         this.uploadImg(type)
       } else {
         this.doAjax(type)
       }
     },
     doAjax (type) {
-      this[`${type}Data`].serverIds = this.uploadIds
-      this[`${type}Data`].userEmail = window.localStorage.getItem('userEmail')
       this[`${type}Data`].lcCode = this[`${type}Data`].lcCode.toUpperCase()
-      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/putaway/doPutaway`, qs.stringify(this[`${type}Data`]), {
+      let form = new FormData()
+      for (let i in this[`${type}Data`]) {
+        form.append(i, this[`${type}Data`][i] === null ? '' : this[`${type}Data`][i])
+      }
+      form.append('serverIds', this.uploadIds)
+      form.set('userEmail', window.localStorage.getItem('userEmail'))
+      form.append('language', window.localStorage.getItem('lang') || 'cn')
+      if (this[`${type}Files`]) {
+        for (let i = 0; i <= this[`${type}Files`].length - 1; i++) {
+          form.append('files', this[`${type}Files`][i] || '')
+        }
+      }
+      /* this.axios.post(`${this.$store.getters.getUrl}/weixinapi/putaway/doPutaway`, qs.stringify(this[`${type}Data`]), {
         headers: {
           'content-type': 'application/x-www-form-urlencoded'
+        }
+      }) */
+      const instance = this.axios.create({
+        async: true,
+        crossDomain: true,
+        withCredentials: true
+      })
+      instance.post(`${this.$store.getters.getUrl}/weixinapi/putaway/doPutaway`, form, {
+        headers: {
+          'Content-type': 'multipart/form-data'
         }
       })
       .then(res => {
@@ -446,6 +471,7 @@ export default {
           })
           this[`${type}Img`] = []
           this[`${type}ImgIOS`] = []
+          this[`${type}Files`] = []
           this.uploadIds = []
           this.toSearch(type)
         } else {
@@ -462,22 +488,26 @@ export default {
       })
     },
     chooseImage (type) {
-      let that = this
-      let count = 3 - that[`${type}Img`].length
-      // eslint-disable-next-line
-      wx.chooseImage({
-        count: count,
-        sizeType: ['original', 'compressed'],
-        sourceType: ['album', 'camera'],
-        success: function (res) {
-          that[`${type}Img`] = [...that[`${type}Img`], ...res.localIds]
-          if (this.$store.getters.getPhoneType === 'IOS') {
-            that[`${type}Img`].forEach((item, index) => {
-              that.getLocalImgData(item, index, type)
-            })
+      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC') {
+        let that = this
+        let count = 3 - that[`${type}Img`].length
+        // eslint-disable-next-line
+        wx.chooseImage({
+          count: count,
+          sizeType: ['original', 'compressed'],
+          sourceType: ['album', 'camera'],
+          success: function (res) {
+            that[`${type}Img`] = [...that[`${type}Img`], ...res.localIds]
+            if (this.$store.getters.getPhoneType === 'IOS') {
+              that[`${type}Img`].forEach((item, index) => {
+                that.getLocalImgData(item, index, type)
+              })
+            }
           }
-        }
-      })
+        })
+      } else {
+        document.querySelector(`.${type}-img`).click()
+      }
     },
     getLocalImgData (item, index, type) {
       let that = this
@@ -492,14 +522,21 @@ export default {
     deleteImg (type, index) {
       this[`${type}Img`].splice(index, 1)
       this[`${type}ImgIOS`].splice(index, 1)
+      if (this[`${type}Files`]) {
+        this[`${type}Files`].splice(index, 1)
+      }
     },
     previewImg (type, index) {
       let that = this
-      // eslint-disable-next-line
-      wx.previewImage({
-        current: that[`${type}Img`][index],
-        urls: that[`${type}Img`]
-      })
+      try {
+        // eslint-disable-next-line
+        wx.previewImage({
+          current: that[`${type}Img`][index],
+          urls: that[`${type}Img`]
+        })
+      } catch (err) {
+        console.log('On dev mode!')
+      }
     },
     uploadImg (type) {
       let that = this
@@ -516,6 +553,33 @@ export default {
           }
         })
       }
+    },
+    changeImg (type) {
+      let that = this
+      let inputDOM = this.$refs[`${type}inputer`]
+      let inputFile = inputDOM.files
+      let exit = that[`${type}Img`].length
+      if ((inputFile.length + exit) > 3) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('canOnlyUploadUpTo3Images')
+        })
+        inputDOM.value = ''
+        return false
+      }
+      for (let i = 0; i <= inputFile.length - 1; i++) {
+        let reader = new FileReader()
+        let item = inputFile[i]
+        that[`${type}Files`].push(item)
+        reader.onload = (function (theFile) {
+          return function (e) {
+            that[`${type}Img`].push(e.target.result)
+            that.$previewRefresh()
+          }
+        })(item)
+        reader.readAsDataURL(item)
+      }
+      inputDOM.value = ''
     }
   },
   watch: {

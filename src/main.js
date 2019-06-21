@@ -26,9 +26,10 @@ Vue.config.productionTip = false
 
 axios.interceptors.request.use(function (config) {
   let userEmail = window.localStorage.getItem('userEmail')
-  let language = window.localStorage.getItem('lang') || 'zh'
+  let language = window.localStorage.getItem('lang') || 'cn'
   let warehouse = window.localStorage.getItem('warehouse')
   let warehouseId = JSON.parse(warehouse || '{}').warehouseId
+  console.log(config)
   if (config.method === 'post') {
     let data = qs.parse(config.data)
     config.data = qs.stringify({
@@ -72,9 +73,9 @@ Vue.directive('selectVal', {
 })
 
 const i18n = new VueI18n({
-  locale: window.localStorage.getItem('lang') || 'zh',
+  locale: window.localStorage.getItem('lang') || 'cn',
   messages: {
-    'zh': require('./lang/zh'),
+    'cn': require('./lang/cn'),
     'en': require('./lang/en')
   }
 })

@@ -37,7 +37,7 @@
         <input type="number" style="width: 5rem" placeholder="0" v-model="editData.rdReceivedNetReceiptsQty" v-select-val />
       </div>
       <div class="search search-last">
-        <scan-input :name="$t('location')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="editData.lcCode"></scan-input>
+        <scan-input :name="$t('pallet')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="editData.lcCode"></scan-input>
       </div>
       <div class="selector">
         <group>
@@ -45,7 +45,7 @@
         </group>
       </div>
       <div class="photo">
-        <span class="label">{{$t('takePhotos')}}</span>
+        <span class="label">{{$t('takePhotosMust')}}</span>
         <input class="edit-img hidden" @change="changeImg('edit')" type="file" name="cover" ref="editinputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? editImgIOS : editImg" :key="index">
@@ -77,7 +77,7 @@
         <scan-input :name="'SKU'" :placeholder="$t('scanTheSKUOnTheShippingMarkHere')" v-model="newData.productBarcode"></scan-input>
       </div>
       <div class="search">
-        <scan-input :name="$t('location')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="newData.lcCode"></scan-input>
+        <scan-input :name="$t('pallet')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="newData.lcCode"></scan-input>
       </div>
       <div class="search">
         <span class="label" style="width: 11rem">{{$t('quantityReceivedThisTime')}}</span>
@@ -89,7 +89,7 @@
         </group>
       </div>
       <div class="photo">
-        <span class="label">{{$t('takePhotos')}}</span>
+        <span class="label">{{$t('takePhotosMust')}}</span>
         <input class="new-img hidden" @change="changeImg('new')" type="file" name="cover" ref="newinputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
           <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? newImgIOS :newImg" :key="index">
@@ -130,6 +130,9 @@
           <span class="label">{{$t('refNo')}}：</span> 
           <span class="underline name" title="">{{editData.spoCode}}</span>
         </div>
+        <div class="info-detail" style="margin-top: 2rem;">
+          <span class="label">{{$t('pleaseOperateInNormalOrderMode')}}</span> 
+        </div>
       </div>
       <div class="button">
         <flexbox>
@@ -150,7 +153,7 @@ import { XButton, Flexbox, FlexboxItem, Selector, Group } from 'vux'
 import qs from 'Qs'
 
 export default {
-  name: 'receiving',
+  name: 'returnManagement',
   components: {
     XButton,
     Flexbox,
@@ -184,18 +187,20 @@ export default {
         spoType: '',
         productBarcode: '',
         rdReceivedNetReceiptsQty: 0,
-        receivingQtyList: [{}]
+        receivingQtyList: [{}],
+        exception: ''
       },
       editImg: [],
-      editFile: [],
+      editFiles: [],
       editImgIOS: [],
       newImg: [],
-      newFile: [],
+      newFiles: [],
       newImgIOS: [],
       newData: {
         spoType: '',
         productBarcode: '',
-        trackingNumber: ''
+        trackingNumber: '',
+        exception: ''
       },
       oldeditData: {
         spoType: '',
@@ -237,10 +242,12 @@ export default {
             this[`${type}Data`].sopQuantity = res.data.data.sopQuantity
             this[`${type}Data`].sopReceivedQty = res.data.data.sopReceivedQty
             this[`${type}Data`].rdReceivedNetReceiptsQty = 0
+            this[`${type}Data`].productId = res.data.data.productId
           } else {
             this[`${type}Data`].sopQuantity = 0
             this[`${type}Data`].sopReceivedQty = 0
             this[`${type}Data`].rdReceivedNetReceiptsQty = 0
+            this[`${type}Data`].productId = ''
             if (res.data.message) {
               this.$vux.toast.show({
                 type: 'text',
@@ -280,6 +287,13 @@ export default {
           this.$vux.toast.show({
             type: 'text',
             text: this.$t('pleaseEnterTheTrakcingNo')
+          })
+          return false
+        }
+        if (this[`${type}Img`].length === 0) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: this.$t('uploadAtLeastOneImage')
           })
           return false
         }
@@ -325,7 +339,7 @@ export default {
       }
     },
     doAjax (type) {
-      let params = {
+      /* let params = {
         warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
         warehouseCode: JSON.parse(window.localStorage.getItem('warehouse')).warehouseCode,
         trackingNumber: this[`${type}Data`].trackingNumber,
@@ -334,30 +348,51 @@ export default {
         lcCode: this[`${type}Data`].lcCode,
         exception: this[`${type}Data`].exception,
         serverIds: this.uploadIds
-      }
+      } */
+      let form = new FormData()
+      form.append('warehouseId', JSON.parse(window.localStorage.getItem('warehouse')).warehouseId)
+      form.append('warehouseCode', JSON.parse(window.localStorage.getItem('warehouse')).warehouseCode)
+      form.append('trackingNumber', this[`${type}Data`].trackingNumber)
+      form.append('productBarcode', this[`${type}Data`].productBarcode)
+      form.append('quantity', this[`${type}Data`].rdReceivedNetReceiptsQty)
+      form.append('lcCode', this[`${type}Data`].lcCode)
+      form.append('exception', this[`${type}Data`].exception || '')
+      form.append('serverIds', this.uploadIds)
+      form.append('userEmail', window.localStorage.getItem('userEmail'))
+      form.append('language', window.localStorage.getItem('lang') || 'cn')
       let url = ''
       if (type === 'edit') {
-        params = {
+        form.append('productId', this[`${type}Data`].productId)
+        form.append('type', this[`${type}Data`].spoType)
+        form.append('relateOrderCode', this[`${type}Data`].spoCode)
+        /* params = {
           productId: this[`${type}Data`].productId,
           type: this[`${type}Data`].spoType,
           relateOrderCode: this[`${type}Data`].spoCode,
           ...params
-        }
+        } */
         url = '/weixinapi/returnOrder/insertScanningList'
       } else {
         url = '/weixinapi/returnOrder/insertReturnClaimOrder'
       }
-      // eslint-disable-next-line
-      /* if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value === 'PC') {
-        params.img = this[`${type}Img`]
-      } */
-      console.log(`${type}File`)
-      console.log(this[`${type}File`])
-      params.file = this[`${type}File`]
-      params.file1 = 1
-      this.axios.post(`${this.$store.getters.getUrl}${url}`, qs.stringify(params), {
+      if (this[`${type}Files`]) {
+        for (let i = 0; i <= this[`${type}Files`].length - 1; i++) {
+          form.append('files', this[`${type}Files`][i])
+        }
+      }
+      /* this.axios.post(`${this.$store.getters.getUrl}${url}`, qs.stringify(params), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
+        }
+      }) */
+      const instance = this.axios.create({
+        async: true,
+        crossDomain: true,
+        withCredentials: true
+      })
+      instance.post(`${this.$store.getters.getUrl}${url}`, form, {
+        headers: {
+          'Content-type': 'multipart/form-data'
         }
       })
       .then(res => {
@@ -369,7 +404,13 @@ export default {
           })
           this[`${type}Img`] = []
           this[`${type}ImgIOS`] = []
+          this[`${type}Files`] = []
           this.uploadIds = []
+          this[`${type}Data`].productBarcode = ''
+          this[`${type}Data`].rdReceivedNetReceiptsQty = ''
+          this[`${type}Data`].lcCode = ''
+          this[`${type}Data`].exception = ''
+          this[`${type}Data`].trackingNumber = ''
         } else {
           this.$vux.toast.show({
             type: 'text',
@@ -421,6 +462,9 @@ export default {
     deleteImg (type, index) {
       this[`${type}Img`].splice(index, 1)
       this[`${type}ImgIOS`].splice(index, 1)
+      if (this[`${type}Files`]) {
+        this[`${type}Files`].splice(index, 1)
+      }
     },
     previewImg (type, index) {
       let that = this
@@ -466,6 +510,7 @@ export default {
       for (let i = 0; i <= inputFile.length - 1; i++) {
         let reader = new FileReader()
         let item = inputFile[i]
+        that[`${type}Files`].push(item)
         reader.onload = (function (theFile) {
           return function (e) {
             that[`${type}Img`].push(e.target.result)
@@ -474,9 +519,7 @@ export default {
         })(item)
         reader.readAsDataURL(item)
       }
-      console.log(inputFile)
-      that[`${type}File`] = inputFile
-      console.log(that[`${type}File`])
+      inputDOM.value = ''
     }
   },
   watch: {

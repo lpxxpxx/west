@@ -1,6 +1,6 @@
 <template>
   <div class="cont">
-    <span class="label">{{name}}</span>
+    <span class="label" v-show="name">{{name}}</span>
     <input type="text" :placeholder="placeholder" :disabled="disabled" :autofocus="autofocus" v-model="val" onfocus="this.select()" />
     <span class="iconfont icon-scan" @click="scan"></span>
   </div>

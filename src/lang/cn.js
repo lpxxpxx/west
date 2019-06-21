@@ -54,6 +54,7 @@ module.exports = {
   delete: '删除',
   operationSuccessful: '操作成功',
   takePhotos: '拍照（可选）',
+  takePhotosMust: '拍照',
   moveAllSKUOfCurrentStorageLocation: '移动当前库位所有SKU',
   submit: '提交',
   pleaseEnterTheLocation: '请输入库位',
@@ -132,5 +133,18 @@ module.exports = {
   canOnlyUploadUpTo3Images: '最多只能上传3张图片',
   pickingListNo: '拣货单号',
   pickingStatus: '拣货状态',
-  PickQuantity: '拣货数量'
+  PickQuantity: '拣货数量',
+  pleaseOperateInNormalOrderMode: '请按正常入库单模式操作',
+  uploadAtLeastOneImage: '至少上传一张图片',
+  pallet: '托盘',
+  picked: '已拣数量',
+  pleaseScanTheLocation: '请扫描库位',
+  pleaseScanTheSKU: '请扫描SKU',
+  formLocation: '源库位',
+  remainQty: '剩余拣货数量',
+  thereIsNoSuchSKUOnTheTocation: '库位上没有此SKU',
+  SKUHasBeenDamaged: 'SKU已损坏',
+  barcodeCannotBeScanned: '条码无法扫描',
+  barcodeIsInconsistentWithPrinting: '条码与印刷不一致',
+  otherReasons: '其他原因'
 }
