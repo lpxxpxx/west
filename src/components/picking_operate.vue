@@ -264,7 +264,7 @@ export default {
       if (this.lcCodeP.toUpperCase() === this.lcCode.toUpperCase()) {
         this.step = 2
         this.focusInput(1)
-        if (Number(pickedQTY) === 0) this.beginThePicking()
+        if (Number(this.pickedQTY) === 0) this.beginThePicking()
       }
     },
     productBarcodeP () {
