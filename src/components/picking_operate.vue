@@ -159,13 +159,35 @@ export default {
             for (let i in res.data.data) {
               this[i] = res.data.data[i]
             }
-            this.focusInput(0)
+            if (res.data.data.pageType === 'finish') {
+              this.step = 3
+            } else {
+              this.focusInput(0)
+            }
           }
         } else {
           this.$vux.toast.show({
             type: 'text',
             text: res.data.message
           })
+        }
+      })
+      .catch(res => {
+        alert(this.$t('businessSystemException'))
+      })
+    },
+    beginThePicking () {
+      let params = {
+        pickingCode: this.pickingCode
+      }
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/picking/beginThePicking`, qs.stringify(params), {
+        headers: {
+          'Content-type': 'application/x-www-form-urlencoded'
+        }
+      })
+      .then(res => {
+        if (res.data.success) {
+          console.log('开始拣货')
         }
       })
       .catch(res => {
@@ -242,6 +264,7 @@ export default {
       if (this.lcCodeP.toUpperCase() === this.lcCode.toUpperCase()) {
         this.step = 2
         this.focusInput(1)
+        if (Number(pickedQTY) === 0) this.beginThePicking()
       }
     },
     productBarcodeP () {
