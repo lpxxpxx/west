@@ -355,7 +355,7 @@ export default {
       form.append('trackingNumber', this[`${type}Data`].trackingNumber)
       form.append('productBarcode', this[`${type}Data`].productBarcode)
       form.append('quantity', this[`${type}Data`].rdReceivedNetReceiptsQty)
-      form.append('lcCode', this[`${type}Data`].lcCode)
+      form.append('lcCode', this[`${type}Data`].lcCode.toUpperCase())
       form.append('exception', this[`${type}Data`].exception || '')
       form.append('serverIds', this.uploadIds)
       form.append('userEmail', window.localStorage.getItem('userEmail'))

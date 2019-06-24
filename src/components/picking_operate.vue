@@ -5,9 +5,12 @@
         <span class="label">{{$t('pickingListNo')}}：</span> 
         <span class="underline name" title="">{{pickingCode}}</span>
       </div>
-      <div class="total">
+      <div class="total clearfloat">
         <span class="pull-left">{{$t('total')}}： <span class="underline">{{pickingItemCnt || 0}}</span></span>
         <span class="pull-right">{{$t('picked')}}： <span class="underline">{{pickedQTY || 0}}</span></span>
+      </div>
+      <div class="total clearfloat">
+        <span class="pull-right">{{$t('exceptionQTY')}}： <span class="underline">{{exceptionQTY || 0}}</span></span>
       </div>
     </div>
     <div class="step" v-show="step===1">
@@ -114,7 +117,7 @@ export default {
   },
   data () {
     return {
-      step: 1,
+      step: 2,
       showExceptionMenus: false,
       pickingCode: '',
       pickingItemCnt: '',
@@ -127,6 +130,9 @@ export default {
       productBarcode: '',
       productBarcodeP: '',
       productId: '',
+      exceptionQTY: '',
+      totalTime: '',
+      pickRate: '',
       exceptionMenus: {
         '1': this.$t('thereIsNoSuchSKUOnTheTocation'),
         '2': this.$t('SKUHasBeenDamaged'),
@@ -236,11 +242,12 @@ export default {
               this.step = 3
             }
           }
+        } else {
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
         }
-        this.$vux.toast.show({
-          type: 'text',
-          text: res.data.message
-        })
       })
       .catch(res => {
         alert(this.$t('businessSystemException'))
@@ -268,11 +275,13 @@ export default {
       }
     },
     productBarcodeP () {
-      let a = this.productBarcodeP.split('-')
-      let b = this.productBarcode.split('-')
-      if (this.productBarcodeP.toUpperCase() === this.productBarcode.toUpperCase() || a[a.length - 1].toUpperCase() === b[b.length - 1].toUpperCase()) {
-        this.submit()
-      }
+      let that = this
+      clearTimeout(that.timeoutId)
+      console.log(this.productBarcodeP)
+      that.timeoutId = setTimeout(function () {
+        that.submit()
+        console.log(that.productBarcodeP)
+      }, 1000)
     }
   }
 }

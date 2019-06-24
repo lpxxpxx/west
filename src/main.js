@@ -29,7 +29,6 @@ axios.interceptors.request.use(function (config) {
   let language = window.localStorage.getItem('lang') || 'cn'
   let warehouse = window.localStorage.getItem('warehouse')
   let warehouseId = JSON.parse(warehouse || '{}').warehouseId
-  console.log(config)
   if (config.method === 'post') {
     let data = qs.parse(config.data)
     config.data = qs.stringify({

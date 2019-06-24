@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="input">
-      <scan-input :placeholder="$t('trackingNumber')" v-model="queryCode"></scan-input>
+      <scan-input :placeholder="`${$t('trackingNumber')}/SKU`" v-model="queryCode"></scan-input>
     </div>
     <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.pickingCode, item.pickingItemCnt)">
       <div class="task-item">
