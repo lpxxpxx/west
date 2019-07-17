@@ -33,6 +33,14 @@
           </tbody>
         </x-table>
       </div>
+      <div class="selector">
+        <group>
+          <selector v-model="skuException" :title="$t('exception')" :options="exceptionList"></selector>
+        </group>
+      </div>
+      <div class="search reasons" v-show="skuException === 'other'">
+        <input type="text" :placeholder="$t('otherReasons')" v-model="skuOtherReasons" v-select-val />
+      </div>
       <div class="button" v-show="skuButtonShow">
         <flexbox>
           <flexbox-item>
@@ -79,6 +87,14 @@
         </x-table>
         <x-button v-show="lcCodeButtonShow" :gradients="['#169bd5', '#169bd5']" @click.native="addSku('lcCode')"><i class="iconfont icon-jiajianzujianjiahao"></i></x-button>
       </div>
+      <div class="selector">
+        <group>
+          <selector v-model="lcCodeException" :title="$t('exception')" :options="exceptionList"></selector>
+        </group>
+      </div>
+      <div class="search reasons" v-show="lcCodeException === 'other'">
+        <input type="text" :placeholder="$t('otherReasons')" v-model="lcCodeOtherReasons" v-select-val />
+      </div>
       <div class="button" v-show="lcCodeButtonShow">
         <flexbox>
           <flexbox-item>
@@ -94,7 +110,7 @@
 </template>
 
 <script>
-import { Tab, TabItem, XTable, XButton, Flexbox, FlexboxItem } from 'vux'
+import { Tab, TabItem, XTable, XButton, Flexbox, FlexboxItem, Selector, Group } from 'vux'
 import qs from 'Qs'
 
 export default {
@@ -105,7 +121,9 @@ export default {
     XTable,
     XButton,
     Flexbox,
-    FlexboxItem
+    FlexboxItem,
+    Selector,
+    Group
   },
   mounted () {
     let query = this.$route.query || {}
@@ -135,8 +153,19 @@ export default {
       lcCodeDataNew: [],
       oldskuData: [],
       oldlcCodeData: [],
+      skuException: '',
+      lcCodeException: '',
+      skuOtherReasons: '',
+      lcCodeOtherReasons: '',
       skuButtonShow: false,
-      lcCodeButtonShow: false
+      lcCodeButtonShow: false,
+      exceptionList: [
+        {key: '实物与系统不符 / Physical and system do not match', value: this.$t('physicalAndSystemDoNotMatch')},
+        {key: '箱规问题 / Box gauge problem', value: this.$t('boxGaugeProblem')},
+        {key: 'SKU混箱 / SKU mixing box', value: this.$t('SKUMixingBox')},
+        {key: '移库数据差异 / Transfer database data difference', value: this.$t('transferDatabaseDataDifference')},
+        {key: 'other', value: this.$t('otherReasons')}
+      ]
     }
   },
   methods: {
@@ -157,6 +186,8 @@ export default {
       this[`${type}All`] = ''
       this[`has${type}`] = false
       this[`${type}ButtonShow`] = false
+      this[`${type}Exception`] = '实物与系统不符 / Physical and system do not match'
+      this[`${type}OtherReasons`] = ''
     },
     addSku (type) {
       if (this[`${type}DataNew`].length >= 5) {
@@ -294,10 +325,29 @@ export default {
         })
         return false
       }
+      let remarks = ''
+      if (!this[`${type}Exception`]) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('pleaseSelectTheCauseOfTheException')
+        })
+        return false
+      } else if (this[`${type}Exception`] === 'other') {
+        if (!this[`${type}OtherReasons`]) {
+          this.$vux.toast.show({
+            type: 'text',
+            text: this.$t('pleaseFillInTheReasonForTheException')
+          })
+          return false
+        }
+        remarks = this[`${type}OtherReasons`]
+      } else {
+        remarks = this[`${type}Exception`]
+      }
       this.$vux.loading.show({
         text: 'Loading'
       })
-      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/inventoryAdjustment`, qs.stringify({receivedManageVo: JSON.stringify(submitData)}), {
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/inventory/inventoryAdjustment`, qs.stringify({receivedManageVo: JSON.stringify(submitData), remarks: remarks}), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         }
@@ -368,6 +418,12 @@ export default {
       float: right;
       height: 2rem;
       line-height: 2rem;
+    }
+  }
+  .reasons {
+    padding: 5px 1rem;
+    input {
+      padding: 0 2rem 0 .5rem;
     }
   }
   .button {

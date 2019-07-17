@@ -121,17 +121,23 @@ export default {
     submit (type) {
       let cloudSizeUnitRate = 0.3937008
       let cloudWeightUnitRate = 2.2046226
-      if (!this.data.productId) {
+      /* if (!this.data.productId) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseEnterTheCorrectSKU')
         })
         return false
-      }
+      } */
       if (!this.data.productWeight || Number(this.data.productWeight) === 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseInputProductWeight')
+        })
+        return false
+      } else if (Number(this.data.productWeight) < 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('pleaseInputProductCorrectWeight')
         })
         return false
       }
@@ -141,6 +147,12 @@ export default {
           text: this.$t('pleaseEnterProductLength')
         })
         return false
+      } else if (Number(this.data.productLength) < 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('pleaseInputProductCorrectLength')
+        })
+        return false
       }
       if (!this.data.productWidth || Number(this.data.productWidth) === 0) {
         this.$vux.toast.show({
@@ -148,11 +160,23 @@ export default {
           text: this.$t('pleaseEnterProductWidth')
         })
         return false
+      } else if (Number(this.data.productWidth) < 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('pleaseInputProductCorrectWidth')
+        })
+        return false
       }
       if (!this.data.productHeight || Number(this.data.productHeight) === 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseEnterProductHeight')
+        })
+        return false
+      } else if (Number(this.data.productHeight) < 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('pleaseInputProductCorrectHeight')
         })
         return false
       }

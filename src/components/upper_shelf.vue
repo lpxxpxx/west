@@ -710,7 +710,7 @@ export default {
     }
   }
   .total {
-    padding: 0rem 1rem 1.5rem;
+    padding: 0 0 1.5rem;
   }
   .table {
     padding: 1rem;

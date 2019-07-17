@@ -64,7 +64,6 @@ export default {
     this.quantity = query.quantity
     this.aid = query.aid
     this.isTask = !(query.aid === '')
-    this.loadDetail()
   },
   data () {
     return {
@@ -155,7 +154,7 @@ export default {
         let that = this
         clearTimeout(that.timeoutId)
         that.timeoutId = setTimeout(function () {
-          that.loadDetail()
+          if (that.productBarcode && that.lcCode && that.lcCodeNew) that.loadDetail()
         }, 1000)
       }
     },

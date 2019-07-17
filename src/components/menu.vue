@@ -194,6 +194,9 @@ export default {
               case 5:
                 item.num = res.data.data.productSkuAttrCount || 0
                 break
+              case 8:
+                item.num = res.data.data.pickingCount || 0
+                break
             }
             return item
           })

@@ -229,7 +229,8 @@ export default {
       let params = {
         productSku: this[`${type}Data`].productBarcode,
         warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
-        spoCode: this[`${type}Data`].spoCode
+        spoCode: this[`${type}Data`].spoCode,
+        trackingNumber: this[`${type}Data`].trackingNumber
       }
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/returnOrder/returnOrdersDetailSearch`, qs.stringify(params), {
         headers: {
@@ -282,14 +283,12 @@ export default {
       this[`${type}Data`] = JSON.parse(JSON.stringify(this[`old${type}Data`]))
     },
     submit (type) {
-      if (type === 'new') {
-        if (this[`${type}Img`].length === 0) {
-          this.$vux.toast.show({
-            type: 'text',
-            text: this.$t('uploadAtLeastOneImage')
-          })
-          return false
-        }
+      if (this[`${type}Img`].length === 0) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('uploadAtLeastOneImage')
+        })
+        return false
       }
       let reg = /^[1-9]\d{0,4}$/
       if (!reg.test(Number(this[`${type}Data`].rdReceivedNetReceiptsQty)) || Number(this[`${type}Data`].rdReceivedNetReceiptsQty) === 0) {
@@ -410,7 +409,6 @@ export default {
           this[`${type}Data`].rdReceivedNetReceiptsQty = ''
           this[`${type}Data`].lcCode = ''
           this[`${type}Data`].exception = ''
-          this[`${type}Data`].trackingNumber = ''
         } else {
           this.$vux.toast.show({
             type: 'text',

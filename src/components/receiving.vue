@@ -124,7 +124,7 @@
 
 <script>
 import { Tab, TabItem, XButton, Flexbox, FlexboxItem } from 'vux'
-import qs from 'Qs'
+/* import qs from 'Qs' */
 
 export default {
   name: 'receiving',
@@ -331,37 +331,37 @@ export default {
       }
     },
     doAjax (type) {
-      /* let form = new FormData()
-      form.append('receivingId', JSON.parse(window.localStorage.getItem('warehouse')).warehouseId)
-      form.append('receivingCode', JSON.parse(window.localStorage.getItem('warehouse')).warehouseCode)
-      form.append('customerCode', this[`${type}Data`].trackingNumber)
-      form.append('receivingStatus', this[`${type}Data`].productBarcode)
-      form.append('productBarcode', this[`${type}Data`].rdReceivedNetReceiptsQty)
-      form.append('productTitleEn', this[`${type}Data`].lcCode)
-      form.append('productWeight', this[`${type}Data`].exception)
-      form.append('productLength', this.uploadIds)
-      form.append('productWidth', window.localStorage.getItem('userEmail'))
-      form.append('productHeight', window.localStorage.getItem('lang') || 'cn')
-      form.append('productId', window.localStorage.getItem('lang') || 'cn')
-      form.append('warehouseId', window.localStorage.getItem('lang') || 'cn')
-      form.append('rdReceivedNetReceiptsQty', window.localStorage.getItem('lang') || 'cn')
-      form.append('rdReceivingQtySubset', window.localStorage.getItem('lang') || 'cn')
-      form.append('rdReceivedQtySubset', window.localStorage.getItem('lang') || 'cn')
-      form.append('codeType', window.localStorage.getItem('lang') || 'cn')
-      form.append('boxNo', window.localStorage.getItem('lang') || 'cn')
-      form.append('userEmail', window.localStorage.getItem('lang') || 'cn')
-      form.append('language', window.localStorage.getItem('lang') || 'cn')
-      form.append('serverIds', window.localStorage.getItem('lang') || 'cn')
-      form.append('cloudSizeUnit', window.localStorage.getItem('lang') || 'cn')
-      form.append('cloudWeightUnit', window.localStorage.getItem('lang') || 'cn') */
-      this[`${type}Data`].serverIds = this.uploadIds
-      // eslint-disable-next-line
-      if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value === 'PC') {
-        this[`${type}Data`].img = this[`${type}Img`]
+      let form = new FormData()
+      for (let i in this[`${type}Data`]) {
+        if (this[`${type}Data`][i]) form.append(i, this[`${type}Data`][i])
       }
-      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/receiving/confirmArrival`, qs.stringify({receivingWeixinDetailVo: JSON.stringify(this[`${type}Data`])}), {
+      form.set('userEmail', window.localStorage.getItem('userEmail'))
+      form.set('language', window.localStorage.getItem('lang') || 'cn')
+      if (this[`${type}Files`].length) {
+        for (let i = 0; i <= this[`${type}Files`].length - 1; i++) {
+          if (this[`${type}Files`]) form.append('files', this[`${type}Files`][i])
+        }
+      } else {
+        form.delete('files')
+      }
+      if (this.uploadIds.length) {
+        form.set('serverIds', this.uploadIds)
+      } else {
+        form.delete('serverIds')
+      }
+      /* this.axios.post(`${this.$store.getters.getUrl}/weixinapi/receiving/confirmArrival`, qs.stringify({receivingWeixinDetailVo: JSON.stringify(this[`${type}Data`])}), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
+        }
+      }) */
+      const instance = this.axios.create({
+        async: true,
+        crossDomain: true,
+        withCredentials: true
+      })
+      instance.post(`${this.$store.getters.getUrl}/weixinapi/receiving/confirmArrival`, form, {
+        headers: {
+          'Content-type': 'multipart/form-data'
         }
       })
       .then(res => {

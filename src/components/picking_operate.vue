@@ -29,23 +29,26 @@
     </div>
     <div class="step" v-show="step===2">
       <div class="search">
-        <span class="label">{{$t('formLocation')}}</span>
+        <span class="label">{{$t('formLocation')}}：</span>
+        <span class="detail">{{lcCode}}</span>
       </div>
-      <div class="search search-last search-detail">
+      <!-- <div class="search search-last search-detail">
         <span class="label">{{lcCode}}</span>
-      </div>
+      </div> -->
       <div class="search">
-        <span class="label">SKU</span>
+        <span class="label">SKU：</span>
+        <span class="detail">{{productBarcode}}</span>
       </div>
-      <div class="search search-last search-detail">
+      <!-- <div class="search search-last search-detail">
         <span class="label">{{productBarcode}}</span>
-      </div>
+      </div> -->
       <div class="search">
-        <span class="label">{{$t('total')}}</span>
+        <span class="label">{{$t('total')}}：</span>
+        <span class="detail">{{pickSumQty}}</span>
       </div>
-      <div class="search search-last search-detail">
+      <!-- <div class="search search-last search-detail">
         <span class="label">{{pickSumQty}}</span>
-      </div>
+      </div> -->
       <div class="search">
         <span class="label">{{$t('pleaseScanTheSKU')}}</span>
       </div>
@@ -53,11 +56,12 @@
         <scan-input :placeholder="$t('scanTheSKUBarCodeHere')" v-model="productBarcodeP"></scan-input>
       </div>
       <div class="search">
-        <span class="label">{{$t('remainQty')}}</span>
+        <span class="label">{{$t('remainQty')}}：</span>
+        <span class="detail">{{remainQty}}</span>
       </div>
-      <div class="search search-last search-detail">
+      <!-- <div class="search search-last search-detail">
         <span class="label">{{remainQty}}</span>
-      </div>
+      </div> -->
       <div class="button">
         <flexbox>
           <flexbox-item>
@@ -117,7 +121,7 @@ export default {
   },
   data () {
     return {
-      step: 2,
+      step: 1,
       showExceptionMenus: false,
       pickingCode: '',
       pickingItemCnt: '',
@@ -268,19 +272,26 @@ export default {
   },
   watch: {
     lcCodeP () {
-      if (this.lcCodeP.toUpperCase() === this.lcCode.toUpperCase()) {
-        this.step = 2
-        this.focusInput(1)
-        if (Number(this.pickedQTY) === 0) this.beginThePicking()
-      }
+      let that = this
+      clearTimeout(that.timeoutId)
+      that.timeoutId = setTimeout(function () {
+        if (that.lcCodeP.toUpperCase() === that.lcCode.toUpperCase()) {
+          that.step = 2
+          that.focusInput(1)
+          if (Number(that.pickedQTY) === 0) that.beginThePicking()
+        } else if (that.lcCodeP) {
+          that.$vux.toast.show({
+            type: 'text',
+            text: that.$t('ScanningLocationIsInconsistentWithNewLocation')
+          })
+        }
+      }, 1000)
     },
     productBarcodeP () {
       let that = this
       clearTimeout(that.timeoutId)
-      console.log(this.productBarcodeP)
       that.timeoutId = setTimeout(function () {
-        that.submit()
-        console.log(that.productBarcodeP)
+        if (that.productBarcodeP) that.submit()
       }, 1000)
     }
   }
@@ -300,6 +311,8 @@ export default {
     display: flex;
     .label {
       font-size: 1.5rem;
+      height: 3rem;
+      white-space: nowrap;
     }
     input {
       flex: 1;
