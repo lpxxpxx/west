@@ -8,17 +8,21 @@
         </div>
       </flexbox-item>
     </flexbox>
+    <!-- <div class="button">
+      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToChart()">{{$t('skip')}}</x-button>
+    </div> -->
   </div>
 </template>
 
 <script>
-import { Flexbox, FlexboxItem } from 'vux'
+import { Flexbox, FlexboxItem, XButton } from 'vux'
 
 export default {
   name: 'Warehouse',
   components: {
     Flexbox,
-    FlexboxItem
+    FlexboxItem,
+    XButton
   },
   mounted () {
     let warehouses = document.querySelector('#userInfo').value
@@ -51,6 +55,13 @@ export default {
       this.$cookies.set('userEmail', this.warehouses.userEmail)
       window.localStorage.setItem('warehouse', JSON.stringify(item))
       this.$router.push('/menu')
+    },
+    goToChart () {
+      this.$store.dispatch('setUser', this.warehouses.userName)
+      this.$store.dispatch('setUserEmail', this.warehouses.userEmail)
+      this.$cookies.set('user', this.warehouses.userName)
+      this.$cookies.set('userEmail', this.warehouses.userEmail)
+      this.$router.push('/chartCenter')
     }
   }
 }
@@ -74,5 +85,15 @@ export default {
   height: 1rem;
   line-height: 1rem;
   text-align: center;
+}
+.button {
+  position: fixed;
+  padding: 1rem 1rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
+  background: #fbf9fe;
 }
 </style>

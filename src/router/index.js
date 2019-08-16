@@ -20,6 +20,7 @@ import returnManagement from '@/components/return_management'
 import pickingOperateTask from '@/components/picking_operate_task'
 import pickingOperate from '@/components/picking_operate'
 import slideList from '@/components/slide_list'
+import chartCenter from '@/components/chart_center'
 import cn from '@/lang/cn'
 import en from '@/lang/en'
 
@@ -177,6 +178,14 @@ const routes = new Router({
       component: pickingOperate,
       meta: {
         title: 'pickingOperate'
+      }
+    },
+    {
+      path: '/chartCenter',
+      name: 'chartCenter',
+      component: chartCenter,
+      meta: {
+        title: 'chartCenter'
       }
     }
   ]

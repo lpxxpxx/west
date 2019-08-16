@@ -43,7 +43,7 @@ export default {
   },
   methods: {
     changeFooter () {
-      if (this.$route.name === 'Warehouse') {
+      if (this.$route.name === 'Warehouse' || this.$route.name === 'chartCenter') {
         this.showFooter = false
       } else {
         this.showFooter = true
@@ -228,6 +228,17 @@ body {
   .weui-cells:after {
     border-bottom: 0;
   }
+}
+.vux-table td,
+.vux-table th {
+  line-height: 24px;
+  padding: 3px 0;
+}
+.vux-table th {
+  white-space: nowrap;
+}
+.vux-table td:first-of-type {
+  word-break: break-all;
 }
 .footer {
   position: fixed;

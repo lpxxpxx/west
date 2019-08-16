@@ -12,22 +12,22 @@
     <divider>{{$t('parameters')}}</divider>
     <div class="search search-first">
       <span class="label">{{$t('weight')}}</span>
-      <input type="number" placeholder="0" v-model="data.productWeight" class="weight" v-enter-number v-select-val />
+      <input type="number" placeholder="0" v-model="data.productWeightLb" class="weight" v-enter-number v-select-val />
       <span class="type">{{$t(data.cloudWeightUnit || 'KG')}}</span>
     </div>
     <div class="search">
       <span class="label">{{$t('long')}}</span>
-      <input type="number" placeholder="0" v-model="data.productLength" v-enter-number v-select-val />
+      <input type="number" placeholder="0" v-model="data.productLengthIn" v-enter-number v-select-val />
       <span class="type">{{$t(data.cloudSizeUnit || 'CM')}}</span>
     </div>
     <div class="search">
       <span class="label">{{$t('wide')}}</span>
-      <input type="number" placeholder="0" v-model="data.productWidth" v-enter-number v-select-val />
+      <input type="number" placeholder="0" v-model="data.productWidthIn" v-enter-number v-select-val />
       <span class="type">{{$t(data.cloudSizeUnit || 'CM')}}</span>
     </div>
     <div class="search search-last">
       <span class="label">{{$t('high')}}</span>
-      <input type="number" placeholder="0" v-model="data.productHeight" v-enter-number v-select-val />
+      <input type="number" placeholder="0" v-model="data.productHeightIn" v-enter-number v-select-val />
       <span class="type">{{$t(data.cloudSizeUnit || 'CM')}}</span>
     </div>
     <div class="button">
@@ -66,18 +66,18 @@ export default {
       data: {
         productBarcode: '',
         productTitleEn: '',
-        productLength: 0,
-        productWidth: 0,
-        productHeight: 0,
-        productWeight: 0
+        productLengthIn: 0,
+        productWidthIn: 0,
+        productHeightIn: 0,
+        productWeightLb: 0
       },
       oldData: {
         productBarcode: '',
         productTitleEn: '',
-        productLength: 0,
-        productWidth: 0,
-        productHeight: 0,
-        productWeight: 0
+        productLengthIn: 0,
+        productWidthIn: 0,
+        productHeightIn: 0,
+        productWeightLb: 0
       }
     }
   },
@@ -101,10 +101,10 @@ export default {
           this.oldData = JSON.parse(JSON.stringify(res.data))
         } else {
           this.data.productTitleEn = ''
-          this.data.productLength = 0
-          this.data.productWidth = 0
-          this.data.productHeight = 0
-          this.data.productWeight = 0
+          this.data.productLengthIn = 0
+          this.data.productWidthIn = 0
+          this.data.productHeightIn = 0
+          this.data.productWeightLb = 0
         }
       })
       .catch(res => {
@@ -119,8 +119,8 @@ export default {
       }, 1000)
     },
     submit (type) {
-      let cloudSizeUnitRate = 0.3937008
-      let cloudWeightUnitRate = 2.2046226
+      /* let cloudSizeUnitRate = 0.3937008
+      let cloudWeightUnitRate = 2.2046226 */
       /* if (!this.data.productId) {
         this.$vux.toast.show({
           type: 'text',
@@ -128,52 +128,52 @@ export default {
         })
         return false
       } */
-      if (!this.data.productWeight || Number(this.data.productWeight) === 0) {
+      if (!this.data.productWeightLb || Number(this.data.productWeightLb) === 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseInputProductWeight')
         })
         return false
-      } else if (Number(this.data.productWeight) < 0) {
+      } else if (Number(this.data.productWeightLb) < 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseInputProductCorrectWeight')
         })
         return false
       }
-      if (!this.data.productLength || Number(this.data.productLength) === 0) {
+      if (!this.data.productLengthIn || Number(this.data.productLengthIn) === 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseEnterProductLength')
         })
         return false
-      } else if (Number(this.data.productLength) < 0) {
+      } else if (Number(this.data.productLengthIn) < 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseInputProductCorrectLength')
         })
         return false
       }
-      if (!this.data.productWidth || Number(this.data.productWidth) === 0) {
+      if (!this.data.productWidthIn || Number(this.data.productWidthIn) === 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseEnterProductWidth')
         })
         return false
-      } else if (Number(this.data.productWidth) < 0) {
+      } else if (Number(this.data.productWidthIn) < 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseInputProductCorrectWidth')
         })
         return false
       }
-      if (!this.data.productHeight || Number(this.data.productHeight) === 0) {
+      if (!this.data.productHeightIn || Number(this.data.productHeightIn) === 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseEnterProductHeight')
         })
         return false
-      } else if (Number(this.data.productHeight) < 0) {
+      } else if (Number(this.data.productHeightIn) < 0) {
         this.$vux.toast.show({
           type: 'text',
           text: this.$t('pleaseInputProductCorrectHeight')
@@ -185,20 +185,22 @@ export default {
       })
       let submitData = {}
       submitData.productId = this.data.productId
-      if (this.data.cloudSizeUnit === 'IN') {
+      /* if (this.data.cloudSizeUnit === 'IN') {
         submitData.productLength = (this.data.productLength * cloudSizeUnitRate).toFixed(2)
         submitData.productWidth = (this.data.productWidth * cloudSizeUnitRate).toFixed(2)
         submitData.productHeight = (this.data.productHeight * cloudSizeUnitRate).toFixed(2)
-      } else {
-        submitData.productLength = this.data.productLength
-        submitData.productWidth = this.data.productWidth
-        submitData.productHeight = this.data.productHeight
-      }
+      } else { */
+      submitData.productLengthIn = this.data.productLengthIn
+      submitData.productWidthIn = this.data.productWidthIn
+      submitData.productHeightIn = this.data.productHeightIn
+      /* }
       if (this.data.cloudWeightUnit === 'LB') {
         submitData.productWeight = (this.data.productWeight * cloudWeightUnitRate).toFixed(3)
-      } else {
-        submitData.productWeight = this.data.productWeight
-      }
+      } else { */
+      submitData.productWeightLb = this.data.productWeightLb
+      submitData.cloudWeightUnit = this.data.cloudWeightUnit
+      submitData.cloudSizeUnit = this.data.cloudSizeUnit
+      /* } */
       submitData.pwaId = this.data.pwaId
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/product/updateAttr`, qs.stringify(submitData), {
         headers: {
@@ -214,10 +216,10 @@ export default {
           })
           this.data.productBarcode = ''
           this.data.productTitleEn = ''
-          this.data.productLength = 0
-          this.data.productWidth = 0
-          this.data.productHeight = 0
-          this.data.productWeight = 0
+          this.data.productLengthIn = 0
+          this.data.productWidthIn = 0
+          this.data.productHeightIn = 0
+          this.data.productWeightLb = 0
           this.oldData = JSON.parse(JSON.stringify(this.data))
         } else {
           this.$vux.toast.show({

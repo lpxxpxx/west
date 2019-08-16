@@ -7,7 +7,7 @@
     </tab>
     <div class="tab-swiper" v-show="index === 0">
       <div class="input">
-        <scan-input :placeholder="$t('trackingNumber')" v-model="queryCode"></scan-input>
+        <scan-input :placeholder="$t('trackingNumberRefNo')" v-model="queryCode"></scan-input>
       </div>
       <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.spoType, item)">
         <div class="task-item">
@@ -75,16 +75,20 @@
           <thead>
             <tr>
               <th>SKU</th>
+              <th>{{$t('method')}}</th>
+              <th>{{$t('status')}}</th>
               <th>{{$t('theNumber')}}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in trayData" :key="index">
               <td>{{item.productBarcode}}</td>
+              <td>{{methodsType[item.requestHandleStatus ? item.requestHandleStatus : '-']}}</td>
+              <td>{{getStatus(item.remark, item.status)}}</td>
               <td>{{item.quantity}}</td>
             </tr>
             <tr v-if="!hastray">
-              <td colspan="2">{{$t('noMatchingRecordsWereFound')}}</td>
+              <td colspan="4">{{$t('noMatchingRecordsWereFound')}}</td>
             </tr>
           </tbody>
         </x-table>
@@ -127,7 +131,27 @@ export default {
       hastray: false,
       skuData: [],
       trayData: [],
-      timeoutId: ''
+      timeoutId: '',
+      ws: {
+        '0': this.$t('toBeProcessed'),
+        '1': this.$t('confirmed'),
+        '2': this.$t('completed'),
+        '3': this.$t('deleted'),
+        '-': '-'
+      },
+      rco: {
+        '0': this.$t('unclaimed'),
+        '1': this.$t('claimed'),
+        '2': this.$t('completed'),
+        '3': this.$t('deleted'),
+        '-': '-'
+      },
+      methodsType: {
+        '1': this.$t('shelves'),
+        '2': this.$t('destroy'),
+        '3': this.$t('temporary'),
+        '-': '-'
+      }
     }
   },
   methods: {
@@ -137,6 +161,15 @@ export default {
     goToDetail (spoType = '', item = {}) {
       this.$store.dispatch('setTemporary', item)
       this.$router.push(`/returnManagement?spoType=${spoType}`)
+    },
+    getStatus (type = '-', num = '-') {
+      if (type === 'ws') {
+        return this.ws[num]
+      } else if (type === 'rco') {
+        return this.rco[num]
+      } else {
+        return '-'
+      }
     },
     scroll () {
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop

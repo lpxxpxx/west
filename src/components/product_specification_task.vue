@@ -6,8 +6,8 @@
     <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.productBarcode)">
       <div class="task-item">
         <p>SKU：{{item.productBarcode}}</p>
-        <p>{{$t('specification')}}：{{item.productLength || 0}} x {{item.productWidth || 0}} x {{item.productHeight || 0}} {{item.cloudSizeUnit || 'CM'}}</p>
-        <p>{{$t('weight')}}：{{item.productWeight || 0}} {{item.cloudWeightUnit || 'KG'}}</p>
+        <p>{{$t('specification')}}：{{item.productLengthIn || 0}} x {{item.productWidthIn || 0}} x {{item.productHeightIn || 0}} {{item.cloudSizeUnit || 'CM'}}</p>
+        <p>{{$t('weight')}}：{{item.productWeightLb || 0}} {{item.cloudWeightUnit || 'KG'}}</p>
       </div>
     </div>
     <div class="task-list task-list-none" v-show="isLoading">

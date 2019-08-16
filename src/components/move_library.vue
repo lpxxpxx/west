@@ -31,7 +31,7 @@
       <div class="button">
         <flexbox>
           <flexbox-item>
-            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit">{{$t('submit')}}</x-button>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="submit(false)">{{$t('submit')}}</x-button>
             <x-button :gradients="['#ff0000', '#ff0000']" @click.native="showExceptionMenus = true" v-if="aid">{{$t('exception')}}</x-button>
           </flexbox-item>
         </flexbox>
@@ -40,21 +40,34 @@
         <actionsheet :menus="exceptionMenus" v-model="showExceptionMenus" @on-click-menu="exception"></actionsheet>
       </div>
     </div>
+    <div v-transfer-dom>
+      <confirm v-model="confirmShow"
+      :title="$t('confirmNewLocation')"
+      :confirm-text="$t('confirm')"
+      :cancel-text="$t('cancel')"
+      @on-confirm="submit(true)">
+        <p style="text-align:center;">{{ $t('DoesContinue') }}</p>
+      </confirm>
+    </div>
   </div>
 </template>
 
 <script>
-import { XButton, Flexbox, FlexboxItem, CheckIcon, Actionsheet } from 'vux'
+import { XButton, Flexbox, FlexboxItem, CheckIcon, Actionsheet, Confirm, TransferDomDirective as TransferDom } from 'vux'
 import qs from 'Qs'
 
 export default {
   name: 'moveLibrary',
+  directives: {
+    TransferDom
+  },
   components: {
     XButton,
     Flexbox,
     FlexboxItem,
     CheckIcon,
-    Actionsheet
+    Actionsheet,
+    Confirm
   },
   mounted () {
     let query = this.$route.query || {}
@@ -70,6 +83,7 @@ export default {
       index: 0,
       isAll: true,
       isTask: false,
+      confirmShow: false,
       productBarcode: '',
       lcCode: '',
       lcCodeP: '',
@@ -154,11 +168,11 @@ export default {
         let that = this
         clearTimeout(that.timeoutId)
         that.timeoutId = setTimeout(function () {
-          if (that.productBarcode && that.lcCode && that.lcCodeNew) that.loadDetail()
+          if (!that.isTask && that.productBarcode && that.lcCode && that.lcCodeNew) that.loadDetail()
         }, 1000)
       }
     },
-    submit () {
+    submit (flag = false) {
       if (!this.lcCode) {
         this.$vux.toast.show({
           type: 'text',
@@ -180,13 +194,6 @@ export default {
         })
         return false
       }
-      if (this.lcCodeNewP && this.lcCodeNewP.toUpperCase() !== this.lcCodeNew.toUpperCase()) {
-        this.$vux.toast.show({
-          type: 'text',
-          text: this.$t('confirmLocation')
-        })
-        return false
-      }
       if (!this.isAll) {
         if (!this.productBarcode) {
           this.$vux.toast.show({
@@ -204,6 +211,12 @@ export default {
           return false
         }
       }
+      if (!flag) {
+        if (this.lcCodeNewP && this.lcCodeNewP.toUpperCase() !== this.lcCodeNew.toUpperCase()) {
+          this.confirmShow = true
+          return false
+        }
+      }
       this.$vux.loading.show({
         text: 'Loading'
       })
@@ -218,7 +231,7 @@ export default {
       let query = {
         moveType: this.isAll ? 'All' : 'Part',
         productBarcode: this.productBarcode,
-        quantity: this.quantity,
+        quantity: this.isAll ? '' : this.quantity,
         lcCode: this.lcCode.toUpperCase(),
         lcCodeNew: this.lcCodeNew.toUpperCase(),
         aid: this.aid,
