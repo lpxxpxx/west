@@ -305,6 +305,15 @@ export default {
         })
         return false
       }
+      console.log(this[`${type}Data`].trackingNumber)
+      console.log(this[`${type}Data`].trackingNumber.length)
+      if (this[`${type}Data`].trackingNumber.length > 200) {
+        this.$vux.toast.show({
+          type: 'text',
+          text: this.$t('theTrakcingNoIsTooLong')
+        })
+        return false
+      }
       /* if (Number(this[`${type}Data`].rdReceivedNetReceiptsQty) >= Number(this[`${type}Data`].sopQuantity) - Number(this[`${type}Data`].sopReceivedQty)) {
         this.$vux.toast.show({
           type: 'text',
@@ -536,6 +545,9 @@ export default {
         } else if (that.newData.trackingNumber && that.newData.trackingNumber.length === 30) {
           /* FEDEX_SMARTPOST  条码扫出来的长度是30，系统长度是20 */
           that.newData.trackingNumber = that.newData.trackingNumber.substring(that.newData.trackingNumber.length - 20)
+        } else if (that.newData.trackingNumber && that.newData.trackingNumber.length === 28) {
+          /* 欧洲DPD渠道 扫码长度为28  %WS151LX15501804030530812826  系统长度为14   15501804030530 */
+          that.newData.trackingNumber = that.newData.trackingNumber.substring(8, 22)
         }
       }, 1000)
     }

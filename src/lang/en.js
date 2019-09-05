@@ -162,6 +162,7 @@ module.exports = {
   otherReasons: 'Other reasons',
   finish: 'Finish',
   pleaseEnterTheTrakcingNo: 'Please enter the trakcing #',
+  theTrakcingNoIsTooLong: 'The trakcing # is too long',
   ScanningLocationIsInconsistentWithNewLocation: 'Scanning location is inconsistent with new location',
   returnScan: 'Return Scan',
   physicalAndSystemDoNotMatch: 'Physical and system do not match',
@@ -178,5 +179,7 @@ module.exports = {
   temporary: 'Temporary',
   method: 'Method',
   status: 'Status',
-  trackingNumberRefNo: 'Tracking # / Ref #'
+  trackingNumberRefNo: 'Tracking # / Ref #',
+  chartCenter: 'Chart Center',
+  enterChartCenter: 'Enter Chart Center'
 }

@@ -184,9 +184,15 @@ export default {
       if (this.queryCode.length === 34) {
         /* FEDEX  条码扫出来的长度是34，系统长度是12 */
         this.queryCode = this.queryCode.substring(this.queryCode.length - 12)
+        return false
       } else if (this.queryCode.length === 30) {
         /* FEDEX_SMARTPOST  条码扫出来的长度是30，系统长度是20 */
         this.queryCode = this.queryCode.substring(this.queryCode.length - 20)
+        return false
+      } else if (this.queryCode.length === 28) {
+        /* 欧洲DPD渠道 扫码长度为28  %WS151LX15501804030530812826  系统长度为14   15501804030530 */
+        this.queryCode = this.queryCode.substring(8, 22)
+        return false
       }
       let params = {
         pageNumber: ++this.page,

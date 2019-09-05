@@ -162,6 +162,7 @@ module.exports = {
   otherReasons: '其他原因',
   finish: '完成',
   pleaseEnterTheTrakcingNo: '请输入跟踪单号',
+  theTrakcingNoIsTooLong: '跟踪单号过长',
   ScanningLocationIsInconsistentWithNewLocation: '扫描库位与新库位不一致',
   returnScan: '退件扫描',
   physicalAndSystemDoNotMatch: '实物与系统不符',
@@ -178,5 +179,7 @@ module.exports = {
   temporary: '暂存',
   method: '处理方式',
   status: '状态',
-  trackingNumberRefNo: '跟踪号/退件单号'
+  trackingNumberRefNo: '跟踪号/退件单号',
+  chartCenter: '报表中心',
+  enterChartCenter: '进入报表中心'
 }

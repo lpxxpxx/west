@@ -1,78 +1,102 @@
 <template>
   <div class="datacount">
+      <tab :line-width=1>
+        <tab-item :selected="type === 0" @on-item-click="type = 0">{{menuList[0]}}</tab-item>
+        <tab-item :selected="type === 1" @on-item-click="type = 1">{{menuList[1]}}</tab-item>
+        <tab-item :selected="type === 2" @on-item-click="type = 2">{{menuList[2]}}</tab-item>
+        <tab-item :selected="type === 3" @on-item-click="type = 3">{{menuList[3]}}</tab-item>
+      </tab>
       <div class="search-con">
         <div class="search">
           <span class="label">时区</span>
-          <select>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
+          <select v-model="timeZone">
+            <option v-for="(item, index) in timeZoneList" :key="index" :value="item.zone">{{item.name}}</option>
           </select>
         </div>
         <div class="search">
           <span class="label">仓库</span>
-          <select multiple="multiple">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-          </select>
+          <button @click.stop="expandChange(2)">{{selectedWarName ? selectedWarName : '全部'}}</button>
+          <div class="type-list warehouse-list" :class="{'close':!isExpand2}">
+            <ul class="items">
+              <li @click.stop="warehousesClick('', '')" :class="{'selected': selectedWarList.length === 0} ">全部 <x-icon type="ios-checkmark-empty" size="30" class="icon-checked"></x-icon></li>
+              <li v-for="(x, index) in warehousesList" :key="index" @click.stop="warehousesClick(index, x)" ref="warItem">{{ x.warehouseDesc }} <x-icon type="ios-checkmark-empty" size="30" class="icon-checked"></x-icon></li>
+            </ul>
+          </div>
         </div>
       </div>
-      <canvas id="chart1"></canvas>
       <div class="title">
-        <h5>退件</h5>
-        <span>本月</span>
-        <span>本周</span>
-        <span>最近一周</span>
-        <span>昨天</span>
-        <span @click="setToday">今天</span>
-      </div>
-      <div class="flex">
-        <group style="flex-grow: 1;width: 50%;">
-          <datetime
-            style="height: 2rem;box-sizing: border-box;font-size: .9rem;"
-            v-model="startTime"
-            @on-change="timeChange"></datetime>
-        </group>
-        <group style="flex-grow: 1;width: 50%;">
-          <datetime
-            style="height: 2rem;box-sizing: border-box;font-size: .9rem;"
-            v-model="endTime"
-            @on-change="timeChange"></datetime>
-        </group>
-      </div>
-      <div class="count">
-        <div>
-          <canvas id="chart2"></canvas>
-          <p>退件处理率</p>
-        </div>
-        <div>
-          <canvas id="chart3"></canvas>
-          <p>认领件处理率</p>
+        <h5 @click.stop="expandChange(1)"><label>{{menuList[type]}}</label><!-- <i class="iconfont icon-class" :class="{'icon-icon-test1':!isExpand1,'icon-icon-test':isExpand1}"></i> --></h5>
+        <div v-show="type !== 3">
+          <span @click="setThisMonth">本月</span>
+          <span @click="setThisWeek">本周</span>
+          <span @click="setLast7Day">最近一周</span>
+          <span @click="setYesterday">昨天</span>
+          <span @click="setToday">今天</span>
         </div>
       </div>
-      <div class="total">
-        <!-- <grid :show-lr-borders="false" :show-vertical-dividers="false">
-          <grid-item v-for="(item, index) in chartDataAge" :key="index">
-            <span>{{ item.name }}</span>
-            <p>{{ item.value }}<span>&nbsp;万元</span></p>
-            <span class="grid-bot">{{ item.percent }}</span>
-          </grid-item>
-        </grid> -->
+      <canvas v-show="type === 3" style="margin-top: 1rem;" id="chart1"></canvas>
+      <div v-show="type !== 3">
+        <div class="type-list" :class="{'close':!isExpand1}">
+          <ul class="items">
+            <li v-for="(x, index) in menuList" :key="index" @click="menuTypeClick(index)" :class="{'selected': index === type}">{{ x }} <x-icon type="ios-checkmark-empty" size="30" class="icon-checked"></x-icon></li>
+          </ul>
+        </div>
+        <div class="flex">
+          <group style="flex-grow: 1;width: 50%;">
+            <datetime
+              style="height: 2rem;box-sizing: border-box;font-size: .9rem;"
+              v-model="startTime"
+              @on-change="timeChange"></datetime>
+          </group>
+          <group style="flex-grow: 1;width: 50%;">
+            <datetime
+              style="height: 2rem;box-sizing: border-box;font-size: .9rem;"
+              v-model="endTime"
+              @on-change="timeChange"></datetime>
+          </group>
+        </div>
+        <div class="total">
+          <grid :show-lr-borders="false" :show-vertical-dividers="false">
+            <grid-item v-for="(item, index) in getTotalData" :key="index" style="height: 5.7rem; background: #f0f0f0;">
+              <p :style="totalColorList[index]">{{item || 0}}</p>
+              <span>{{totalList[index][type]}}</span>
+            </grid-item>
+          </grid>
+        </div>
+        <div class="count">
+          <div>
+            <canvas id="chart2"></canvas>
+            <p>{{footerList1[type]}}</p>
+          </div>
+          <div>
+            <canvas id="chart3"></canvas>
+            <p>{{footerList2[type]}}</p>
+          </div>
+        </div>
+        <div class="count">
+          <div>
+            <canvas id="chart4"></canvas>
+            <p>仓库占比</p>
+          </div>
+        </div>
+        <div class="count">
+          <div>
+            <canvas id="chart5"></canvas>
+            <p>客户占比</p>
+          </div>
+        </div>
       </div>
   </div>
 </template>
 
 <script>
-import F2 from '@antv/f2'
+import F2 from '@antv/f2/lib/index-all'
 import qs from 'Qs'
-import { Countup, XButton, Grid, GridItem, Datetime, Group } from 'vux'
+import { Tab, TabItem, Countup, XButton, Grid, GridItem, Datetime, Group } from 'vux'
 export default {
   components: {
+    Tab,
+    TabItem,
     Countup,
     XButton,
     Grid,
@@ -81,172 +105,220 @@ export default {
     Group
   },
   mounted () {
-    this.renderChart()
-    this.renderCircle(20, 'chart2', 1)
-    this.renderCircle(40, 'chart3', 2)
+    try {
+      this.warehousesList = JSON.parse(document.querySelector('#userInfo').value).warehouseList
+    } catch (err) {
+      console.error('无权限')
+      this.warehousesList = [
+        {
+          'warehouseCode': 'LA02THC',
+          'warehouseDesc': '洛杉矶大仓退货仓',
+          'warehouseId': 10,
+          'warehouseTimezone': 'America/Los_Angeles'
+        }, {
+          'warehouseCode': 'LALS',
+          'warehouseDesc': '美国洛杉矶大仓临时仓',
+          'warehouseId': 9,
+          'warehouseTimezone': 'America/Los_Angeles'
+        }, {
+          'warehouseCode': 'TEST',
+          'warehouseDesc': '测试用',
+          'warehouseId': 6,
+          'warehouseTimezone': 'America/Los_Angeles'
+        }, {
+          'warehouseCode': 'WPBE',
+          'warehouseDesc': '比利时仓',
+          'warehouseId': 12,
+          'warehouseTimezone': 'Europe/Berlin'
+        }, {
+          'warehouseCode': 'WPCHI',
+          'warehouseDesc': '美国芝加哥仓',
+          'warehouseId': 7,
+          'warehouseTimezone': 'America/Chicago'
+        }, {
+          'warehouseCode': 'WPDE',
+          'warehouseDesc': '德国仓',
+          'warehouseId': 5,
+          'warehouseTimezone': 'Europe/Berlin'
+        }, {
+          'warehouseCode': 'WPHOU',
+          'warehouseDesc': '美国休斯敦仓',
+          'warehouseId': 8,
+          'warehouseTimezone': 'US/Eastern'
+        }, {
+          'warehouseCode': 'WPLA',
+          'warehouseDesc': '美国洛杉矶',
+          'warehouseId': 3,
+          'warehouseTimezone': 'America/Los_Angeles'
+        }, {
+          'warehouseCode': 'WPLA218',
+          'warehouseDesc': '洛杉矶218仓',
+          'warehouseId': 13,
+          'warehouseTimezone': 'America/Los_Angeles'
+        }, {
+          'warehouseCode': 'WPNJ',
+          'warehouseDesc': '美国新泽西',
+          'warehouseId': 4,
+          'warehouseTimezone': 'America/New_York'
+        }, {
+          'warehouseCode': 'WPUKK',
+          'warehouseDesc': '英国K仓',
+          'warehouseId': 1,
+          'warehouseTimezone': 'Europe/London'
+        }, {
+          'warehouseCode': 'WPUKS',
+          'warehouseDesc': '英国S仓',
+          'warehouseId': 2,
+          'warehouseTimezone': 'Europe/London'
+        }
+      ]
+    }
+    this.searchChart()
+    this.searchCircle()
+    this.timeZone = this.$cookies.get('timeZone') || 'Asia/Shanghai'
+    document.addEventListener('click', this.expandToZero)
+  },
+  destroyed () {
+    document.removeEventListener('click', this.expandToZero)
   },
   data () {
     return {
-      chart: null,
+      type: 0,
+      isExpand1: 0,
+      isExpand2: 0,
       chart1: null,
       chart2: null,
       chart3: null,
       chart4: null,
-      startTime: '',
-      endTime: '',
+      chart5: null,
+      startTime: new Date(new Date().getTime() - (new Date().getDate() - 1) * 24 * 60 * 60 * 1000).format('yyyy-MM-dd'),
+      endTime: new Date().format('yyyy-MM-dd'),
       timeoutId: '',
-      chartData: [{
-        'availableStorageCapacity': 1020.34,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 1020.34,
-        'warehouseCode': 'LA02THC',
-        'warehouseDesc': '洛杉矶大仓退货仓',
-        'warehouseId': 10,
-        'warehouseTimezone': 'America/Los_Angeles'
-      }, {
-        'availableStorageCapacity': 0,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 0,
-        'warehouseCode': 'LALS',
-        'warehouseDesc': '美国洛杉矶大仓临时仓',
-        'warehouseId': 9,
-        'warehouseTimezone': 'America/Los_Angeles'
-      }, {
-        'availableStorageCapacity': 300.00,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 300.00,
-        'warehouseCode': 'TEST',
-        'warehouseDesc': '测试用',
-        'warehouseId': 6,
-        'warehouseTimezone': 'America/Los_Angeles'
-      }, {
-        'availableStorageCapacity': 0,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 0,
-        'warehouseCode': 'WPBE',
-        'warehouseDesc': '比利时仓',
-        'warehouseId': 12,
-        'warehouseTimezone': 'Europe/Berlin'
-      }, {
-        'availableStorageCapacity': 13600.00,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 13600.00,
-        'warehouseCode': 'WPCHI',
-        'warehouseDesc': '美国芝加哥仓',
-        'warehouseId': 7,
-        'warehouseTimezone': 'America/Chicago'
-      }, {
-        'availableStorageCapacity': 17600.00,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 17600.00,
-        'warehouseCode': 'WPDE',
-        'warehouseDesc': '德国仓',
-        'warehouseId': 5,
-        'warehouseTimezone': 'Europe/Berlin'
-      }, {
-        'availableStorageCapacity': 1338000.00,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 1338000.00,
-        'warehouseCode': 'WPHOU',
-        'warehouseDesc': '美国休斯敦仓',
-        'warehouseId': 8,
-        'warehouseTimezone': 'US/Eastern'
-      }, {
-        'availableStorageCapacity': 2170368.01,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 2170368.01,
-        'warehouseCode': 'WPLA',
-        'warehouseDesc': '美国洛杉矶',
-        'warehouseId': 3,
-        'warehouseTimezone': 'America/Los_Angeles'
-      }, {
-        'availableStorageCapacity': 1000.00,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 1000.00,
-        'warehouseCode': 'WPLA218',
-        'warehouseDesc': '洛杉矶218仓',
-        'warehouseId': 13,
-        'warehouseTimezone': 'America/Los_Angeles'
-      }, {
-        'availableStorageCapacity': 0.37,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 0.37,
-        'warehouseCode': 'WPNJ',
-        'warehouseDesc': '美国新泽西',
-        'warehouseId': 4,
-        'warehouseTimezone': 'America/New_York'
-      }, {
-        'availableStorageCapacity': 1000.00,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 1000.00,
-        'warehouseCode': 'WPUKK',
-        'warehouseDesc': '英国K仓',
-        'warehouseId': 1,
-        'warehouseTimezone': 'Europe/London'
-      }, {
-        'availableStorageCapacity': 1269556.20,
-        'existingStorageCapacity': 0,
-        'totalStorageCapacity': 1269556.20,
-        'warehouseCode': 'WPUKS',
-        'warehouseDesc': '英国S仓',
-        'warehouseId': 2,
-        'warehouseTimezone': 'Europe/London'
-      }],
-      returnData: {
-        'claimProcessingRate': 7,
-        'confirmedQty': 34,
-        'customerPropList': [{
-          'customerCode': '',
-          'returnQty': 58
-        }, {
-          'customerCode': 'A004',
-          'returnQty': 2
-        }, {
-          'customerCode': 'AK',
-          'returnQty': 4
-        }, {
-          'customerCode': 'XK',
-          'returnQty': 64
-        }, {
-          'customerCode': 'YDL',
-          'returnQty': 120
-        }],
-        'processedQty': 200,
-        'returnQty': 248,
-        'returnRate': 58,
-        'toBeClaimedQty': 14,
-        'warehouseShareList': [{
-          'returnQty': 8,
-          'warehouseCode': 'WPUKS'
-        }, {
-          'returnQty': 183,
-          'warehouseCode': 'WPLA'
-        }, {
-          'returnQty': 37,
-          'warehouseCode': 'WPNJ'
-        }, {
-          'returnQty': 1,
-          'warehouseCode': 'WPDE'
-        }, {
-          'returnQty': 11,
-          'warehouseCode': 'WPCHI'
-        }, {
-          'returnQty': 8,
-          'warehouseCode': 'WPHOU'
-        }]
+      timeZone: 'Asia/Shanghai',
+      warehousesList: [],
+      selectedWarList: [],
+      selectedWarName: '',
+      menuList: ['自发货', 'FBA', '退件', '库容'],
+      footerList1: ['出库率', '出库率', '退件处理率'],
+      footerList2: ['空包率', '空包率', '认领件处理率'],
+      totalList: [
+        ['订单数', '总箱数', '退件数'],
+        ['已下架', '已下架', '待客户确认'],
+        ['问题件', '问题件', '已确认'],
+        ['已出库', '已出库', '已处理']
+      ],
+      totalColorList: [
+        {color: '#999900'},
+        {color: '#3399FF'},
+        {color: '#CC9966'},
+        {color: '#9999FF'}
+      ],
+      timeZoneList: [
+        {
+          zone: 'Asia/Shanghai',
+          name: '[GMT +8] 亚洲/中国/上海'
+        },
+        {
+          zone: 'Europe/Berlin',
+          name: '[GMT +1] 欧洲/德国/柏林'
+        },
+        {
+          zone: 'Europe/London',
+          name: '[GMT 0] 欧洲/英国/伦敦'
+        },
+        {
+          zone: 'America/New_York',
+          name: '[GMT -5] 美洲/美国/纽约'
+        },
+        {
+          zone: 'America/Chicago',
+          name: '[GMT -6] 美洲/美国/芝加哥'
+        },
+        {
+          zone: 'America/Los_Angeles',
+          name: '[GMT -8] 美洲/美国/洛杉矶'
+        }
+      ],
+      chartData: [],
+      circleData: {}
+    }
+  },
+  computed: {
+    getTotalData: function () {
+      let res = []
+      if (this.type === 0) {
+        res.push(this.circleData.orderQty)
+        res.push(this.circleData.offShelfQty)
+        res.push(this.circleData.questionPieceQty)
+        res.push(this.circleData.outboundDeliveryQty)
+      } else if (this.type === 1) {
+        res.push(this.circleData.orderQty)
+        res.push(this.circleData.offShelfQty)
+        res.push(this.circleData.questionPieceQty)
+        res.push(this.circleData.outboundDeliveryQty)
+      } else if (this.type === 2) {
+        res.push(this.circleData.returnQty)
+        res.push(this.circleData.toBeClaimedQty)
+        res.push(this.circleData.confirmedQty)
+        res.push(this.circleData.processedQty)
       }
+      return res
     }
   },
   methods: {
-    toSearch: function () {
+    toSearch: function (fn, time) {
       let that = this
       clearTimeout(that.timeoutId)
       that.timeoutId = setTimeout(function () {
-        that.searchCircle(2)
-      }, 1000)
+        fn()
+      }, time)
+    },
+    expandChange: function (num = 1) {
+      this[`isExpand${num}`] = this[`isExpand${num}`] ? 0 : 1
+    },
+    expandToZero: function () {
+      this.isExpand1 = 0
+      this.isExpand2 = 0
+    },
+    menuTypeClick: function (index) {
+      this.type = index
+    },
+    warehousesClick: function (index = 0, war = {}) {
+      /* if (index === '' || (this.selectedWarList.indexOf(war.warehouseId) === -1 && this.selectedWarList.length === (this.warehousesList.length - 1))) { */
+      if (index === '') {
+        this.selectedWarList = []
+        this.$refs.warItem.forEach((item) => {
+          item.className = ''
+        })
+        this.selectedWarName = ''
+      } else if (this.selectedWarList.indexOf(war.warehouseId) === -1) {
+        this.selectedWarList.push(war.warehouseId)
+        this.$refs.warItem[index].className = 'selected'
+        this.selectedWarName += `${war.warehouseDesc},`
+      } else {
+        this.selectedWarList = this.selectedWarList.filter((item) => item !== war.warehouseId)
+        this.$refs.warItem[index].className = ''
+        this.selectedWarName = this.selectedWarName.replace(`${war.warehouseDesc},`, '')
+      }
     },
     setToday: function () {
       this.startTime = new Date().format('yyyy-MM-dd')
+      this.endTime = new Date().format('yyyy-MM-dd')
+    },
+    setYesterday: function () {
+      this.startTime = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
+      this.endTime = new Date(new Date().getTime() - 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
+    },
+    setLast7Day: function () {
+      this.startTime = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
+      this.endTime = new Date().format('yyyy-MM-dd')
+    },
+    setThisWeek: function () {
+      this.startTime = new Date(new Date().getTime() - (new Date().getDay() - 1) * 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
+      this.endTime = new Date().format('yyyy-MM-dd')
+    },
+    setThisMonth: function () {
+      this.startTime = new Date(new Date().getTime() - (new Date().getDate() - 1) * 24 * 60 * 60 * 1000).format('yyyy-MM-dd')
       this.endTime = new Date().format('yyyy-MM-dd')
     },
     getChartData: function () {
@@ -257,12 +329,46 @@ export default {
       })
       return res
     },
+    getPieWarData: function () {
+      let res = []
+      let that = this
+      if (this.circleData.warehouseShareList) {
+        this.circleData.warehouseShareList.map(function (ware) {
+          res.push({y: Number(that.type === 2 ? ware.returnQty : ware.warehouseOrderQty), name: ware.warehouseCode, count: 'count'})
+        })
+      }
+      res.sort(function (a, b) { return b.y - a.y })
+      return res
+    },
+    getPieCusData: function () {
+      let res = []
+      let that = this
+      if (this.circleData.customerPropList) {
+        this.circleData.customerPropList.map(function (ware) {
+          res.push({y: Number(that.type === 2 ? ware.returnQty : ware.customerOrderQty), name: ware.customerCode, count: 'count'})
+        })
+      }
+      res.sort(function (a, b) { return b.y - a.y })
+      return res
+    },
     timeChange: function () {
-      this.toSearch()
+      if (this.startTime && this.endTime) {
+        if (new Date(this.startTime) > new Date(this.endTime)) {
+          let that = this
+          setTimeout(function () {
+            that.$vux.toast.show({
+              type: 'text',
+              text: '开始时间大于结束时间'
+            })
+          }, 1000)
+        } else {
+          this.toSearch(this.searchCircle, 1000)
+        }
+      }
     },
     searchChart: function () {
       let query = {}
-      query.warehouseIds = '3,4,5,7'
+      query.warehouseIds = this.selectedWarList.join(',')
       this.axios.post(`${this.$store.getters.getUrl}/weixinapi/reportform/storageCapacitySearch`, qs.stringify(query), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
@@ -270,10 +376,11 @@ export default {
       })
       .then(res => {
         this.$vux.loading.hide()
-        if (res.data.success) {
+        if (res.data.success && res.data.data) {
           this.chartData = res.data.data
-          this.chart.clear()
+          if (this.chart1) this.chart1.clear()
           this.renderChart()
+          this.toSearch(this.searchChart, 1000 * 60 * 2)
         } else {
           this.$vux.toast.show({
             type: 'text',
@@ -286,20 +393,20 @@ export default {
         alert(this.$t('businessSystemException'))
       })
     },
-    searchCircle: function (type) {
+    searchCircle: function () {
       /* type等于0为自发货，1为FBA，2为退件 */
       let url = ''
       let query = {}
-      if (type === 2) {
+      if (this.type === 2) {
         url = '/weixinapi/reportform/returnReportSearch'
       } else {
         url = '/weixinapi/reportform/spontaneousOrderStatementSearch'
-        query.orderType = type
+        query.orderType = this.type
       }
-      query.warehouseIds = '3,4,5,7'
-      query.startTime = this.startTime
-      query.endTime = this.endTime
-      query.timeZone = 'Asia/Shanghai'
+      query.warehouseIds = this.selectedWarList.join(',')
+      query.startTime = this.startTime + ' 00:00:00'
+      query.endTime = this.endTime === new Date().format('yyyy-MM-dd') ? new Date().format('yyyy-MM-dd hh:mm:ss') : this.endTime + ' 23:59:59'
+      query.timeZone = this.timeZone
       this.axios.post(`${this.$store.getters.getUrl}${url}`, qs.stringify(query), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
@@ -307,17 +414,33 @@ export default {
       })
       .then(res => {
         this.$vux.loading.hide()
-        if (res.data.success) {
+        if (res.data.success && res.data.data) {
           this.circleData = res.data.data
-          this.renderChart()
+          if (this.chart2) this.chart2.clear()
+          if (this.chart3) this.chart3.clear()
+          if (this.chart4) this.chart4.clear()
+          if (this.chart5) this.chart5.clear()
+          if (this.type === 2) {
+            this.renderCircle(Number(res.data.data.returnRate), 2)
+            this.renderCircle(Number(res.data.data.claimProcessingRate), 3)
+            this.renderPie(this.getPieWarData(), 4)
+            this.renderPie(this.getPieCusData(), 5)
+          } else {
+            this.renderCircle(Number(res.data.data.orderQty ? (res.data.data.outboundDeliveryQty / res.data.data.orderQty * 100).toFixed(0) : 0), 2)
+            this.renderCircle(Number(res.data.data.trackingNumQty ? (res.data.data.noTrackingNumQty / res.data.data.trackingNumQty * 100).toFixed(0) : 0), 3)
+            this.renderPie(this.getPieWarData(), 4)
+            this.renderPie(this.getPieCusData(), 5)
+          }
+          this.toSearch(this.searchCircle, 1000 * 60 * 2)
         } else {
-          this.$vux.toast.show({
-            type: 'text',
-            text: res.data.message
-          })
+          this.renderCircle(0, 2)
+          this.renderCircle(0, 3)
+          this.renderPie([], 4)
+          this.renderPie([], 5)
         }
       })
       .catch(res => {
+        console.log(res)
         this.$vux.loading.hide()
         alert(this.$t('businessSystemException'))
       })
@@ -358,20 +481,20 @@ export default {
 
       chart.interval().position('ware*count').color('name').adjust('stack')
       chart.render()
-      _this.chart = chart
+      _this.chart1 = chart
     },
-    renderCircle: function (num = 0, target = '', no = 1) {
-      var data = [{
+    renderCircle: function (num = 0, no = 2) {
+      let data = [{
         x: '1',
         y: num
       }]
-      var chart = new F2.Chart({
+      let chart = new F2.Chart({
         width: window.innerWidth / 2,
         height:
           window.innerWidth > window.innerHeight
             ? window.innerHeight - 54
             : window.innerWidth * 0.5,
-        id: target,
+        id: `chart${no}`,
         pixelRatio: window.devicePixelRatio
       })
       chart.source(data, {
@@ -382,6 +505,7 @@ export default {
       })
       chart.axis(false)
       chart.tooltip(false)
+      chart.legend(false)
       chart.coord('polar', {
         transposed: true,
         innerRadius: 0.8,
@@ -404,14 +528,71 @@ export default {
           fontSize: '25'
         }
       })
-      chart.interval().position('x*y').size(20).animate({
+      chart.interval().position('x*y').size(20).color('x', `${no === 2 ? '#73b6e5' : '#f48b8b'}`).animate({
         appear: {
-          duration: 1200,
+          duration: 1000,
           easing: 'cubicIn'
         }
       })
       chart.render()
       this[`chart${no}`] = chart
+    },
+    renderPie: function (arr = [], no = 4) {
+      let chart = new F2.Chart({
+        width: window.innerWidth,
+        height:
+          window.innerWidth > window.innerHeight
+            ? window.innerHeight - 54
+            : window.innerWidth * 0.5,
+        id: `chart${no}`,
+        pixelRatio: window.devicePixelRatio
+      })
+      chart.source(arr)
+      chart.coord('polar', {
+        transposed: true,
+        radius: 0.75
+      })
+      chart.legend(false)
+      chart.axis(false)
+      chart.tooltip(false)
+
+      // 添加饼图文本
+      chart.pieLabel({
+        sidePadding: 40,
+        label1: function label1 (data, color) {
+          return {
+            text: data.name,
+            fill: color
+          }
+        },
+        label2: function label2 (data) {
+          return {
+            text: String(Math.floor(data.y * 100) / 100).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + '件',
+            fill: '#808080',
+            fontWeight: 'bold'
+          }
+        }
+      })
+
+      chart.interval().position('const*y').color('name', ['#ebaa4e', '#98c849', '#ec7e57', '#6ba9dc', '#ec547d']).adjust('stack')
+      chart.render()
+      this[`chart${no}`] = chart
+    }
+  },
+  watch: {
+    type () {
+      if (this.type !== 3) this.searchCircle()
+    },
+    timeZone () {
+      this.searchCircle()
+      this.$cookies.set('timeZone', this.timeZone)
+    },
+    selectedWarName () {
+      let that = this
+      this.toSearch(function () {
+        that.searchChart()
+        that.searchCircle()
+      }, 1000)
     }
   }
 }
@@ -439,11 +620,18 @@ export default {
       font-size: 1rem;
       text-align: right;
     }
-    input,
+    button,
     select {
       flex: 1;
       padding: 0 .5rem;
       height: 2rem;
+      width: 100px;
+    }
+    button {
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   .flex {
@@ -455,6 +643,7 @@ export default {
       flex-grow: 1;
       p {
         text-align: center;
+        margin-bottom: 1rem;
       }
     }
   }
@@ -469,6 +658,69 @@ export default {
       float: right;
       color: #1890FF;
       margin: 0 5px;
+    }
+    div {
+      float: right;
+    }
+  }
+  .type-list {
+    position: absolute;
+    box-sizing: border-box;
+    max-height: 214px;
+    left: 1rem;
+    margin-top: 5px;
+    width: 180px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+    z-index: 2;
+    transition: all .3s ease-in-out;
+  }
+  .warehouse-list {
+    right: 1rem;
+    left: auto;
+    margin-top: 2.5rem;
+    max-height: 320px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .close {
+    max-height: 0px;
+    padding: 0px;
+  }
+  .type-list li {
+    position: relative;
+    text-align: left;
+    overflow: hidden;
+    height: 38px;
+    line-height: 38px;
+    padding-left: 15px;
+    color: #666;
+  }
+  .type-list li .vux-x-icon {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    fill: #ffb924;
+    display: none;
+  }
+  .type-list li.selected {
+    background: #efeff4;
+  }
+  .type-list li.selected .icon-checked {
+    display: block;
+  }
+  .total {
+    text-align: center;
+    p {
+      font-size: 1.1rem;
+    }
+    span {
+      color: #333;
+      font-size: .7rem;
     }
   }
 </style>

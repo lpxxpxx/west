@@ -8,9 +8,9 @@
         </div>
       </flexbox-item>
     </flexbox>
-    <!-- <div class="button">
-      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToChart()">{{$t('skip')}}</x-button>
-    </div> -->
+    <div class="button" v-if="hasPermission">
+      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToChart()">{{$t('enterChartCenter')}}</x-button>
+    </div>
   </div>
 </template>
 
@@ -26,6 +26,7 @@ export default {
   },
   mounted () {
     let warehouses = document.querySelector('#userInfo').value
+    let menuList = document.querySelector('#menuList').value
     if (warehouses) {
       warehouses = JSON.parse(warehouses)
       this.warehouses = warehouses
@@ -36,12 +37,16 @@ export default {
     if (warehouses.warehouseList.length === 0) {
       alert(this.$t('noPermissionToView'))
       return false
-    } else if (warehouses.warehouseList.length === 1) {
+    }/*  else if (warehouses.warehouseList.length === 1) {
       this.goToMenu(warehouses.warehouseList[0])
+    } */
+    if (menuList.indexOf('chart_enter') !== -1) {
+      this.hasPermission = true
     }
   },
   data () {
     return {
+      hasPermission: false,
       warehouses: {}
     }
   },
