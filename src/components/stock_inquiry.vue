@@ -34,7 +34,7 @@
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku, '')" v-show="skuButtonShow">{{$t('theInventory')}}</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(sku, '')" v-if="hasPermission" v-show="skuButtonShow">{{$t('theInventory')}}</x-button>
       </div>
     </div>
     <div class="tab-swiper" v-show="index === 1">
@@ -67,7 +67,7 @@
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)" v-show="lcCodeButtonShow">{{$t('theInventory')}}</x-button>
+        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)" v-if="hasPermission" v-show="lcCodeButtonShow">{{$t('theInventory')}}</x-button>
       </div>
     </div>
   </div>
@@ -101,7 +101,18 @@ export default {
       skuData: [],
       lcCodeData: [],
       skuButtonShow: false,
-      lcCodeButtonShow: false
+      lcCodeButtonShow: false,
+      hasPermission: false
+    }
+  },
+  mounted () {
+    try {
+      let menuList = document.querySelector('#menuList').value
+      if (menuList.indexOf('edit_inventory') !== -1) {
+        this.hasPermission = true
+      }
+    } catch (err) {
+      console.warn('无权限')
     }
   },
   methods: {
