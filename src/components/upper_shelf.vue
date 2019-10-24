@@ -443,7 +443,13 @@ export default {
       this[`${type}Data`].lcCode = this[`${type}Data`].lcCode.toUpperCase()
       let form = new FormData()
       for (let i in this[`${type}Data`]) {
-        form.append(i, this[`${type}Data`][i] === null ? '' : this[`${type}Data`][i])
+        if (this[`${type}Data`][i]) {
+          if (typeof (this[`${type}Data`][i]) === 'string') {
+            form.append(i, this[`${type}Data`][i].trim())
+          } else {
+            form.append(i, this[`${type}Data`][i])
+          }
+        }
       }
       form.set('userEmail', window.localStorage.getItem('userEmail'))
       form.set('language', window.localStorage.getItem('lang') || 'cn')

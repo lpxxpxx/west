@@ -8,6 +8,10 @@
       <div class="search">
         <scan-input :placeholder="$t('scanTheSKUBarCodeHere')" :name="'SKU'" v-model="sku"></scan-input>
       </div>
+      <div class="search search-plus" v-show="productBarcode && productBarcode !== sku">
+          <span>{{$t('productBarcode')}}：</span>
+          <span class="underline name" title="">{{productBarcode}}</span>
+      </div>
       <div class="total">
         <span class="pull-left">{{$t('locationNumber')}} <span class="underline">{{skuCount}}</span></span>
         <span class="pull-right">{{$t('total')}} <span class="underline">{{skuAll}}</span></span>
@@ -90,6 +94,7 @@ export default {
     return {
       index: 0,
       sku: '',
+      productBarcode: '',
       lcCode: '',
       skuCount: '',
       lcCodeCount: '',
@@ -146,10 +151,11 @@ export default {
         }
       })
       .then(res => {
+        this[`${type}Data`] = []
+        this[`${type}Count`] = 0
+        this[`${type}All`] = 0
+        this.productBarcode = ''
         if (res.data.success) {
-          this[`${type}Data`] = []
-          this[`${type}Count`] = 0
-          this[`${type}All`] = 0
           let that = this
           setTimeout(function () {
             let all = 0
@@ -163,14 +169,12 @@ export default {
               that[`has${type}`] = false
             } else {
               that[`has${type}`] = true
+              that.productBarcode = type === 'sku' ? res.data.data.rows[0].productBarcode : ''
             }
             that.blurInput()
             that[`${type}ButtonShow`] = true
           }, 10)
         } else {
-          this[`${type}Data`] = []
-          this[`${type}Count`] = 0
-          this[`${type}All`] = 0
           this[`${type}ButtonShow`] = false
         }
       })
@@ -203,6 +207,10 @@ export default {
   }
   .search {
     padding: 1.5rem 1rem;
+  }
+  .search-plus {
+    padding: 0 1rem;
+    margin-top: -1rem;
   }
   .total {
     padding: 0rem 1rem 1.5rem;

@@ -3,6 +3,10 @@
     <div class="search search-first">
         <scan-input :placeholder="$t('scanTheSKUBarCodeHere')" :name="'SKU'" v-model="data.productBarcode"></scan-input>
     </div>
+    <div class="search search-plus" v-show="data.productBarcodeS && data.productBarcodeS !== data.productBarcode">
+        <span>{{$t('productBarcode')}}：</span>
+        <span class="underline name" title="">{{data.productBarcodeS}}</span>
+    </div>
     <div class="search search-last" style="height: auto">
       <div class="info-detail">
         <span class="label">{{$t('theNameOfTheSKU')}}：</span> 
@@ -65,6 +69,7 @@ export default {
       timeoutId: '',
       data: {
         productBarcode: '',
+        productBarcodeS: '',
         productTitleEn: '',
         productLengthIn: 0,
         productWidthIn: 0,
@@ -73,6 +78,7 @@ export default {
       },
       oldData: {
         productBarcode: '',
+        productBarcodeS: '',
         productTitleEn: '',
         productLengthIn: 0,
         productWidthIn: 0,
@@ -97,9 +103,12 @@ export default {
       })
       .then(res => {
         if (res.data.productBarcode) {
+          res.data.productBarcodeS = res.data.productBarcode
+          res.data.productBarcode = this.data.productBarcode
           this.data = res.data
           this.oldData = JSON.parse(JSON.stringify(res.data))
         } else {
+          this.data.productBarcodeS = ''
           this.data.productTitleEn = ''
           this.data.productLengthIn = 0
           this.data.productWidthIn = 0
@@ -269,6 +278,10 @@ export default {
       margin-left: .5rem;
       text-align: right;
     }
+  }
+  .search-plus {
+    padding: 0 1rem;
+    margin-top: -.5rem;
   }
   .name {
     flex: 1;

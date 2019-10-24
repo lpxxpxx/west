@@ -38,6 +38,10 @@
       <div class="search">
         <scan-input :placeholder="$t('scanTheSKUBarCodeHere')" :name="'SKU'" v-model="sku"></scan-input>
       </div>
+      <div class="search search-plus" v-show="productBarcode && productBarcode !== sku">
+          <span>{{$t('productBarcode')}}：</span>
+          <span class="underline name" title="">{{productBarcode}}</span>
+      </div>
       <div class="total">
         <span class="pull-left">{{$t('locationNumber')}} <span class="underline">{{skuCount}}</span></span>
         <span class="pull-right">{{$t('total')}} <span class="underline">{{skuAll}}</span></span>
@@ -122,6 +126,7 @@ export default {
       isLoading: false,
       hasTask: true,
       sku: '',
+      productBarcode: '',
       tray: '',
       skuCount: '',
       trayCount: '',
@@ -233,6 +238,7 @@ export default {
         this[`${type}Data`] = []
         this[`${type}Count`] = 0
         this[`${type}All`] = 0
+        this.productBarcode = ''
         return false
       }
       /* this.axios.get(`${this.$store.getters.getUrl}/weixinapi/returnOrder/returnOrdersListSearchBySku`, {
@@ -244,10 +250,11 @@ export default {
         }
       })
       .then(res => {
+        this[`${type}Data`] = []
+        this[`${type}Count`] = 0
+        this[`${type}All`] = 0
+        this.productBarcode = ''
         if (res.data.success) {
-          this[`${type}Data`] = []
-          this[`${type}Count`] = 0
-          this[`${type}All`] = 0
           let that = this
           setTimeout(function () {
             let all = 0
@@ -261,12 +268,9 @@ export default {
               that[`has${type}`] = false
             } else {
               that[`has${type}`] = true
+              that.productBarcode = type === 'sku' ? res.data.data[0].productBarcode : ''
             }
           }, 10)
-        } else {
-          this[`${type}Data`] = []
-          this[`${type}Count`] = 0
-          this[`${type}All`] = 0
         }
       })
       .catch(res => {
@@ -307,6 +311,10 @@ export default {
   }
   .search {
     padding: 1.5rem 1rem;
+  }
+  .search-plus {
+    padding: 0 1rem;
+    margin-top: -1rem;
   }
   .total {
     padding: 0rem 1rem 1.5rem;

@@ -333,7 +333,13 @@ export default {
     doAjax (type) {
       let form = new FormData()
       for (let i in this[`${type}Data`]) {
-        if (this[`${type}Data`][i]) form.append(i, this[`${type}Data`][i])
+        if (this[`${type}Data`][i]) {
+          if (typeof (this[`${type}Data`][i]) === 'string') {
+            form.append(i, this[`${type}Data`][i].trim())
+          } else {
+            form.append(i, this[`${type}Data`][i])
+          }
+        }
       }
       form.set('userEmail', window.localStorage.getItem('userEmail'))
       form.set('language', window.localStorage.getItem('lang') || 'cn')

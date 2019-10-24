@@ -360,19 +360,19 @@ export default {
       let form = new FormData()
       form.append('warehouseId', JSON.parse(window.localStorage.getItem('warehouse')).warehouseId)
       form.append('warehouseCode', JSON.parse(window.localStorage.getItem('warehouse')).warehouseCode)
-      form.append('trackingNumber', this[`${type}Data`].trackingNumber)
-      form.append('productBarcode', this[`${type}Data`].productBarcode)
+      form.append('trackingNumber', this[`${type}Data`].trackingNumber.trim())
+      form.append('productBarcode', this[`${type}Data`].productBarcode.trim())
       form.append('quantity', this[`${type}Data`].rdReceivedNetReceiptsQty)
-      form.append('lcCode', this[`${type}Data`].lcCode.toUpperCase())
+      form.append('lcCode', this[`${type}Data`].lcCode.toUpperCase().trim())
       form.append('exception', this[`${type}Data`].exception || '')
       form.append('serverIds', this.uploadIds)
       form.append('userEmail', window.localStorage.getItem('userEmail'))
       form.append('language', window.localStorage.getItem('lang') || 'cn')
       let url = ''
       if (type === 'edit') {
-        form.append('productId', this[`${type}Data`].productId)
+        form.append('productId', this[`${type}Data`].productId.trim())
         form.append('type', this[`${type}Data`].spoType)
-        form.append('relateOrderCode', this[`${type}Data`].spoCode)
+        form.append('relateOrderCode', this[`${type}Data`].spoCode.trim())
         /* params = {
           productId: this[`${type}Data`].productId,
           type: this[`${type}Data`].spoType,

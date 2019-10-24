@@ -8,7 +8,7 @@ const state = {
   user: 'Narotu',
   warehouse: {},
   /* url: 'http://localhost:8080', */
-  /* url: 'http://wms.qa.aukeyit.com', */
+  /* url: 'http://westwms.qa.aukeyit.com', */
   url: '',
   userEmail: '',
   phoneType: '',

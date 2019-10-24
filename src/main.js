@@ -31,6 +31,11 @@ axios.interceptors.request.use(function (config) {
   let warehouseId = JSON.parse(warehouse || '{}').warehouseId
   if (config.method === 'post') {
     let data = qs.parse(config.data)
+    for (let item in data) {
+      if (typeof (data[item]) === 'string') {
+        data[item] = data[item].trim()
+      }
+    }
     config.data = qs.stringify({
       userEmail,
       language,
@@ -38,6 +43,11 @@ axios.interceptors.request.use(function (config) {
       ...data
     })
   } else if (config.method === 'get') {
+    for (let item in config.params) {
+      if (typeof (config.params[item]) === 'string') {
+        config.params[item] = config.params[item].trim()
+      }
+    }
     config.params = {
       userEmail,
       language,

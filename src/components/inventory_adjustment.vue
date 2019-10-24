@@ -8,6 +8,10 @@
       <div class="search">
         <scan-input :placeholder="$t('scanTheSKUBarCodeHere')" :name="'SKU'" v-model="sku"></scan-input>
       </div>
+      <div class="search search-plus" v-show="productBarcode && productBarcode !== sku">
+          <span>{{$t('productBarcode')}}：</span>
+          <span class="underline name" title="">{{productBarcode}}</span>
+      </div>
       <div class="total">
         <span class="pull-left">{{$t('locationNumber')}} <span class="underline">{{skuCount}}</span></span>
         <span class="pull-right">{{$t('total')}} <span class="underline">{{skuAll}}</span></span>
@@ -140,6 +144,7 @@ export default {
     return {
       index: 0,
       sku: '',
+      productBarcode: '',
       lcCode: '',
       skuCount: '',
       lcCodeCount: '',
@@ -188,6 +193,7 @@ export default {
       this[`${type}ButtonShow`] = false
       this[`${type}Exception`] = '实物与系统不符 / Physical and system do not match'
       this[`${type}OtherReasons`] = ''
+      this.productBarcode = ''
     },
     addSku (type) {
       if (this[`${type}DataNew`].length >= 5) {
@@ -249,6 +255,7 @@ export default {
               that[`has${type}`] = false
             } else {
               that[`has${type}`] = true
+              that.productBarcode = type === 'sku' ? res.data.data[0].productBarcode : ''
             }
             that.blurInput()
             that[`${type}ButtonShow`] = true
@@ -401,6 +408,10 @@ export default {
     input {
       flex: 1;
     }
+  }
+  .search-plus {
+    padding: 0 1rem;
+    margin-top: -1.5rem;
   }
   .total {
     padding: 0rem 1rem 1.5rem;

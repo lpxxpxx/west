@@ -181,5 +181,6 @@ module.exports = {
   status: '状态',
   trackingNumberRefNo: '跟踪号/退件单号',
   chartCenter: '报表中心',
-  enterChartCenter: '进入报表中心'
+  enterChartCenter: '进入报表中心',
+  productBarcode: '产品代码'
 }

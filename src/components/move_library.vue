@@ -10,6 +10,10 @@
       <div class="search">
         <scan-input :name="'SKU'" :placeholder="$t('scanTheSKUBarCodeHere')" :disabled="isAll ? 'disabled' : false" v-model="productBarcode"></scan-input>
       </div>
+      <div class="search search-plus" v-show="productBarcodeS && productBarcodeS !== productBarcode">
+          <span>{{$t('productBarcode')}}：</span>
+          <span class="underline name" title="">{{productBarcodeS}}</span>
+      </div>
       <div class="search">
         <scan-input :name="$t('newLocation')" :placeholder="lcCodeNewP ? lcCodeNewP : $t('scanTheBarcodeOfStorageLocationHere')" v-model="lcCodeNew"></scan-input>
       </div>
@@ -85,6 +89,7 @@ export default {
       isTask: false,
       confirmShow: false,
       productBarcode: '',
+      productBarcodeS: '',
       lcCode: '',
       lcCodeP: '',
       lcCodeNew: '',
@@ -114,6 +119,7 @@ export default {
       this.isAll = false
       this.isTask = false
       this.productBarcode = ''
+      this.productBarcodeS = ''
       this.lcCode = ''
       this.lcCodeP = ''
       this.lcCodeNew = ''
@@ -128,7 +134,7 @@ export default {
     setVal (res) {
       this.lcCode = res.data.lcCode
       this.lcCodeNew = res.data.lcCodeNew
-      this.productBarcode = res.data.productBarcode
+      this.productBarcodeS = res.data.productBarcode
       this.quantity = res.data.quantity
       this.aid = res.data.aid
       this.warehouseId = res.data.warehouseId
@@ -143,6 +149,7 @@ export default {
           lcCodeNew: this.lcCodeNew
         }})
       .then(res => {
+        this.productBarcodeS = ''
         if (res.data.aid) {
           if (this.isTask) {
             if (Number(this.aid) === Number(res.data.aid)) {
@@ -243,7 +250,12 @@ export default {
       }
       let form = new FormData()
       for (let i in query) {
-        if (query[i]) form.append(i, query[i])
+        if (query[i]) {
+          if (typeof (query[i]) === 'string') {
+            query[i] = query[i]
+          }
+          form.append(i, query[i])
+        }
       }
       if (this.skuFiles.length) {
         for (let i = 0; i <= this.skuFiles.length - 1; i++) {
@@ -441,6 +453,10 @@ export default {
       flex: 1;
       padding: 0 .5rem;
     }
+  }
+  .search-plus {
+    padding: 0 1rem;
+    margin-top: -.5rem;
   }
   .search.search-first {
     padding-top: 1rem; 
