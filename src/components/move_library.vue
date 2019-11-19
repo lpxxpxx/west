@@ -25,7 +25,7 @@
         <span class="label">{{$t('takePhotos')}}</span>
         <input class="img hidden" @change="changeImg()" type="file" name="cover" ref="inputer" accept="image/*" capture="camera" multiple/>
         <span class="photo-cont">
-          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? skuImgIOS :skuImg" :key="index">
+          <span class="img-con" v-for="(item, index) in $store.getters.getPhoneType === 'IOS' ? skuImgIOS : skuImg" :key="index">
             <img :src="item" @click="previewImg(index)" preview="1">
             <span class="delete-icon" @click="deleteImg(index)">x</span>
           </span>
@@ -51,6 +51,26 @@
       :cancel-text="$t('cancel')"
       @on-confirm="submit(true)">
         <p style="text-align:center;">{{ $t('DoesContinue') }}</p>
+      </confirm>
+    </div>
+    <div v-transfer-dom>
+      <confirm v-model="submitConfirm"
+      :title="$t('locationInformationConfirmation')"
+      :confirm-text="$t('confirm')"
+      :cancel-text="$t('cancel')"
+      @on-confirm="back()">
+        <div class="confirm-info">
+          <div class="info-detail">
+            <span class="label">{{$t('newLocation')}}：</span> 
+            <span class="name" title="">{{lcCodeNew}}</span>
+          </div>
+          <div class="info-detail">
+            <span class="label">SKU：</span> 
+            <span class="name" title="">
+              <p v-for="(item, index) in SKUDetail"  :key="index">{{item}}</p>
+            </span>
+          </div>
+        </div>
       </confirm>
     </div>
   </div>
@@ -88,6 +108,8 @@ export default {
       isAll: true,
       isTask: false,
       confirmShow: false,
+      submitConfirm: false,
+      SKUDetail: [],
       productBarcode: '',
       productBarcodeS: '',
       lcCode: '',
@@ -118,6 +140,7 @@ export default {
     reset () {
       this.isAll = false
       this.isTask = false
+      this.SKUDetail = []
       this.productBarcode = ''
       this.productBarcodeS = ''
       this.lcCode = ''
@@ -171,7 +194,7 @@ export default {
       })
     },
     toSearch () {
-      if (this.lcCode !== '' && this.lcCodeNew !== '' && this.productBarcode !== '') {
+      if (this.lcCode !== '' && this.lcCodeNew !== '' && this.productBarcode !== '' && this.isTask) {
         let that = this
         clearTimeout(that.timeoutId)
         that.timeoutId = setTimeout(function () {
@@ -279,12 +302,12 @@ export default {
       })
       .then(res => {
         this.$vux.loading.hide()
+        this.doubleConfirm()
         if (res.data.success) {
           this.$vux.toast.show({
             type: 'text',
             text: res.data.message
           })
-          this.reset()
         } else {
           this.$vux.toast.show({
             type: 'text',
@@ -328,6 +351,36 @@ export default {
         this.$vux.loading.hide()
         alert(this.$t('businessSystemException'))
       })
+    },
+    doubleConfirm () {
+      this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventorySearch`, {
+        params: {
+          codeType: 'lcCode',
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
+          queryCode: this.lcCodeNew
+        }
+      })
+      .then(res => {
+        let that = this
+        that.SKUDetail = []
+        if (res.data.success) {
+          res.data.data.rows.forEach(item => {
+            that.SKUDetail.push(`${item.productBarcode} * ${item.piSellable}`)
+          })
+          that.submitConfirm = true
+        } else {
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
+        }
+      })
+      .catch(res => {
+        alert(this.$t('businessSystemException'))
+      })
+    },
+    back () {
+      this.$router.go(-1)
     },
     chooseImage () {
       if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC') {
@@ -508,6 +561,18 @@ export default {
         color: #999;
         font-size: 2rem;
         padding: 0px 7px 0;
+      }
+    }
+  }
+  .confirm-info {
+    max-height: 21rem;
+    overflow-y: auto;
+    .info-detail {
+      display: flex;
+      .name {
+        flex: 1;
+        text-overflow: ellipsis;
+        text-align: left;
       }
     }
   }

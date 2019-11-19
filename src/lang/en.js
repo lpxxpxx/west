@@ -182,5 +182,6 @@ module.exports = {
   trackingNumberRefNo: 'Tracking # / Ref #',
   chartCenter: 'Chart Center',
   enterChartCenter: 'Enter Chart Center',
-  productBarcode: 'Product Barcode'
+  productBarcode: 'Product Barcode',
+  locationInformationConfirmation: 'Information Confirmation'
 }

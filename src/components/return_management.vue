@@ -370,7 +370,7 @@ export default {
       form.append('language', window.localStorage.getItem('lang') || 'cn')
       let url = ''
       if (type === 'edit') {
-        form.append('productId', this[`${type}Data`].productId.trim())
+        form.append('productId', this[`${type}Data`].productId)
         form.append('type', this[`${type}Data`].spoType)
         form.append('relateOrderCode', this[`${type}Data`].spoCode.trim())
         /* params = {

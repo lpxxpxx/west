@@ -182,5 +182,6 @@ module.exports = {
   trackingNumberRefNo: '跟踪号/退件单号',
   chartCenter: '报表中心',
   enterChartCenter: '进入报表中心',
-  productBarcode: '产品代码'
+  productBarcode: '产品代码',
+  locationInformationConfirmation: '库位信息确认'
 }

@@ -176,11 +176,31 @@
         </flexbox>
       </div>
     </div>
+    <div v-transfer-dom>
+      <confirm v-model="submitConfirm"
+      :title="$t('locationInformationConfirmation')"
+      :confirm-text="$t('confirm')"
+      :cancel-text="$t('cancel')"
+      @on-confirm="back('tray')">
+        <div class="confirm-info">
+          <div class="info-detail">
+            <span class="label">{{$t('location')}}：</span> 
+            <span class="name" title="">{{trayData.lcCode}}</span>
+          </div>
+          <div class="info-detail">
+            <span class="label">SKU：</span> 
+            <span class="name" title="">
+              <p v-for="(item, index) in SKUDetail"  :key="index">{{item}}</p>
+            </span>
+          </div>
+        </div>
+      </confirm>
+    </div>
   </div>
 </template>
 
 <script>
-import { Tab, TabItem, XButton, Flexbox, XTable, FlexboxItem } from 'vux'
+import { Tab, TabItem, XButton, Flexbox, XTable, FlexboxItem, Confirm } from 'vux'
 import ScanInput from './scan_input'
 /* import qs from 'Qs' */
 
@@ -193,6 +213,7 @@ export default {
     Flexbox,
     XTable,
     FlexboxItem,
+    Confirm,
     ScanInput
   },
   mounted () {
@@ -260,7 +281,9 @@ export default {
       lcCodeCount: '',
       lcCodeAll: '',
       lcCodeData: [],
-      haslcCode: false
+      haslcCode: false,
+      submitConfirm: false,
+      SKUDetail: []
     }
   },
   methods: {
@@ -487,11 +510,6 @@ export default {
             type: 'text',
             text: this.$t('operationSuccessful')
           })
-          this[`${type}Img`] = []
-          this[`${type}ImgIOS`] = []
-          this[`${type}Files`] = []
-          this.uploadIds = []
-          this.toSearch(type)
         } else {
           this.$vux.toast.show({
             type: 'text',
@@ -499,11 +517,46 @@ export default {
           })
           this.uploadIds = []
         }
+        this.doubleConfirm()
       })
       .catch(res => {
         this.$vux.loading.hide()
         alert(this.$t('businessSystemException'))
       })
+    },
+    doubleConfirm () {
+      this.axios.get(`${this.$store.getters.getUrl}/weixinapi/inventory/inventorySearch`, {
+        params: {
+          codeType: 'lcCode',
+          warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId,
+          queryCode: this.trayData.lcCode
+        }
+      })
+      .then(res => {
+        let that = this
+        that.SKUDetail = []
+        if (res.data.success) {
+          res.data.data.rows.forEach(item => {
+            that.SKUDetail.push(`${item.productBarcode} * ${item.piSellable}`)
+          })
+          that.submitConfirm = true
+        } else {
+          this.$vux.toast.show({
+            type: 'text',
+            text: res.data.message
+          })
+        }
+      })
+      .catch(res => {
+        alert(this.$t('businessSystemException'))
+      })
+    },
+    back (type) {
+      this[`${type}Img`] = []
+      this[`${type}ImgIOS`] = []
+      this[`${type}Files`] = []
+      this.uploadIds = []
+      this.toSearch(type)
     },
     chooseImage (type) {
       if (document.querySelector('#requestTerminal') && document.querySelector('#requestTerminal').value !== 'PC') {
@@ -720,6 +773,18 @@ export default {
   }
   .table {
     padding: 1rem;
+  }
+  .confirm-info {
+    max-height: 21rem;
+    overflow-y: auto;
+    .info-detail {
+      display: flex;
+      .name {
+        flex: 1;
+        text-overflow: ellipsis;
+        text-align: left;
+      }
+    }
   }
   .button {
     position: fixed;
