@@ -1,13 +1,13 @@
 <template>
   <div class="container">
     <div class="input">
-      <scan-input :placeholder="$t('pickingListNo')" v-model="queryCode"></scan-input>
+        <scan-input :placeholder="$t('ISC')" v-model="queryCode"></scan-input>
     </div>
-    <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.pickingCode, item.pickingItemCnt, item.pickedQTY, item.exceptionQTY)">
-      <div class="task-item">
-        <p>{{$t('pickingListNo')}}：{{item.pickingCode}}</p>
-        <p>{{$t('pickingStatus')}}：{{item.pickStatusText}}</p>
-        <p>{{$t('PickQuantity')}}：{{item.pickingItemCnt}}</p>
+    <div v-for="(item, index) in taskList" :key="index" class="task-list">
+      <div class="task-item" @click="goToDetail(item.tsCode, item.tsType)">
+        <p class="full">{{$t('inventoryNumber')}}：{{item.tsCode}}</p>
+        <p class="full">{{$t('inventoryType')}}：{{item.tsTypeText}}</p>
+        <p class="full">{{$t('creationTime')}}：{{item.tsUpdateTime ? new Date(item.tsUpdateTime).format('yyyy-MM-dd hh:mm:ss') : ''}}</p>
       </div>
     </div>
     <div class="task-list task-list-none" v-show="isLoading">
@@ -16,23 +16,26 @@
     <div class="task-list task-list-none" v-show="!hasTask">
       {{$t('noTask')}}
     </div>
-    <!-- <div class="button">
-      <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(0, {trakcingNo: queryCode})">{{$t('skip')}}</x-button>
-    </div> -->
   </div>
 </template>
 
 <script>
 import { XButton } from 'vux'
+import ScanInput from './scan_input'
 import qs from 'Qs'
 
 export default {
-  name: 'pickingOperateTask',
+  name: 'upperShelfTask',
   components: {
-    XButton
+    XButton,
+    ScanInput
   },
   mounted () {
     this.search()
+    window.addEventListener('scroll', this.scroll)
+  },
+  beforeDestroy () {
+    window.removeEventListener('scroll', this.scroll)
   },
   data () {
     return {
@@ -46,8 +49,8 @@ export default {
     }
   },
   methods: {
-    goToDetail (pickingCode = '', pickingItemCnt = '', pickedQTY = '', exceptionQTY = '') {
-      this.$router.push(`/pickingOperate?pickingCode=${pickingCode}&pickingItemCnt=${pickingItemCnt}&pickedQTY=${pickedQTY}&exceptionQTY=${exceptionQTY}`)
+    goToDetail (tsCode = '', tsType = '') {
+      this.$router.push(`/inventory?tsCode=${tsCode}&tsType=${tsType}`)
     },
     scroll () {
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -59,20 +62,19 @@ export default {
       }
     },
     search () {
-      let params = {
+      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/takeStock/takeStockListSearch`, qs.stringify({
         pageNumber: ++this.page,
         limit: 20,
         queryCode: this.queryCode,
         warehouseId: JSON.parse(window.localStorage.getItem('warehouse')).warehouseId
-      }
-      this.axios.post(`${this.$store.getters.getUrl}/weixinapi/picking/pickingListSearch`, qs.stringify(params), {
+      }), {
         headers: {
           'Content-type': 'application/x-www-form-urlencoded'
         }
       })
       .then(res => {
         this.isLoading = false
-        if (res.data.rows.length === 0 && this.taskList.length === 0) {
+        if (res.data.rows.length === 0) {
           this.hasTask = false
         } else {
           this.taskList = this.taskList.concat(res.data.rows)
@@ -83,7 +85,8 @@ export default {
       .catch(res => {
         this.isLoading = false
         this.page--
-        alert(JSON.stringify(res))
+        alert(`${this.$store.getters.getUrl}/weixinapi/putaway/putawaySearch`)
+        alert(this.$t('businessSystemException'))
       })
     }
   },
@@ -113,15 +116,19 @@ export default {
     padding: 0.7rem 1rem;
     font-size: 0.8rem;
   }
-  .task-list-none {
-    display: inherit;
-    text-align: center;
-  }
   .task-item {
     width: 100%;
   }
-  .button {
-    padding: 1rem 1rem;
+  .task-item p.full {
+    width: 100%;
+  }
+  .task-item p {
+    width: 49%;
+    display: inline-block;
+  }
+  .task-list-none {
+    display: inherit;
+    text-align: center;
   }
   .button {
     position: fixed;

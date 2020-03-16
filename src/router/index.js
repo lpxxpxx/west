@@ -10,6 +10,8 @@ import UpperShelfTask from '@/components/upper_shelf_task'
 import UpperShelf from '@/components/upper_shelf'
 import InventoryAdjustmentTask from '@/components/inventory_adjustment_task'
 import InventoryAdjustment from '@/components/inventory_adjustment'
+import InventoryTask from '@/components/inventory_task'
+import Inventory from '@/components/inventory'
 import MoveLibraryTask from '@/components/move_library_task'
 import MoveLibrary from '@/components/move_library'
 import ProductSpecificationTask from '@/components/product_specification_task'
@@ -98,6 +100,22 @@ const routes = new Router({
       component: InventoryAdjustment,
       meta: {
         title: 'theInventory'
+      }
+    },
+    {
+      path: '/inventoryTask',
+      name: 'inventoryTask',
+      component: InventoryTask,
+      meta: {
+        title: 'inventoryTask'
+      }
+    },
+    {
+      path: '/inventory',
+      name: 'inventory',
+      component: Inventory,
+      meta: {
+        title: 'inventory'
       }
     },
     {

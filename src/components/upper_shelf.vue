@@ -510,6 +510,7 @@ export default {
             type: 'text',
             text: this.$t('operationSuccessful')
           })
+          this.doubleConfirm()
         } else {
           this.$vux.toast.show({
             type: 'text',
@@ -517,7 +518,6 @@ export default {
           })
           this.uploadIds = []
         }
-        this.doubleConfirm()
       })
       .catch(res => {
         this.$vux.loading.hide()

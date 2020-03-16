@@ -85,6 +85,13 @@ export default {
           icon: 'icon-detail',
           target: '/pickingOperateTask',
           num: 0
+        },
+        make_an_inventory: {
+          id: 9,
+          name: this.$t('inventory'),
+          icon: 'icon-detail',
+          target: '/inventoryTask',
+          num: 0
         }
       },
       menuList: []
@@ -165,6 +172,13 @@ export default {
             icon: 'icon-detail',
             target: '/pickingOperateTask',
             num: 0
+          },
+          {
+            id: 9,
+            name: this.$t('inventory'),
+            icon: 'icon-detail',
+            target: '/inventoryTask',
+            num: 0
           }
         ]
         console.log('On dev mode!')
@@ -196,6 +210,9 @@ export default {
                 break
               case 8:
                 item.num = res.data.data.pickingCount || 0
+                break
+              case 9:
+                item.num = res.data.data.takeStockCount || 0
                 break
             }
             return item

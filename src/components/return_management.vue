@@ -36,12 +36,19 @@
         <span class="label" style="width: 11rem">{{$t('quantityReceivedThisTime')}}</span>
         <input type="number" style="width: 5rem" placeholder="0" v-model="editData.rdReceivedNetReceiptsQty" v-select-val />
       </div>
-      <div class="search search-last">
+      <div class="search">
         <scan-input :name="$t('pallet')" :placeholder="$t('scanTheBarcodeOfStorageLocationHere')" v-model="editData.lcCode"></scan-input>
       </div>
+      <div class="search">
+        <span class="label">{{$t('remark')}} </span>
+        <input type="text" placeholder="" v-model="editData.warehouseRemark" v-select-val />
+      </div>
       <div class="selector">
-        <group>
+        <!-- <group>
           <selector v-model="editData.exception" :title="$t('exception')" :options="exceptionList"></selector>
+        </group> -->
+        <group>
+          <radio v-model="editData.exception" :options="exceptionList"></radio>
         </group>
       </div>
       <div class="photo">
@@ -83,9 +90,16 @@
         <span class="label" style="width: 11rem">{{$t('quantityReceivedThisTime')}}</span>
         <input type="number" style="width: 5rem" placeholder="0" v-model="newData.rdReceivedNetReceiptsQty" v-select-val />
       </div>
+      <div class="search">
+        <span class="label">{{$t('remark')}} </span>
+        <input type="text" placeholder="" v-model="newData.warehouseRemark" v-select-val />
+      </div>
       <div class="selector">
-        <group>
+        <!-- <group>
           <selector v-model="newData.exception" :title="$t('exception')" :options="exceptionList"></selector>
+        </group> -->
+        <group>
+          <radio v-model="newData.exception" :options="exceptionList"></radio>
         </group>
       </div>
       <div class="photo">
@@ -149,7 +163,7 @@
 </template>
 
 <script>
-import { XButton, Flexbox, FlexboxItem, Selector, Group } from 'vux'
+import { XButton, Flexbox, FlexboxItem, Selector, Group, Radio } from 'vux'
 import qs from 'Qs'
 
 export default {
@@ -159,7 +173,8 @@ export default {
     Flexbox,
     FlexboxItem,
     Selector,
-    Group
+    Group,
+    Radio
   },
   mounted () {
     let query = this.$route.query || {}
@@ -169,6 +184,8 @@ export default {
     } else if (query.spoType !== '0') {
       this.index = 0
       this.editData = this.$store.getters.getTemporary
+      this.editData.exception = ''
+      this.editData.rdReceivedNetReceiptsQty = this.editData.rdReceivedNetReceiptsQty || 1
     } else {
       this.newData.trackingNumber = this.$store.getters.getTemporary.trackingNumber
       this.index = 1
@@ -186,7 +203,7 @@ export default {
       editData: {
         spoType: '',
         productBarcode: '',
-        rdReceivedNetReceiptsQty: 0,
+        rdReceivedNetReceiptsQty: 1,
         receivingQtyList: [{}],
         exception: ''
       },
@@ -200,22 +217,24 @@ export default {
         spoType: '',
         productBarcode: '',
         trackingNumber: '',
-        exception: ''
+        exception: '',
+        rdReceivedNetReceiptsQty: 1
       },
       oldeditData: {
         spoType: '',
         productBarcode: '',
-        rdReceivedNetReceiptsQty: 0,
+        rdReceivedNetReceiptsQty: 1,
         receivingQtyList: [{}]
       },
       oldnewData: {
         spoType: '',
         productBarcode: '',
-        trackingNumber: ''
+        trackingNumber: '',
+        rdReceivedNetReceiptsQty: 1
       },
       uploadIds: [],
       exceptionList: [
-        {key: '', value: this.$t('pleaseSelectTheCauseOfTheException')},
+        {key: '', value: this.$t('normal')},
         {key: '1', value: this.$t('packagingDamage')},
         {key: '2', value: this.$t('goodsDamage')}
       ]
@@ -305,8 +324,6 @@ export default {
         })
         return false
       }
-      console.log(this[`${type}Data`].trackingNumber)
-      console.log(this[`${type}Data`].trackingNumber.length)
       if (this[`${type}Data`].trackingNumber.length > 200) {
         this.$vux.toast.show({
           type: 'text',
@@ -360,11 +377,12 @@ export default {
       let form = new FormData()
       form.append('warehouseId', JSON.parse(window.localStorage.getItem('warehouse')).warehouseId)
       form.append('warehouseCode', JSON.parse(window.localStorage.getItem('warehouse')).warehouseCode)
-      form.append('trackingNumber', this[`${type}Data`].trackingNumber.trim())
+      form.append('trackingNumber', this[`${type}Data`].trackingNumber.replace(/[ |~|`|!|@|#|$|%|^|&|*|(|)|_|+|=||||[|\]|{|}|;|:|"|'|,|<|.|>|/]/g, ''))
       form.append('productBarcode', this[`${type}Data`].productBarcode.trim())
       form.append('quantity', this[`${type}Data`].rdReceivedNetReceiptsQty)
       form.append('lcCode', this[`${type}Data`].lcCode.toUpperCase().trim())
       form.append('exception', this[`${type}Data`].exception || '')
+      form.append('warehouseRemark', this[`${type}Data`].warehouseRemark || '')
       form.append('serverIds', this.uploadIds)
       form.append('userEmail', window.localStorage.getItem('userEmail'))
       form.append('language', window.localStorage.getItem('lang') || 'cn')
@@ -418,6 +436,7 @@ export default {
           this[`${type}Data`].rdReceivedNetReceiptsQty = ''
           this[`${type}Data`].lcCode = ''
           this[`${type}Data`].exception = ''
+          this.$router.go(-1)
         } else {
           this.$vux.toast.show({
             type: 'text',
@@ -568,7 +587,7 @@ export default {
     display: flex;
     .label {
       font-size: 1.5rem;
-      width: 4rem;
+      margin-right: 1rem;
     }
     input {
       flex: 1;
@@ -657,5 +676,26 @@ export default {
     width: 100%;
     box-sizing: border-box;
     background: #fbf9fe;
+  }
+  .selector {
+    line-height: 2rem;
+    height: auto!important;
+  }
+</style>
+<style>
+  .selector .weui-cells {
+    line-height: normal;
+  }
+  .weui-cells_radio {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .weui-cell.weui-cell_radio {
+    margin: .3rem!important;
+    padding: .5rem .6rem .6rem!important;
+    border: 1px solid #999!important;
+    border-radius: .5rem!important;
+    line-height: normal;
   }
 </style>

@@ -188,7 +188,7 @@ body {
     margin: 0 .8rem;
     height: 2rem;
     line-height: 2rem;
-    width: 50vw;
+    width: auto;
     .label {
       display: none;
     }
@@ -239,6 +239,10 @@ body {
 }
 .vux-table td:first-of-type {
   word-break: break-all;
+}
+.weui-actionsheet__menu {
+  max-height: 336px;
+  overflow-y: auto;
 }
 .footer {
   position: fixed;

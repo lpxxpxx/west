@@ -1,6 +1,6 @@
 import 'babel-polyfill'
 import Vue from 'vue'
-import FastClick from 'fastclick'
+/* import FastClick from 'fastclick' */
 import VueCookies from 'vue-cookies'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -9,12 +9,13 @@ import App from './App'
 import store from './store'
 import { ToastPlugin, LoadingPlugin } from 'vux'
 import ScanInput from './components/scan_input'
+import imgCont from './components/img_cont'
 import qs from 'Qs'
 import VueI18n from 'vue-i18n'
 import preview from 'vue-photo-preview'
 import 'vue-photo-preview/dist/skin.css'
 
-FastClick.attach(document.body)
+/* FastClick.attach(document.body) */
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin, {time: 5000, width: '80%'})
 Vue.use(VueCookies)
@@ -22,6 +23,7 @@ Vue.use(VueAxios, axios)
 Vue.use(VueI18n)
 Vue.use(preview)
 Vue.component('scan-input', ScanInput)
+Vue.component('img-cont', imgCont)
 Vue.config.productionTip = false
 
 axios.interceptors.request.use(function (config) {

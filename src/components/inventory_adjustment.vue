@@ -21,7 +21,7 @@
           <thead>
             <tr>
               <th>{{$t('location')}}</th>
-              <th>{{$t('inventoryNumber')}}</th>
+              <th>{{$t('inventoryQty')}}</th>
               <th>{{$t('setTo')}}</th>
             </tr>
           </thead>
@@ -69,7 +69,7 @@
           <thead>
             <tr>
               <th>SKU</th>
-              <th>{{$t('inventoryNumber')}}</th>
+              <th>{{$t('inventoryQty')}}</th>
               <th>{{$t('setTo')}}</th>
             </tr>
           </thead>

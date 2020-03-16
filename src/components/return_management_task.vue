@@ -9,7 +9,7 @@
       <div class="input">
         <scan-input :placeholder="$t('trackingNumberRefNo')" v-model="queryCode"></scan-input>
       </div>
-      <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.spoType, item)">
+      <!-- <div v-for="(item, index) in taskList" :key="index" class="task-list" @click="goToDetail(item.spoType, item)">
         <div class="task-item">
           <p class="clearfloat">
             <span class="pull-left">{{$t('orderNo')}}：{{item.spoCode}}</span>
@@ -32,7 +32,7 @@
       </div>
       <div class="button">
         <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail(0, {trakcingNo: queryCode})">{{$t('noMatch')}}</x-button>
-      </div>
+      </div> -->
     </div>
     <div class="tab-swiper" v-show="index === 1">
       <div class="search">
@@ -113,9 +113,9 @@ export default {
     TabItem,
     XTable
   },
-  mounted () {
+  /* mounted () {
     this.search()
-  },
+  }, */
   data () {
     return {
       taskList: [],
@@ -212,12 +212,22 @@ export default {
       })
       .then(res => {
         this.isLoading = false
-        if (res.data.rows.length === 0 && this.taskList.length === 0) {
+        /* if (res.data.rows.length === 0 && this.taskList.length === 0) {
           this.hasTask = false
         } else {
           this.taskList = this.taskList.concat(res.data.rows)
           this.total = res.data.total
           this.hasTask = true
+        } */
+        if (res.data.rows.length === 1) {
+          this.goToDetail(res.data.rows[0].spoType, res.data.rows[0])
+        } else if (res.data.rows.length === 0) {
+          this.goToDetail(0, {trackingNumber: this.queryCode})
+        } else {
+          this.$vux.toast.show({
+            type: 'text',
+            text: this.$t('pleaseEnterTheCompleteNo')
+          })
         }
       })
       .catch(res => {
@@ -293,7 +303,7 @@ export default {
   },
   watch: {
     queryCode () {
-      this.toSearch('')
+      if (this.queryCode.length >= 12) this.toSearch('')
     },
     sku () {
       this.toSearch('sku')
