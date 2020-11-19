@@ -112,7 +112,7 @@ module.exports = {
   pickingOperateTask: 'Picking Operate Task',
   pickingOperate: 'Picking Operate',
   slidingMenu: 'Sliding Menu',
-  westMail: 'Western Post',
+  westMail: 'WMS',
   KG: 'KG',
   CM: 'CM',
   LB: 'LB',
@@ -198,5 +198,18 @@ module.exports = {
   pleaseSelectALocationToStartPicking: 'Please select a location to start picking',
   reselectTheLocation: 'Reselect the location',
   normal: 'Normal',
-  remark: 'Remark'
+  remark: 'Remark',
+  moveOut: 'Move Out',
+  moveIn: 'Move In',
+  confirmMoveOut: 'Confirm Move Out',
+  confirmMoveIn: 'Confirm Move In',
+  removableQty: 'Removable Qty',
+  moveInQty: 'Move In Qty',
+  moveOutQty: 'Move Out Qty',
+  moveInLcCode: 'Move In Location',
+  moveOutLcCode: 'Move Out Location',
+  moveInSKU: 'Move In SKU',
+  targetLocation: 'Target Location',
+  cannotBeEqual: 'Moving into the location cannot be equal to moving out of the location!',
+  onwayQty: 'Onway Qty'
 }

@@ -198,5 +198,18 @@ module.exports = {
   pleaseSelectALocationToStartPicking: '请选择库位开始拣货',
   reselectTheLocation: '重新选择库位',
   normal: '无异常',
-  remark: '备注'
+  remark: '备注',
+  moveOut: '移出',
+  moveIn: '移入',
+  confirmMoveOut: '确认移出',
+  confirmMoveIn: '确认移入',
+  removableQty: '可移数量',
+  moveInQty: '移入数量',
+  moveOutQty: '移出数量',
+  moveInLcCode: '移入库位',
+  moveOutLcCode: '移出库位',
+  moveInSKU: '移入SKU',
+  targetLocation: '目标库位',
+  cannotBeEqual: '移入库位不能与移出库位相等',
+  onwayQty: '在途数量'
 }

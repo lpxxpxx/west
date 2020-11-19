@@ -16,6 +16,9 @@
         <span class="pull-left">{{$t('locationNumber')}} <span class="underline">{{skuCount}}</span></span>
         <span class="pull-right">{{$t('total')}} <span class="underline">{{skuAll}}</span></span>
       </div>
+      <div class="total">
+        <span class="pull-left">{{$t('onwayQty')}} <span class="underline">{{onwayQty}}</span></span>
+      </div>
       <div class="table">
         <x-table full-bordered>
           <thead>
@@ -71,14 +74,22 @@
         </x-table>
       </div>
       <div class="button">
-        <x-button :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)" v-if="hasPermission" v-show="lcCodeButtonShow">{{$t('theInventory')}}</x-button>
+        <flexbox v-show="lcCodeButtonShow">
+          <flexbox-item>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="moveOut()">{{$t('moveOut')}}</x-button>
+          </flexbox-item>
+          <flexbox-item>
+            <x-button :gradients="['#169bd5', '#169bd5']" @click.native.stop="moveIn()">{{$t('moveIn')}}</x-button>
+          </flexbox-item>
+        </flexbox>
+        <x-button style="margin-top: .5rem;" :gradients="['#1D62F0', '#19D5FD']" @click.native="goToDetail('', lcCode)" v-show="lcCodeButtonShow">{{$t('theInventory')}}</x-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Tab, TabItem, XTable, XButton } from 'vux'
+import { Tab, TabItem, Flexbox, FlexboxItem, XTable, XButton } from 'vux'
 import ScanInput from './scan_input'
 
 export default {
@@ -86,6 +97,8 @@ export default {
   components: {
     Tab,
     TabItem,
+    Flexbox,
+    FlexboxItem,
     XTable,
     XButton,
     ScanInput
@@ -100,6 +113,7 @@ export default {
       lcCodeCount: '',
       skuAll: '',
       lcCodeAll: '',
+      onwayQty: '',
       hassku: false,
       haslcCode: false,
       timeoutId: '',
@@ -118,6 +132,11 @@ export default {
       }
     } catch (err) {
       console.warn('无权限')
+    }
+    let query = this.$route.query || {}
+    if (query.lcCode) {
+      this.index = 1
+      this.lcCode = query.lcCode
     }
   },
   methods: {
@@ -140,6 +159,7 @@ export default {
         this[`${type}Data`] = []
         this[`${type}Count`] = 0
         this[`${type}All`] = 0
+        this.onwayQty = 0
         this[`${type}ButtonShow`] = false
         return false
       }
@@ -154,6 +174,7 @@ export default {
         this[`${type}Data`] = []
         this[`${type}Count`] = 0
         this[`${type}All`] = 0
+        this.onwayQty = 0
         this.productBarcode = ''
         if (res.data.success) {
           let that = this
@@ -171,6 +192,7 @@ export default {
               that[`has${type}`] = true
               that.productBarcode = type === 'sku' ? res.data.data.rows[0].productBarcode : ''
             }
+            that.onwayQty = type === 'sku' ? res.data.data2 : ''
             that.blurInput()
             that[`${type}ButtonShow`] = true
           }, 10)
@@ -188,6 +210,12 @@ export default {
       that.timeoutId = setTimeout(function () {
         that.search(type)
       }, 1000)
+    },
+    moveOut () {
+      this.$router.push(`/moveOutLcCode?lcCode=${this.lcCode}`)
+    },
+    moveIn () {
+      this.$router.push(`/moveInLcCode?lcCode=${this.lcCode}`)
     }
   },
   watch: {
@@ -213,7 +241,7 @@ export default {
     margin-top: -1rem;
   }
   .total {
-    padding: 0rem 1rem 1.5rem;
+    padding: 0rem 1rem 1.7rem;
   }
   .table {
     padding: 1rem;

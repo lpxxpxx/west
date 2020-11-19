@@ -21,6 +21,8 @@ import returnManagementTask from '@/components/return_management_task'
 import returnManagement from '@/components/return_management'
 import pickingOperateTask from '@/components/picking_operate_task'
 import pickingOperate from '@/components/picking_operate'
+import moveInLccode from '@/components/move_in_lccode'
+import moveOutLccode from '@/components/move_out_lccode'
 import slideList from '@/components/slide_list'
 import chartCenter from '@/components/chart_center'
 import cn from '@/lang/cn'
@@ -196,6 +198,22 @@ const routes = new Router({
       component: pickingOperate,
       meta: {
         title: 'pickingOperate'
+      }
+    },
+    {
+      path: '/moveInLccode',
+      name: 'moveInLccode',
+      component: moveInLccode,
+      meta: {
+        title: 'inventoryQuery'
+      }
+    },
+    {
+      path: '/moveOutLccode',
+      name: 'moveOutLccode',
+      component: moveOutLccode,
+      meta: {
+        title: 'inventoryQuery'
       }
     },
     {
